@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <%= @project.name %>
+      <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
+    </div>
+    <div class="panel-body">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <%= @survey.name %>
+          <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @project), class: "pull-right"%>
+        </div>
+        <div class="panel-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class = "col-md-12">
+                <p><%= @survey.description %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

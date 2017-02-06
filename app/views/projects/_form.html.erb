@@ -1,0 +1,34 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <%= if @project.id.nil? then t('project.new') else t('project.edit') end %>
+  </div>
+  <div class="panel-body">
+    <%= form_for([@user, @project], class: "form", remote: true) do |f| %>
+      <div class="form-group <%= "has-error" unless @project.errors[:name].blank? %>">
+        <%= f.label :name, class: "control-label" %>
+        <%= f.text_field :name, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :description, class: "control-label" %>
+        <%= f.text_field :description, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.submit :class => "btn btn-primary" %>
+        <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
+        <% unless @project.id.nil? %>
+            <%= link_to t('project.delete'), user_project_path(@user, @project), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+    function cancelForm() {
+        <% if @project.id.nil? then %>
+          $('#new_project').html("<%= escape_javascript(render 'new') %>");
+        <% else %>
+          $('#project_<%= @project.id %>').html("<%= escape_javascript(render @project) %>");
+        <% end %>
+    }
+</script>

@@ -1,0 +1,22 @@
+<div id="project_<%= project.id%>">
+  <div class="panel <%= if project.available then "panel-success" else "panel-default" end %>">
+    <div class="panel-heading">
+      <%= link_to project.name, user_project_path(@user, project) %>
+      <p class = "pull-right">
+        <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_path(@user, project), remote: true %>
+        &nbsp;
+        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_path(@user, project, format: 'zip')%>
+      </p>
+    </div>
+    <div class="panel-body">
+      <p><%= project.description%></p>
+      <table class="table">
+        <tr><td><%= t('.surveys') %>:</td><td><%= project.surveys.count %></td></tr>
+        <tr><td><%= t('concept_maps') %>:</td><td><%= project.concept_maps.count %></td></tr>
+      </table>
+      <%= link_to t('project.show'), user_project_path(@user, project), class: "btn btn-default" %>
+      <%= link_to t('project.edit'), edit_user_project_path(@user, project), class: "btn btn-default", remote: true %>
+      <%= link_to t('export'), user_project_path(@user, project, format: 'zip'), class: "btn btn-default pull-right" %>
+    </div>
+  </div>
+</div>

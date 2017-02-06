@@ -1,0 +1,24 @@
+<div class="row">
+  <div class = "col-md-4">
+    <div id="new_survey">
+      <%= render 'surveys/new' %>
+    </div>
+  </div>
+</div>
+
+<% count = 0 %>
+<% @surveys.each do |s| %>
+    <% if count == 0 then %>
+        <div class = "row">
+    <% end %>
+    <div class = "col-md-4">
+      <%= render s %>
+    </div>
+    <% if count == 2 then %>
+        </div>
+    <% end %>
+    <% count = (count+1) % 3 %>
+<% end %>
+<% if count != 0 then %>
+    </div>
+<% end %>

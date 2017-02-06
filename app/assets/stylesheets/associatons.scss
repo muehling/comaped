@@ -1,0 +1,12 @@
+// Place all the styles related to the Associatons controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url(asset_path('bootstrap/glyphicons-halflings-regular.eot'));
+  src: url(asset_path('bootstrap/glyphicons-halflings-regular.eot?#iefix')) format('embedded-opentype'),
+  url(asset_path('bootstrap/glyphicons-halflings-regular.woff')) format('woff'),
+  url(asset_path('bootstrap/glyphicons-halflings-regular.ttf')) format('truetype'),
+  url(asset_path('bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular')) format('svg');
+}

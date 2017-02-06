@@ -1,0 +1,71 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  activerecord:
+    models:
+      project: "Project"
+      survey: "Survey"
+      user: "User"
+    attributes:
+      project:
+        description: "Description"
+        name: "Name"
+      survey:
+        association_labels: "Allowed association labels"
+        code: "Access code"
+        concept_labels: "Allowed concepts"
+        description: "Description"
+        end_date: "Available to"
+        initial_map: "Initial concept map"
+        start_date: "Available from"
+  application:
+    backend:
+      email: "E-mail"
+      goodbye: "Successfully logged out!"
+      password: "Password"
+      wrong_credentials: "E-mail or password incorrect"
+    frontend:
+      code_not_found: "Code not found!"
+      enter_code: "Please enter your code here"
+      goodbye: "Thank you for using CoMapEd!\nYou may return to your map using the code %{code} later on."
+  layouts:
+    backend:
+      projects: "Projects"
+  project:
+    created: "Project created"
+    delete: "Delete project"
+    destroyed: "Project deleted"
+    edit: "Edit project"
+    new: "New project"
+    show: "Projekt öffnen"
+    _project:
+      surveys: "Surveys"
+  survey:
+    created: "Survey created"
+    delete: "Delete survey"
+    destroyed: "Survey deleted"
+    edit: "Edit survey"
+    new: "New survey"
+  are_you_sure: "Are you sure?"
+  cancel: "Cancel"
+  login: "Login"
+  logout: "Logout"

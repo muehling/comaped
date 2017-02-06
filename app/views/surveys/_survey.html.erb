@@ -1,0 +1,21 @@
+<div id="survey_<%= survey.id%>">
+  <div class="panel <%= if survey.available then "panel-success" else "panel-default" end %>">
+    <div class="panel-heading">
+      <%= link_to survey.name, user_project_survey_path(@user, @project, survey) %>
+      <p class = "pull-right">
+        <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_survey_path(@user, @project, survey), remote: true %>
+        &nbsp;
+        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_path(@user, @project, survey, format: 'zip') %>
+      </p>
+    </div>
+    <div class="panel-body">
+      <p><%= survey.description%></p>
+      <table class="table">
+        <tr><td><%= t('concept_maps') %>:</td><td><%= survey.concept_maps.count %></td></tr>
+        <tr><td><%= t('activerecord.attributes.survey.code') %>:</td><td><%= survey.code || "-" %></td></tr>
+        <tr><td><%= t('activerecord.attributes.survey.start_date') %>:</td><td><%= survey.start_date || "-" %></td></tr>
+        <tr><td><%= t('activerecord.attributes.survey.end_date') %>:</td><td><%= survey.end_date || "-" %></td></tr>
+      </table>
+    </div>
+  </div>
+</div>

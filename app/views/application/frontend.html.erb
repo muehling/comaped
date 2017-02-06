@@ -1,0 +1,8 @@
+<%= form_tag(url_for(controller: 'application', action: 'login', target: 'frontend'), class: "form") do %>
+    <div class="form-group">
+      <label class="control-label" for="code"><%= t('.enter_code') %></label>
+      <%= text_field_tag "code", nil, type: "text", class: "form-control"%>
+    </div>
+    <%= submit_tag t('login'), class: "btn btn-primary" %>
+<% end %>
+
