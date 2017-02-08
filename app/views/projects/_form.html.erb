@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <%= if @project.id.nil? then t('project.new') else t('project.edit') end %>
+    <%= if @project.id.nil? then t('projects.new') else t('projects.edit') end %>
   </div>
   <div class="panel-body">
     <%= form_for([@user, @project], class: "form", remote: true) do |f| %>
@@ -16,7 +16,7 @@
         <%= f.submit :class => "btn btn-primary" %>
         <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
         <% unless @project.id.nil? %>
-            <%= link_to t('project.delete'), user_project_path(@user, @project), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
+            <%= link_to t('projects.delete'), user_project_path(@user, @project), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
         <% end %>
       </div>
     <% end %>

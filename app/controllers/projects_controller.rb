@@ -35,7 +35,7 @@ class ProjectsController < ApplicationController
     @project = @user.projects.build(project_params)
     respond_to do |format|
       if @project.save
-        format.js { redirect_to user_projects_path(@user), notice: I18n.t('project.created')}
+        format.js { redirect_to user_project_path(@user, @project), notice: I18n.t('projects.created')}
         #format.json { render :show, status: :created, location: @project }
       else
         format.js { render :new }
@@ -61,7 +61,7 @@ class ProjectsController < ApplicationController
   def destroy
     @project.destroy
     respond_to do |format|
-      format.html { redirect_to user_projects_path(@user), notice: I18n.t('project.destroyed')}
+      format.html { redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed')}
      # format.json { head :no_content }
     end
   end

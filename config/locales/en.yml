@@ -36,6 +36,7 @@ en:
         description: "Description"
         end_date: "Available to"
         initial_map: "Initial concept map"
+        introduction: "Introduction"
         start_date: "Available from"
   application:
     backend:
@@ -56,7 +57,7 @@ en:
     destroyed: "Project deleted"
     edit: "Edit project"
     new: "New project"
-    show: "Projekt öffnen"
+    show: "Open project"
     _project:
       surveys: "Surveys"
   survey:
@@ -65,7 +66,16 @@ en:
     destroyed: "Survey deleted"
     edit: "Edit survey"
     new: "New survey"
+    show: "Show survey"
+    form_detail:
+      example_concepts: "e.g. Car, Engine, Environment"
+      example_associations: "e.g. has, is, affects"
+      example_initial_map: "Please use TGF format"
   are_you_sure: "Are you sure?"
   cancel: "Cancel"
+  concept_maps: "Concept maps"
+  details: "Details"
+  edit: "Edit"
   login: "Login"
   logout: "Logout"
+  no_description: "No description"

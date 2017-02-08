@@ -1,0 +1,22 @@
+<%= form_for([@user, @project, @survey], class: "form") do |f| %>
+  <div class="control-group">
+    <%= f.label :introduction, class: "control-label" %>
+    <%= f.text_area :introduction, rows: 3, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :concept_labels, class: "control-label" %>
+    <%= f.text_field :concept_labels, class: "form-control", placeholder: t('.example_concepts')%>
+  </div>
+  <div class="form-group">
+    <%= f.label :association_labels, class: "control-label" %>
+    <%= f.text_field :association_labels, class: "form-control", placeholder: t('.example_associations') %>
+  </div>
+  <div class="form-group">
+    <%= f.label :initial_map, class: "control-label" %>
+    <%= f.text_area :initial_map, rows: 7, class: "form-control", placeholder: t('.example_initial_map')%>
+  </div>
+  <div class="form-group">
+    <%= f.submit :class => "btn btn-primary" %>
+    <%= link_to t('cancel'), user_project_survey_path(@user, @project, @survey), class: "btn btn-default" %>
+  </div>
+<% end %>

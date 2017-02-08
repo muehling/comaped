@@ -1,10 +1,10 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <%= if @survey.id.nil? then t('survey.new') else t('survey.edit') end %>
+    <%= if @survey.id.nil? then t('surveys.new') else t('surveys.edit') end %>
   </div>
   <div class="panel-body">
     <%= form_for([@user, @project, @survey], class: "form", remote: true) do |f| %>
-      <div class="form-group <%= "has-error" unless @project.errors[:name].blank? %>">
+      <div class="form-group <%= "has-error" unless @survey.errors[:name].blank? %>">
         <%= f.label :name, class: "control-label" %>
         <%= f.text_field :name, class: "form-control" %>
       </div>
@@ -12,7 +12,7 @@
         <%= f.label :description, class: "control-label" %>
         <%= f.text_field :description, class: "form-control" %>
       </div>
-      <div class="form-group <%= "has-error" unless @project.errors[:code].blank? %>">
+      <div class="form-group <%= "has-error" unless @survey.errors[:code].blank? %>">
         <%= f.label :code, class: "control-label" %>
         <%= f.text_field :code, class: "form-control" %>
       </div>
@@ -24,27 +24,11 @@
         <%= f.label :end_date, class: "control-label" %>
         <%= f.date_select :end_date, class: "form-control", order: [:day, :month, :year]%>
       </div>
-      <div class="control-group">
-        <%= f.label :introduction, class: "control-label" %>
-        <%= f.text_area :introduction, rows: 5, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :concept_labels, class: "control-label" %>
-        <%= f.text_field :concept_labels, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :association_labels, class: "control-label" %>
-        <%= f.text_field :association_labels, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :initial_map, class: "control-label" %>
-        <%= f.text_area :initial_map, rows: 7, class: "form-control" %>
-      </div>
       <div class="form-group">
         <%= f.submit :class => "btn btn-primary" %>
         <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
         <% unless @survey.id.nil? %>
-            <%= link_to t('survey.delete'), user_project_survey_path(@user, @project, @survey), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
+            <%= link_to t('surveys.delete'), user_project_survey_path(@user, @project, @survey), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
         <% end %>
       </div>
     <% end %>

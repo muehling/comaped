@@ -15,6 +15,7 @@ de:
         description: "Beschreibung"
         end_date: "Verfügbar bis"
         initial_map: "Vorgegebenens Begriffsnetz"
+        introduction: "Einführungstext"
         start_date: "Verfügbar ab"
     errors:
       messages:
@@ -245,7 +246,7 @@ de:
   layouts:
     backend:
       projects: "Projekte"
-  project:
+  projects:
     created: "Projekt angelegt"
     delete: "Projekt löschen"
     destroyed: "Projekt gelöscht"
@@ -254,15 +255,22 @@ de:
     show: "Projekt öffnen"
     _project:
       surveys: "Befragungen"
-  survey:
+  surveys:
     created: "Befragung angelegt"
     delete: "Befragung löschen"
     destroyed: "Befragung gelöscht"
     edit: "Befragung bearbeiten"
     new: "Neue Befragung"
+    show: "Befragung anzeigen"
+    form_detail:
+      example_concepts: "z.B. Auto, Motor, Umwelt"
+      example_associations: "z.B. hat, ist, bewirkt"
+      example_initial_map: "Bitte TGF Format verwenden"
   are_you_sure: "Sind Sie sicher?"
   cancel: "Abbrechen"
   concept_maps: "Begriffsnetze"
+  details: "Details"
+  edit: "Bearbeiten"
   login: "Einloggen"
   logout: "Ausloggen"
-
+  no_description: "Keine Beschreibung"
