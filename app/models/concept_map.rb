@@ -1,6 +1,7 @@
 class ConceptMap < ApplicationRecord
-  has_many :concepts
-  has_many :edges
+  
+  has_many :concepts, dependent: :destroy
+  has_many :edges, dependent: :destroy
 
   #Retrieve a map by code or find an available survey and create a new map
   #Params:

@@ -5,7 +5,7 @@ class Survey < ApplicationRecord
   validates :code, uniqueness: true, if: 'code.present?'
 
   belongs_to :project
-  has_many :concept_maps
+  has_many :concept_maps, dependent: :destroy
 
   #Check if the survey is currently availaibe
   #Parameter:-

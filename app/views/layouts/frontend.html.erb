@@ -1,0 +1,20 @@
+<% content_for :header do %>
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <p class="navbar-brand">CoMapEd</p>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to t('logout'), logout_path(target: 'backend')%></li>
+      </ul>
+    </div>
+<% end %>
+
+<% content_for :body do %>
+    <%= yield %>
+<% end %>
+
+<%= render template: "layouts/application" %>
+
+
+
+

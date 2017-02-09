@@ -4,7 +4,7 @@ class Project < ApplicationRecord
   validates :name, presence: true
 
   belongs_to :user
-  has_many :surveys
+  has_many :surveys, dependent: :destroy
 
   #Collect all concept maps of this project
   #Parameter: -

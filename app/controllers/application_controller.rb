@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
         @map = ConceptMap.prepare_map(code) #Retrieve map or create a new one
         unless @map.nil?               #If a map has been found or created => Save it to session hash and continue, else return to welcome screen
           session[:map] = @map.id
-          redirect_to edit_concept_map_url @map
+          redirect_to edit_concept_map_path @map
         else
           redirect_to '/', notice: (I18n.t('application.frontend.code_not_found'))
         end

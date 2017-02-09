@@ -3,6 +3,7 @@ class ConceptMapsController < ApplicationController
   skip_before_action :check_login_frontend, only: [:show, :index, :destroy, :create]
   skip_before_action :check_login_backendend, except: [:show, :index, :destroy, :create]
 
+  layout 'frontend'
 
   # GET /concept_maps
   # GET /concept_maps.json
