@@ -1,7 +1,7 @@
 class ConceptMapsController < ApplicationController
   before_action :set_concept_map, only: [:show, :edit, :update, :destroy]
   skip_before_action :check_login_frontend, only: [:show, :index, :destroy, :create]
-  skip_before_action :check_login_backendend, except: [:show, :index, :destroy, :create]
+  skip_before_action :check_login_backend, except: [:show, :index, :destroy, :create]
 
   layout 'frontend'
 
@@ -18,7 +18,12 @@ class ConceptMapsController < ApplicationController
 
   # GET /concept_maps/1/edit
   def edit
-    if @concept_map.accesses = 0  #First time access => Show the intro sceen
+    if @concept_map.accesses.nil?
+      @concept_map.accesses = 0
+    end
+    @concept_map.accesses = @concept_map.accesses + 1
+    @concept_map.save
+    if @concept_map.accesses == 1  #First time access => Show the intro sceen
       render 'intro'
     else
       render 'edit'
@@ -69,6 +74,9 @@ class ConceptMapsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
       @concept_map = ConceptMap.find(params[:id])
+      if @concept_map.nil? || @concept_map != @map
+        redirect_to '/'
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

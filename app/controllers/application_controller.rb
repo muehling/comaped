@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
 
   def check_login_frontend
     if session.has_key?(:map)
-      @map = session[:map]
+      @map = ConceptMap.find(session[:map])
     else
       redirect_to '/'
     end

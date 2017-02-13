@@ -10,5 +10,11 @@ User.create(email: 'test@test.com', password: '123', password_confirmation: '123
 Project.create(name: "Test Projekt 1", description: "A short description...", user_id: 1)
 Project.create(name: "Test Projekt 2", description: "A short description...", user_id: 1)
 p1 = Project.create(name: "Test Projekt 3", description: "A short description...", user_id: 1)
-p1.surveys.build(name: "Test Befragung 1", code: "abc").save
+s = p1.surveys.build(name: "Test Befragung 1", code: "abc")
+s.save
 p1.surveys.build(name: "Test Befragung 2").save
+cm = s.concept_maps.build(code: "test")
+cm.save
+cm.concepts.build(label: "Auto").save
+cm.concepts.build(label: "Motor").save
+cm.links.build(start: Concept.find(1), end: Concept.find(2), label: "hat").save

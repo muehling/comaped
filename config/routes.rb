@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
 
+
   resources :concept_maps do
     resources :concepts
-    resources :associatons
+    resources :links
   end
 
   scope 'backend' do

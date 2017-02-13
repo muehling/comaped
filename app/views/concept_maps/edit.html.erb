@@ -1,0 +1,41 @@
+<div id="map" class="well" style="height: 100%"></div>
+
+<script type="text/javascript">
+    var nodes = new vis.DataSet([
+        <% @concept_map.concepts.each do |c| %>
+        {id: <%= c.id %>, label: "<%= c.label %>", shape:'ellipse', <% if !c.x.nil? && !c.y.nil? %> x: <%= c.x %>, y: <%= c.y %> <% end %>},
+        <% end %>
+    ]);
+
+    var edges = new vis.DataSet([
+        <% @concept_map.links.each do |l| %>
+        {from: <%= l.start.id %>, to: "<%= l.end.id  %>",  label: "<%= l.label %>"},
+        <% end %>
+    ]);
+
+    var container = document.getElementById('map');
+
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+    var options = {
+        autoResize: true,
+        height: '100%',
+        width: '100%',
+        edges: {
+            arrows : {
+                to: true,
+                scaleFactor: 0.3
+            }
+        },
+        physics: {
+            enabled: false
+        },
+        interaction : {
+            navigationButtons: true
+        }
+    };
+
+    var network = new vis.Network(container, data, options);
+</script>

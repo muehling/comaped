@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%">
   <head>
     <title>CoMapEd</title>
     <%= csrf_meta_tags %>
@@ -8,11 +8,11 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
+  <body style="height: 100%">
     <nav class="navbar navbar-default">
       <%= yield :header %>
     </nav>
-    <div class="container-fluid">
+    <div class="container-fluid" style="height: 85%">
       <div id="alert">
         <% unless notice.blank? %>
             <div class="alert alert-info alert-dismissible">
@@ -22,13 +22,9 @@
         <% end %>
       </div>
 
-      <div id="main-content" style="padding-left: 20px; padding-right: 20px">
+      <div id="main-content" style="padding-left: 20px; padding-right: 20px; height: 100%">
         <%= content_for?(:body) ? yield(:body) : yield  %>
       </div>
     </div>
-
-    <nav class="navbar">
-      <%= yield :footer%>
-    </nav>
   </body>
 </html>

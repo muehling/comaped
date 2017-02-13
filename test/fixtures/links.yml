@@ -1,13 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  start_id: 1
+  end_id: 1
   label: MyString
   concept_map_id: 1
-  start: 1
-  end: 1
 
 two:
+  start_id: 1
+  end_id: 1
   label: MyString
   concept_map_id: 1
-  start: 1
-  end: 1

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AssociatonsControllerTest < ActionDispatch::IntegrationTest
+class LinksControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end
