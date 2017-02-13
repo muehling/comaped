@@ -1,9 +1,19 @@
 <div id="map" class="well" style="height: 100%"></div>
+<input id="entry" class="hidden form-control" placeholder="<%= t :name %>" type="text" style="position:absolute;left:100px;top:300px;width:150px;" />
 
 <script type="text/javascript">
+    const none = 0;
+    const addNode = 1;
+    const editNode = 2;
+    const addEdge = 3;
+    const editEdge = 4;
+
+    var mode = none;
+    var canvasX = 0, canvasY = 0, id = 0;
+
     var nodes = new vis.DataSet([
         <% @concept_map.concepts.each do |c| %>
-        {id: <%= c.id %>, label: "<%= c.label %>", shape:'ellipse', <% if !c.x.nil? && !c.y.nil? %> x: <%= c.x %>, y: <%= c.y %> <% end %>},
+        <%= render c %>,
         <% end %>
     ]);
 
@@ -19,23 +29,76 @@
         nodes: nodes,
         edges: edges
     };
+
     var options = {
         autoResize: true,
         height: '100%',
         width: '100%',
         edges: {
             arrows : {
-                to: true,
-                scaleFactor: 0.3
+                to: {
+                    enabled: true,
+                    scaleFactor: 0.75
+                },
             }
         },
         physics: {
             enabled: false
-        },
-        interaction : {
-            navigationButtons: true
         }
     };
 
     var network = new vis.Network(container, data, options);
+
+    network.on("doubleClick", function (params) {
+        canvasX = params.pointer.canvas.x;
+        canvasY = params.pointer.canvas.y;
+        mode = addNode;
+        $("#entry").val("");
+        $("#entry").attr("style", "position:absolute;left:" + ($("#map").offset().left+params.pointer.DOM.x) + "px;top:" + ($("#map").offset().top+params.pointer.DOM.y) + "px;width:200px");
+        $("#entry").removeClass("hidden");
+    });
+
+    network.on("click", function (params) {
+        if (params.nodes.length > 0) {
+            id = params.nodes[0]
+            canvasX = nodes.get(id).x;
+            canvasY = nodes.get(id).y;
+            mode = editNode;
+            $("#entry").val(nodes.get(id).label);
+            $("#entry").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#entry").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y) + "px;width:200px");
+            $("#entry").removeClass("hidden");
+        }
+        else
+            if (mode != none) {
+                $("#entry").addClass("hidden");
+                $("#entry").val("");
+                $("#entry").focusout();
+                mode = none;
+            }
+    });
+
+    $("#entry").on('keyup', function (e) {
+        if (e.keyCode == 13) {
+            switch (mode) {
+                case addNode:
+                    jQuery.post("<%= concept_map_concepts_path(@map) %>", {"concept": {'label': $("#entry").val(), 'x': canvasX, 'y': canvasY}});
+                    break;
+                case editNode:
+                    jQuery.ajax({type: "PUT", url: "<%= concept_map_path(@map) %>/concepts/" + id + "/", data: {"concept": {'label': $("#entry").val(), 'x': canvasX, 'y': canvasY}}});
+                    break;
+                case addEdge:
+                case editEdge:
+            }
+            $("#entry").addClass("hidden");
+            $("#entry").val("");
+            $("#entry").focusout();
+            mode = none;
+        }
+        if (e.keyCode == 27) {
+            $("#entry").addClass("hidden");
+            $("#entry").val("");
+            $("#entry").focusout();
+            mode = none;
+        }
+    });
 </script>
