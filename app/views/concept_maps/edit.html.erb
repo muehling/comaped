@@ -1,5 +1,14 @@
 <div id="map" class="well" style="height: 100%"></div>
-<input id="entry" class="hidden form-control" placeholder="<%= t :name %>" type="text" style="position:absolute;left:100px;top:300px;width:150px;" />
+
+<div id="form" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
+  <div class="panel-body">
+    <p>Enter: Absenden, ESC: Abbrechen</p>
+    <form class="form-inline">
+      <input id="entry" class="form-control" placeholder="<%= t :name %>" type="text" />
+      <button id="delete" class="btn" onclick="destroy()"><%= t :delete %></button>
+    </form>
+  </div>
+</div>
 
 <script type="text/javascript">
     const none = 0;
@@ -19,7 +28,7 @@
 
     var edges = new vis.DataSet([
         <% @concept_map.links.each do |l| %>
-        {from: <%= l.start.id %>, to: "<%= l.end.id  %>",  label: "<%= l.label %>"},
+        <%= render l %>,
         <% end %>
     ]);
 
@@ -44,18 +53,24 @@
         },
         physics: {
             enabled: false
+        },
+        interaction : {
+            hover: true
         }
     };
 
     var network = new vis.Network(container, data, options);
 
+    network.on("dragEnd", function (params) {
+        id = params.nodes[0];
+        jQuery.ajax({type: "PUT", url: "<%= concept_map_path(@map) %>/concepts/" + id + "/", data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y}}});
+    });
+
     network.on("doubleClick", function (params) {
         canvasX = params.pointer.canvas.x;
         canvasY = params.pointer.canvas.y;
         mode = addNode;
-        $("#entry").val("");
-        $("#entry").attr("style", "position:absolute;left:" + ($("#map").offset().left+params.pointer.DOM.x) + "px;top:" + ($("#map").offset().top+params.pointer.DOM.y) + "px;width:200px");
-        $("#entry").removeClass("hidden");
+        showForm();
     });
 
     network.on("click", function (params) {
@@ -64,16 +79,12 @@
             canvasX = nodes.get(id).x;
             canvasY = nodes.get(id).y;
             mode = editNode;
-            $("#entry").val(nodes.get(id).label);
-            $("#entry").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#entry").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y) + "px;width:200px");
-            $("#entry").removeClass("hidden");
+            showForm();
         }
         else
             if (mode != none) {
-                $("#entry").addClass("hidden");
-                $("#entry").val("");
-                $("#entry").focusout();
                 mode = none;
+                hideForm();
             }
     });
 
@@ -89,16 +100,43 @@
                 case addEdge:
                 case editEdge:
             }
-            $("#entry").addClass("hidden");
-            $("#entry").val("");
-            $("#entry").focusout();
             mode = none;
+            hideForm();
         }
         if (e.keyCode == 27) {
-            $("#entry").addClass("hidden");
-            $("#entry").val("");
-            $("#entry").focusout();
             mode = none;
+            hideForm();
         }
     });
+
+    function destroy() {
+        if (mode == editNode) {
+            mode = none;
+            hideForm();
+            jQuery.ajax({type: "DELETE", url: "<%= concept_map_path(@map) %>/concepts/" + id });
+        }
+    }
+
+    function showForm() {
+        switch (mode) {
+            case addNode:
+                $("#entry").val("");
+                $("#delete").addClass("hidden");
+                break;
+            case editNode:
+                $("#entry").val(nodes.get(id).label);
+                $("#delete").removeClass("hidden");
+                break;
+        }
+        $("#form").removeClass("hidden");
+        $("#form").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
+        $("#entry").focus();
+    }
+
+    function hideForm() {
+        $("#form").addClass("hidden");
+        $("#entry").val("");
+        $("#form").focusout();
+    }
+
 </script>

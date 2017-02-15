@@ -1,0 +1,13 @@
+nodes.clear();
+nodes.add([
+    <% @concept_map.concepts.each do |c| %>
+      <%= render c %>,
+    <% end %>
+]);
+
+edges.clear();
+edges.update([
+    <% @concept_map.links.each do |l| %>
+     <%= render l %>,
+    <% end %>
+]);

@@ -10,7 +10,7 @@ class ConceptsController < ApplicationController
         format.js {}
         #format.json { render :show, status: :created, location: @project }
       else
-        format.js {render nothing: true}
+        format.js {head 200}
         #format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
@@ -26,6 +26,14 @@ class ConceptsController < ApplicationController
         format.js { render :edit }
         #       format.json { render json: @project.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  # DELETE /concept_maps/1/concepts/1.js
+  def destroy
+    @concept.destroy
+    respond_to do |format|
+      format.js {}
     end
   end
 
