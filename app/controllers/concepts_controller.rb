@@ -23,7 +23,7 @@ class ConceptsController < ApplicationController
         format.js { }
         #       format.json { render :show, status: :ok, location: @project }
       else
-        format.js { render :edit }
+        format.js { head :ok }
         #       format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end

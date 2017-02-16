@@ -55,3 +55,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 #Additional gems:
 gem 'rubyzip'
 gem 'bootstrap-sass', '~> 3.3.7'
+gem 'visjs-rails'

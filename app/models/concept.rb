@@ -9,7 +9,7 @@ class Concept < ApplicationRecord
     if label.blank?
       errors.add(:label, "Blank")
     end
-    unless concept_map.concepts.find_by_label(label).nil?
+    unless concept_map.concepts.find_by_label(label).nil? || concept_map.concepts.find_by_label(label) == self
       errors.add(:label, "Unique")
     end
   end

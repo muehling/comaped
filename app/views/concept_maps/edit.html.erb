@@ -1,11 +1,18 @@
 <div id="map" class="well" style="height: 100%"></div>
 
-<div id="form" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
+<div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
   <div class="panel-body">
-    <p>Enter: Absenden, ESC: Abbrechen</p>
-    <form class="form-inline">
-      <input id="entry" class="form-control" placeholder="<%= t :name %>" type="text" />
-      <button id="delete" class="btn" onclick="destroy()"><%= t :delete %></button>
+    <form id="form" class="form-inline" method="post" data-remote="true">
+      <div class="form-group">
+        <input id="entry" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
+        <input id="x" type="hidden" name="concept[x]"/>
+        <input id="y" type="hidden" name="concept[y]"/>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
+        <button class="btn btn-sm btn-default"onclick="hideForm();"><span class="glyphicon glyphicon-remove"></span></button>
+        <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();"><span class="glyphicon glyphicon-trash"></span></button>
+      </div>
     </form>
   </div>
 </div>
@@ -61,59 +68,50 @@
 
     var network = new vis.Network(container, data, options);
 
+    network.on("dragStart", hideForm);
+
     network.on("dragEnd", function (params) {
         id = params.nodes[0];
+        nodes.update({id: id, 'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y});
         jQuery.ajax({type: "PUT", url: "<%= concept_map_path(@map) %>/concepts/" + id + "/", data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y}}});
     });
 
-    network.on("doubleClick", function (params) {
-        canvasX = params.pointer.canvas.x;
-        canvasY = params.pointer.canvas.y;
-        mode = addNode;
-        showForm();
-    });
+    <% if @concept_map.survey.concept_labels.blank? %>
+      network.on("doubleClick", function (params) {
+          canvasX = params.pointer.canvas.x;
+          canvasY = params.pointer.canvas.y;
+          mode = addNode;
+          showForm();
+      });
 
-    network.on("click", function (params) {
-        if (params.nodes.length > 0) {
-            id = params.nodes[0]
-            canvasX = nodes.get(id).x;
-            canvasY = nodes.get(id).y;
-            mode = editNode;
-            showForm();
-        }
-        else
-            if (mode != none) {
-                mode = none;
-                hideForm();
-            }
-    });
+      network.on("click", function (params) {
+          if (params.nodes.length > 0) {
+              id = params.nodes[0]
+              canvasX = nodes.get(id).x;
+              canvasY = nodes.get(id).y;
+              mode = editNode;
+              showForm();
+          }
+          else
+              if (mode != none) {
+                  hideForm();
+              }
+      });
+    <% end %>
 
     $("#entry").on('keyup', function (e) {
         if (e.keyCode == 13) {
-            switch (mode) {
-                case addNode:
-                    jQuery.post("<%= concept_map_concepts_path(@map) %>", {"concept": {'label': $("#entry").val(), 'x': canvasX, 'y': canvasY}});
-                    break;
-                case editNode:
-                    jQuery.ajax({type: "PUT", url: "<%= concept_map_path(@map) %>/concepts/" + id + "/", data: {"concept": {'label': $("#entry").val(), 'x': canvasX, 'y': canvasY}}});
-                    break;
-                case addEdge:
-                case editEdge:
-            }
-            mode = none;
             hideForm();
         }
         if (e.keyCode == 27) {
-            mode = none;
             hideForm();
         }
     });
 
     function destroy() {
         if (mode == editNode) {
-            mode = none;
+            jQuery.ajax({type: "DELETE", url: "<%= concept_map_concepts_path(@map) %>/" + id });
             hideForm();
-            jQuery.ajax({type: "DELETE", url: "<%= concept_map_path(@map) %>/concepts/" + id });
         }
     }
 
@@ -122,21 +120,30 @@
             case addNode:
                 $("#entry").val("");
                 $("#delete").addClass("hidden");
+                $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
+                $("#form").attr('method', 'post');
+                $("#x").attr("value", canvasX);
+                $("#y").attr("value", canvasY);
                 break;
             case editNode:
                 $("#entry").val(nodes.get(id).label);
                 $("#delete").removeClass("hidden");
+                $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>/' + id);
+                $("#form").attr('method', 'put');
+                $("#x").attr("value", canvasX);
+                $("#y").attr("value", canvasY);
                 break;
         }
-        $("#form").removeClass("hidden");
-        $("#form").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
+        $("#panel").removeClass("hidden");
+        $("#panel").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
         $("#entry").focus();
     }
 
     function hideForm() {
-        $("#form").addClass("hidden");
+        mode = none;
+        $("#panel").addClass("hidden");
         $("#entry").val("");
-        $("#form").focusout();
+        $("#panel").focusout();
     }
 
 </script>
