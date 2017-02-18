@@ -1,5 +1,7 @@
 class ConceptMap < ApplicationRecord
 
+  after_create :after_create
+
   belongs_to :survey
   has_many :concepts, dependent: :destroy
   has_many :links, dependent: :destroy
@@ -9,15 +11,18 @@ class ConceptMap < ApplicationRecord
   #        Otherwise, if a start map is given, the necessary concepts and links are created.
   #Returns: -
   def after_create
+    self.accesses ||= 0
     unless survey.concept_labels.blank?
       survey.concept_labels.split(',').each do |c|
-        concepts.build(label: c)
+        concepts.build(label: c).save
       end
+      save
     else
-      unless survey.start_map.blank?
-        parse_tgf(survey.start_map)
+      unless survey.initial_map.blank?
+        parse_tgf(survey.initial_map)
       end
     end
+    reload
   end
 
   #Retrieve a map by code or find an available survey and create a new map
@@ -30,6 +35,7 @@ class ConceptMap < ApplicationRecord
     survey = Survey.find_by_code(code)   #Check if a survey with the given code exists
     if map.nil? && !survey.nil? && survey.available     #No map, but availabe survey => create a new map
       map = survey.concept_maps.build
+      map.save
     end
     return map
   end
@@ -53,7 +59,9 @@ class ConceptMap < ApplicationRecord
       node_defs.each_line do |line|
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
-          hash[l[0]] = concepts.build(:label => l[1].strip!)
+          c = concepts.build(:label => l[1].strip!)
+          c.save
+          hash[l[0]] = c
         end
       end
     end
@@ -61,9 +69,10 @@ class ConceptMap < ApplicationRecord
       edge_defs.each_line do |line|
         l = line.split(' ', 3)
         unless (l[0].nil? || l[1].nil? || hash[l[0]].nil? || hash[l[1]].nil? || l[2].nil? || l[2].blank?)
-          links.build(:start => hash[l[0]], :end => hash[l[1]], :label => l[2])
+          links.build(:start => hash[l[0]], :end => hash[l[1]], :label => l[2]).save
         end
       end
     end
+    save
   end
 end

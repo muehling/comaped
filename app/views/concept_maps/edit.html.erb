@@ -7,11 +7,13 @@
         <input id="entry" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
         <input id="x" type="hidden" name="concept[x]"/>
         <input id="y" type="hidden" name="concept[y]"/>
+        <input id="start" type="hidden" name="link[start]"/>
+        <input id="end" type="hidden" name="link[end]"/>
       </div>
       <div class="form-group">
-        <button type="submit" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
-        <button class="btn btn-sm btn-default"onclick="hideForm();"><span class="glyphicon glyphicon-remove"></span></button>
-        <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();"><span class="glyphicon glyphicon-trash"></span></button>
+        <button class="btn btn-sm btn-success" onclick="hideForm();"><span class="glyphicon glyphicon-ok"></span></button>
+        <button class="btn btn-sm btn-default"onclick="hideForm();return false;"><span class="glyphicon glyphicon-remove"></span></button>
+        <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
       </div>
     </form>
   </div>
@@ -23,6 +25,7 @@
     const editNode = 2;
     const addEdge = 3;
     const editEdge = 4;
+    const dragNode = 5;
 
     var mode = none;
     var canvasX = 0, canvasY = 0, id = 0;
@@ -56,69 +59,115 @@
                     enabled: true,
                     scaleFactor: 0.75
                 },
-            }
+            },
+          smooth: false
         },
         physics: {
             enabled: false
         },
         interaction : {
-            hover: true
+            hover: true,
+            navigationButtons: true,
+            selectConnectedEdges: false,
+            hoverConnectedEdges: false
         }
     };
 
     var network = new vis.Network(container, data, options);
 
-    network.on("dragStart", hideForm);
-
-    network.on("dragEnd", function (params) {
+    //Drag: Knoten verschieben - Anfang
+    network.on("dragStart", function (params) {
+      if (mode == none && params.nodes.length > 0) {
         id = params.nodes[0];
-        nodes.update({id: id, 'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y});
-        jQuery.ajax({type: "PUT", url: "<%= concept_map_path(@map) %>/concepts/" + id + "/", data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y}}});
+        mode = dragNode;
+      }
     });
 
-    <% if @concept_map.survey.concept_labels.blank? %>
-      network.on("doubleClick", function (params) {
-          canvasX = params.pointer.canvas.x;
-          canvasY = params.pointer.canvas.y;
-          mode = addNode;
-          showForm();
-      });
+    //Drag: Knoten verschieben - Ende
+    network.on("dragEnd", function (params) {
+      switch (mode) {
+        case dragNode:
+          nodes.update({id: id, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y});
+          jQuery.ajax({
+            type: "PUT",
+            url: "<%= concept_map_path(@map) %>/concepts/" + id + "/",
+            data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y}}
+          });
+          hideForm();
+      }
+    });
 
-      network.on("click", function (params) {
+    //Hold: Neue Kante erstellen - Anfang
+    network.on("hold", function (params) {
+      if (mode == none && params.nodes.length > 0) {
+        id = params.nodes[0]
+        mode = addEdge;
+      }
+    });
+
+    //Klick: Aktuelle Aktion abbrechen oder neue Kante erstellen - Ende
+    network.on("click", function (params) {
+      switch (mode) {
+        case editEdge:
+        case editNode:
+        case addNode:
+          hideForm();
+              break;
+        case addEdge:
           if (params.nodes.length > 0) {
-              id = params.nodes[0]
-              canvasX = nodes.get(id).x;
-              canvasY = nodes.get(id).y;
-              mode = editNode;
-              showForm();
+            $('#start').val(id);
+            $('#end').val(params.nodes[0]);
+            canvasX = params.pointer.canvas.x;
+            canvasY = params.pointer.canvas.y;
+            showForm();
           }
           else
-              if (mode != none) {
-                  hideForm();
-              }
-      });
-    <% end %>
+            hideForm();
+      }
+    });
 
-    $("#entry").on('keyup', function (e) {
-        if (e.keyCode == 13) {
-            hideForm();
+    //Doppelklick => Edit Node / Edit Edge / Add Node
+    network.on("doubleClick", function (params) {
+        if (params.nodes.length > 0) {
+            id = params.nodes[0]
+            canvasX = nodes.get(id).x;
+            canvasY = nodes.get(id).y;
+            mode = editNode;
+            showForm();
         }
-        if (e.keyCode == 27) {
-            hideForm();
-        }
+        else
+          if (params.edges.length > 0) {
+            id = params.edges[0]
+            canvasX = params.pointer.canvas.x;
+            canvasY = params.pointer.canvas.y;
+            mode = editEdge;
+            showForm();
+          }
+          else {
+            canvasX = params.pointer.canvas.x;
+            canvasY = params.pointer.canvas.y;
+            mode = addNode;
+            showForm();
+          }
     });
 
     function destroy() {
-        if (mode == editNode) {
-            jQuery.ajax({type: "DELETE", url: "<%= concept_map_concepts_path(@map) %>/" + id });
-            hideForm();
+      switch (mode) {
+        case editNode:
+          jQuery.ajax({type: "DELETE", url: "<%= concept_map_concepts_path(@map) %>/" + id });
+          break;
+        case editEdge:
+          jQuery.ajax({type: "DELETE", url: "<%= concept_map_links_path(@map) %>/" + id });
+          break;
         }
+      hideForm();
     }
 
     function showForm() {
         switch (mode) {
             case addNode:
                 $("#entry").val("");
+                $("#entry").attr("name", "concept[label]");
                 $("#delete").addClass("hidden");
                 $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
                 $("#form").attr('method', 'post');
@@ -127,23 +176,43 @@
                 break;
             case editNode:
                 $("#entry").val(nodes.get(id).label);
+                $("#entry").attr("name", "concept[label]");
                 $("#delete").removeClass("hidden");
                 $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>/' + id);
                 $("#form").attr('method', 'put');
                 $("#x").attr("value", canvasX);
                 $("#y").attr("value", canvasY);
                 break;
+            case editEdge:
+                $("#entry").val(edges.get(id).label);
+                $("#entry").attr("name", "link[label]");
+                $("#delete").removeClass("hidden");
+                $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
+                $("#form").attr('method', 'put');
+                break;
+            case addEdge:
+                  $("#entry").val("");
+                  $("#entry").attr("name", "link[label]");
+                  $("#delete").addClass("hidden");
+                  $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
+                  $("#form").attr('method', 'post');
         }
         $("#panel").removeClass("hidden");
         $("#panel").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
         $("#entry").focus();
     }
 
+    //Edit/Create Aktion beenden
     function hideForm() {
-        mode = none;
         $("#panel").addClass("hidden");
-        $("#entry").val("");
         $("#panel").focusout();
+        network.unselectAll();
+        mode = none;
     }
 
+    //Form bei ESC oder Enter schließen
+    $("#entry").on('keyup', function (e) {
+      if (e.keyCode == 13 || e.keyCode == 27)
+        hideForm();
+    });
 </script>
