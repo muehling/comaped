@@ -1,0 +1,19 @@
+<div id="map_<%= concept_map.id%>">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <%= link_to concept_map.code, concept_map_path(concept_map) %>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class = "col-md-6">
+          <%= render partial: 'concept_maps/table', locals: {concept_map: concept_map}%>
+          <%= link_to t('show'), concept_map_path(concept_map), class: "btn btn-default" %>
+          <%= link_to t('export'), concept_map_path(concept_map, format: 'zip'), class: "btn btn-default pull-right" %>
+        </div>
+        <div class = "col-md-6">
+          <%= render partial: 'concept_maps/preview', locals: {concept_map: concept_map}%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,11 @@ de:
        survey: "Befragung"
        user: "Benutzer"
     attributes:
+      concept_map:
+        accesses: "Zugriffe"
+        concepts: "Konzepte"
+        links: "Assoziationen"
+        updated_at: "Letzte Änderung"
       project:
         description: "Beschreibung"
         name: "Name"
@@ -253,7 +258,7 @@ de:
     edit: "Projekt bearbeiten"
     new: "Neues Projekt"
     show: "Projekt öffnen"
-    _project:
+    project:
       surveys: "Befragungen"
   surveys:
     created: "Befragung angelegt"
@@ -272,7 +277,9 @@ de:
   delete: "Löschen"
   details: "Details"
   edit: "Bearbeiten"
+  export: "Exportieren"
   login: "Einloggen"
   logout: "Ausloggen"
   name: "Bezeichner"
   no_description: "Keine Beschreibung"
+  show: "Anzeigen"

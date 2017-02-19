@@ -1,7 +1,7 @@
 class ConceptMapsController < ApplicationController
   before_action :set_concept_map, only: [:show, :edit, :update, :destroy]
-  skip_before_action :check_login_frontend, only: [:show, :index, :destroy, :create]
-  skip_before_action :check_login_backend, except: [:show, :index, :destroy, :create]
+  skip_before_action :check_login_frontend, except: [:edit]
+  skip_before_action :check_login_backend, only: [:edit]
 
   layout 'frontend'
 
@@ -74,7 +74,7 @@ class ConceptMapsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
       @concept_map = ConceptMap.find(params[:id])
-      if @concept_map.nil? || @concept_map != @map
+      if @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
       end
     end

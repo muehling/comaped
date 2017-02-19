@@ -1,0 +1,45 @@
+<div class="row">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <%= @concept_map.survey.project.name %>
+      <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
+    </div>
+
+    <div class="panel-body">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <%= @concept_map.survey.name %>
+          <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @concept_map.survey.project), class: "pull-right"%>
+        </div>
+
+        <div class="panel-body">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <%= @concept_map.code %>
+              <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_survey_path(@user, @concept_map.survey.project, @concept_map.survey), class: "pull-right"%>
+            </div>
+
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-3">
+                  <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
+                </div>
+                <div class="col-md-9">
+                  <%= render partial: 'concept_maps/timeline', locals: {concept_map: @concept_map}%>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-9">
+                  <%= render partial: 'concept_maps/preview', locals: {concept_map: @concept_map}%>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

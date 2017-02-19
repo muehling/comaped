@@ -1,0 +1,6 @@
+<table id="tab_<%=concept_map.id%>" class="table">
+  <tr><td><%= t('activerecord.attributes.concept_map.concepts') %>:</td><td><%= concept_map.concepts.count %></td></tr>
+  <tr><td><%= t('activerecord.attributes.concept_map.links') %>:</td><td><%= concept_map.links.count %></td></tr>
+  <tr><td><%= t('activerecord.attributes.concept_map.accesses') %>:</td><td><%= concept_map.accesses %></td></tr>
+  <tr><td><%= t('activerecord.attributes.concept_map.updated_at') %>:</td><td><%= concept_map.updated_at.localtime.strftime("%Y-%m-%d %H:%M") %></td></tr>
+</table>
