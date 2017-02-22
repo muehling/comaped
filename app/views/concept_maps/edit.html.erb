@@ -1,4 +1,33 @@
-<div id="map" class="well" style="height: 100%"></div>
+<% content_for :header do %>
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <p class="navbar-brand">CoMapEd</p>
+      </div>
+      <p class="navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
+      <ul class="nav navbar-nav navbar-left">
+        <li><%= link_to t('export'), '#'%></li>
+        <li><%= link_to t('.help'), '', onclick: "$('#help').removeClass('hidden');return false;"%></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
+      </ul>
+    </div>
+<% end %>
+
+<div id="help" class="well" style="background-color: #f8f8f8;">
+  <div class="row">
+    <div class="col-md-10">
+      <%= render 'help' %>
+    </div>
+  <div class="col-md-2">
+    <p class="pull-right lead">
+      <a href="#"><span class='glyphicon glyphicon-remove' onclick="$('#help').addClass('hidden');return false;"></span></a>
+    </p>
+  </div>
+  </div>
+</div>
+
+<div id="map" class="well" style="background-color: #f8f8f8; height: 100%"></div>
 
 <div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
   <div class="panel-body">
@@ -54,12 +83,12 @@
         height: '100%',
         width: '100%',
         edges: {
-            arrows : {
-                to: {
-                    enabled: true,
-                    scaleFactor: 0.75
-                },
-            },
+          arrows : {
+              to: {
+                  enabled: true,
+                  scaleFactor: 0.75
+              },
+          },
           smooth: false
         },
         physics: {
@@ -69,7 +98,7 @@
             hover: true,
             navigationButtons: true,
             selectConnectedEdges: false,
-            hoverConnectedEdges: false
+            hoverConnectedEdges: false,
         }
     };
 
@@ -77,7 +106,7 @@
 
     //Drag: Knoten verschieben - Anfang
     network.on("dragStart", function (params) {
-      if (mode == none && params.nodes.length > 0) {
+      if (params.nodes.length > 0) {
         id = params.nodes[0];
         mode = dragNode;
       }
@@ -87,6 +116,7 @@
     network.on("dragEnd", function (params) {
       switch (mode) {
         case dragNode:
+          alert("Test");
           nodes.update({id: id, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y});
           jQuery.ajax({
             type: "PUT",
@@ -100,7 +130,7 @@
     //Hold: Neue Kante erstellen - Anfang
     network.on("hold", function (params) {
       if (mode == none && params.nodes.length > 0) {
-        id = params.nodes[0]
+        id = params.nodes[0];
         mode = addEdge;
       }
     });
@@ -112,13 +142,22 @@
         case editNode:
         case addNode:
           hideForm();
-              break;
+          break;
         case addEdge:
           if (params.nodes.length > 0) {
             $('#start').val(id);
             $('#end').val(params.nodes[0]);
             canvasX = params.pointer.canvas.x;
             canvasY = params.pointer.canvas.y;
+            edge = edges.get({
+              filter: function (item) {
+                return (item.from == $('#start').val() && item.to == $('#end').val());
+              }
+            }, {returnType: 'Array'});
+            if (edge.length > 0) {
+              id = edge[0].id;
+              mode = editEdge;
+            }
             showForm();
           }
           else
@@ -129,25 +168,29 @@
     //Doppelklick => Edit Node / Edit Edge / Add Node
     network.on("doubleClick", function (params) {
         if (params.nodes.length > 0) {
-            id = params.nodes[0]
+          <% if @concept_map.survey.concept_labels.blank? %>
+            id = params.nodes[0];
             canvasX = nodes.get(id).x;
             canvasY = nodes.get(id).y;
             mode = editNode;
             showForm();
+          <% end %>
         }
         else
           if (params.edges.length > 0) {
-            id = params.edges[0]
+            id = params.edges[0];
             canvasX = params.pointer.canvas.x;
             canvasY = params.pointer.canvas.y;
             mode = editEdge;
             showForm();
           }
           else {
-            canvasX = params.pointer.canvas.x;
-            canvasY = params.pointer.canvas.y;
-            mode = addNode;
-            showForm();
+            <% if @concept_map.survey.concept_labels.blank? %>
+              canvasX = params.pointer.canvas.x;
+              canvasY = params.pointer.canvas.y;
+              mode = addNode;
+              showForm();
+            <% end %>
           }
     });
 
@@ -159,43 +202,44 @@
         case editEdge:
           jQuery.ajax({type: "DELETE", url: "<%= concept_map_links_path(@map) %>/" + id });
           break;
-        }
+      }
       hideForm();
     }
 
     function showForm() {
+      updateHelp();
         switch (mode) {
             case addNode:
-                $("#entry").val("");
-                $("#entry").attr("name", "concept[label]");
-                $("#delete").addClass("hidden");
-                $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
-                $("#form").attr('method', 'post');
-                $("#x").attr("value", canvasX);
-                $("#y").attr("value", canvasY);
-                break;
+              $("#entry").val("");
+              $("#entry").attr("name", "concept[label]");
+              $("#delete").addClass("hidden");
+              $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
+              $("#form").attr('method', 'post');
+              $("#x").attr("value", canvasX);
+              $("#y").attr("value", canvasY);
+              break;
             case editNode:
-                $("#entry").val(nodes.get(id).label);
-                $("#entry").attr("name", "concept[label]");
-                $("#delete").removeClass("hidden");
-                $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>/' + id);
-                $("#form").attr('method', 'put');
-                $("#x").attr("value", canvasX);
-                $("#y").attr("value", canvasY);
-                break;
+              $("#entry").val(nodes.get(id).label);
+              $("#entry").attr("name", "concept[label]");
+              $("#delete").removeClass("hidden");
+              $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>/' + id);
+              $("#form").attr('method', 'put');
+              $("#x").attr("value", canvasX);
+              $("#y").attr("value", canvasY);
+              break;
             case editEdge:
-                $("#entry").val(edges.get(id).label);
-                $("#entry").attr("name", "link[label]");
-                $("#delete").removeClass("hidden");
-                $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
-                $("#form").attr('method', 'put');
-                break;
+              $("#entry").val(edges.get(id).label);
+              $("#entry").attr("name", "link[label]");
+              $("#delete").removeClass("hidden");
+              $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
+              $("#form").attr('method', 'put');
+              break;
             case addEdge:
-                  $("#entry").val("");
-                  $("#entry").attr("name", "link[label]");
-                  $("#delete").addClass("hidden");
-                  $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
-                  $("#form").attr('method', 'post');
+              $("#entry").val("");
+              $("#entry").attr("name", "link[label]");
+              $("#delete").addClass("hidden");
+              $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
+              $("#form").attr('method', 'post');
         }
         $("#panel").removeClass("hidden");
         $("#panel").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
@@ -208,6 +252,7 @@
         $("#panel").focusout();
         network.unselectAll();
         mode = none;
+        updateHelp();
     }
 
     //Form bei ESC oder Enter schließen
@@ -215,4 +260,17 @@
       if (e.keyCode == 13 || e.keyCode == 27)
         hideForm();
     });
+
+    function updateHelp() {
+      $('#help_general').addClass("hidden");
+      $('#help_edit').addClass("hidden");
+      $('#help_new').addClass("hidden");
+      switch (mode) {
+        case none: $('#help_general').removeClass("hidden"); break;
+        case editEdge:
+        case editNode: $('#help_edit').removeClass("hidden"); break;
+        case addNode:
+        case addEdge: $('#help_new').removeClass("hidden"); break;
+      }
+    }
 </script>

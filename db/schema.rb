@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170211225029) do
+ActiveRecord::Schema.define(version: 20170222214240) do
 
   create_table "concept_maps", force: :cascade do |t|
     t.string   "code"
@@ -66,6 +66,13 @@ ActiveRecord::Schema.define(version: 20170211225029) do
     t.string   "password_digest"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.integer  "concept_map_id"
+    t.text     "map"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
 end

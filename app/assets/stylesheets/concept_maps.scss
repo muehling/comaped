@@ -1,3 +1,64 @@
 // Place all the styles related to the ConceptMaps controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.vis-button {
+  color: rgb(51, 122, 183);
+  font-family: "Glyphicons Halflings";
+  font-size: 32px;
+}
+
+.vis-button:hover {
+  box-shadow: none !important;
+  color: #23527c;
+}
+
+.vis-right {
+  background-image: none !important;
+}
+
+.vis-right::after {
+  content: "\e131";
+}
+
+.vis-left {
+  background-image: none !important;
+}
+.vis-left::after {
+  content: "\e132";
+}
+
+.vis-up {
+  background-image: none !important;
+}
+.vis-up::after {
+  content: "\e133";
+}
+
+.vis-down {
+  background-image: none !important;
+}
+.vis-down::after {
+  content: "\e134";
+}
+
+.vis-zoomIn {
+  background-image: none !important;
+}
+.vis-zoomIn::after {
+  content: "\e081";
+}
+
+.vis-zoomOut {
+  background-image: none !important;
+}
+.vis-zoomOut::after {
+  content: "\e082";
+}
+
+.vis-zoomExtends {
+  background-image: none !important;
+}
+.vis-zoomExtends::after {
+  content: "\e087";
+}

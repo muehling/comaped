@@ -12,7 +12,7 @@
       <p><%= project.description.blank? ? raw("<i>#{t('no_description')}</i>") : project.description %></p>
       <table class="table">
         <tr><td><%= t('.surveys') %>:</td><td><%= project.surveys.count %></td></tr>
-        <tr><td><%= t('concept_maps') %>:</td><td><%= project.concept_maps.count %></td></tr>
+        <tr><td><%= t('maps') %>:</td><td><%= project.concept_maps.count %></td></tr>
       </table>
       <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-default" %>
       <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-default", remote: true %>

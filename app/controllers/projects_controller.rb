@@ -36,10 +36,8 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project.save
         format.js { redirect_to user_project_path(@user, @project), notice: I18n.t('projects.created')}
-        #format.json { render :show, status: :created, location: @project }
       else
         format.js { render :new }
-        #format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -48,11 +46,9 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @project.update(project_params)
-        format.js { }
- #       format.json { render :show, status: :ok, location: @project }
+        format.js {}
       else
         format.js { render :edit }
- #       format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -62,7 +58,6 @@ class ProjectsController < ApplicationController
     @project.destroy
     respond_to do |format|
       format.html { redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed')}
-     # format.json { head :no_content }
     end
   end
 

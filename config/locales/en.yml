@@ -56,6 +56,10 @@ en:
   layouts:
     backend:
       projects: "Projects"
+  concept_maps:
+    edit:
+      code: "This concept map has the code"
+      help: "Show help"
   project:
     created: "Project created"
     delete: "Delete project"
@@ -78,13 +82,13 @@ en:
       example_initial_map: "Please use TGF format"
   are_you_sure: "Are you sure?"
   cancel: "Cancel"
-  concept_maps: "Concept maps"
   delete: "Delete"
   details: "Details"
   edit: "Edit"
   export: "Export"
   login: "Login"
   logout: "Logout"
+  maps: "Concept maps"
   name: "Name"
   no_description: "No description"
   show: "Anzeigen"

@@ -45,6 +45,7 @@ class ApplicationController < ActionController::Base
   def logout
     puts params[:target]
     if params[:target] == 'frontend'
+      @map = ConceptMap.find(session[:map])
       session[:map] = nil
       redirect_to '/', notice: (I18n.t('application.frontend.goodbye', code: @map.code))
     elsif params[:target] == 'backend'

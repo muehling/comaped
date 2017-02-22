@@ -3,16 +3,12 @@ class ConceptMapsController < ApplicationController
   skip_before_action :check_login_frontend, except: [:edit]
   skip_before_action :check_login_backend, only: [:edit]
 
-  layout 'frontend'
-
   # GET /concept_maps
-  # GET /concept_maps.json
   def index
     @concept_maps = ConceptMap.all
   end
 
   # GET /concept_maps/1
-  # GET /concept_maps/1.json
   def show
   end
 
@@ -31,42 +27,24 @@ class ConceptMapsController < ApplicationController
   end
 
   # POST /concept_maps
-  # POST /concept_maps.json
   def create
     @concept_map = ConceptMap.new(concept_map_params)
 
     respond_to do |format|
       if @concept_map.save
+        @concept_map.versionize
         format.html { redirect_to @concept_map, notice: 'Concept map was successfully created.' }
-        format.json { render :show, status: :created, location: @concept_map }
       else
         format.html { render :new }
-        format.json { render json: @concept_map.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /concept_maps/1
-  # PATCH/PUT /concept_maps/1.json
-  def update
-    respond_to do |format|
-      if @concept_map.update(concept_map_params)
-        format.html { redirect_to @concept_map, notice: 'Concept map was successfully updated.' }
-        format.json { render :show, status: :ok, location: @concept_map }
-      else
-        format.html { render :edit }
-        format.json { render json: @concept_map.errors, status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /concept_maps/1
-  # DELETE /concept_maps/1.json
   def destroy
     @concept_map.destroy
     respond_to do |format|
       format.html { redirect_to concept_maps_url, notice: 'Concept map was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 

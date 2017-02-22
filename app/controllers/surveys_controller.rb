@@ -37,10 +37,8 @@ class SurveysController < ApplicationController
     respond_to do |format|
       if @survey.save
         format.js { redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.created')}
-#        format.json { render :show, status: :created, location: @survey }
       else
         format.js { render :new }
-#        format.json { render json: @survey.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -51,10 +49,8 @@ class SurveysController < ApplicationController
       if @survey.update(survey_params)
         format.js{}
         format.html {redirect_to user_project_survey_path(@user, @project, @survey)}
- #       format.json { render :show, status: :ok, location: @survey }
       else
         format.js { render :edit }
-  #      format.json { render json: @survey.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -64,7 +60,6 @@ class SurveysController < ApplicationController
     @survey.destroy
     respond_to do |format|
       format.html { redirect_to user_project_path(@user, @project), notice: I18n.t('surveys.destroyed') }
- #     format.json { head :no_content }
     end
   end
 

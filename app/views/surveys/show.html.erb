@@ -19,7 +19,7 @@
               <div class = "col-md-12">
                 <ul class="nav nav-pills" role="tablist">
                   <li role="presentation" <% if @survey.concept_maps.size == 0 %> class='active' <% end %> ><a href="#details" aria-controls="details" role="tab" data-toggle="tab"><%= t('details') %></a></li>
-                  <li role="presentation" <% if @survey.concept_maps.size > 0 %> class='active' <% end %>><a href="#maps" aria-controls="maps" role="tab" data-toggle="tab"><%= t('concept_maps') %></a></li>
+                  <li role="presentation" <% if @survey.concept_maps.size > 0 %> class='active' <% end %>><a href="#maps" aria-controls="maps" role="tab" data-toggle="tab"><%= t('maps') %></a></li>
                 </ul>
               </div>
             </div>
@@ -36,7 +36,7 @@
                   <div class = "col-md-3">
                     <table class="table table-hover" width="50%">
                       <tr><td><%= t('activerecord.attributes.survey.description') %>:</td><td><%= @survey.description.blank? ? '-' : @survey.description %></td></tr>
-                      <tr><td><%= t('concept_maps') %>:</td><td><%= @survey.concept_maps.count %></td></tr>
+                      <tr><td><%= t('maps') %>:</td><td><%= @survey.concept_maps.count %></td></tr>
                       <tr><td><%= t('activerecord.attributes.survey.code') %>:</td><td><%= @survey.code.blank? ? '-' : @survey.code %></td></tr>
                       <tr><td><%= t('activerecord.attributes.survey.start_date') %>:</td><td><%= @survey.start_date || "-" %></td></tr>
                       <tr><td><%= t('activerecord.attributes.survey.end_date') %>:</td><td><%= @survey.end_date || "-" %></td></tr>

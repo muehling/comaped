@@ -7,11 +7,10 @@ class LinksController < ApplicationController
     @link = @map.links.build(label: link_params[:label], start_id: link_params[:start].to_i, end_id: link_params[:end].to_i)
     respond_to do |format|
       if @link.save
+        @map.versionize
         format.js {}
-        #format.json { render :show, status: :created, location: @project }
       else
-        format.js {head 200}
-        #format.json { render json: @project.errors, status: :unprocessable_entity }
+        format.js {head :ok}
       end
     end
   end
@@ -20,11 +19,10 @@ class LinksController < ApplicationController
   def update
     respond_to do |format|
       if @link.update(link_params)
-        format.js { }
-        #       format.json { render :show, status: :ok, location: @project }
+        @map.versionize
+        format.js {}
       else
         format.js { head :ok }
-        #       format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -32,6 +30,7 @@ class LinksController < ApplicationController
   # DELETE /concept_maps/1/links/1.js
   def destroy
     @link.destroy
+    @map.versionize
     respond_to do |format|
       format.js {}
     end

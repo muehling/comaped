@@ -7,11 +7,10 @@ class ConceptsController < ApplicationController
     @concept = @map.concepts.build(concept_params)
     respond_to do |format|
       if @concept.save
+        @map.versionize
         format.js {}
-        #format.json { render :show, status: :created, location: @project }
       else
-        format.js {head 200}
-        #format.json { render json: @project.errors, status: :unprocessable_entity }
+        format.js {head :ok}
       end
     end
   end
@@ -19,12 +18,14 @@ class ConceptsController < ApplicationController
   # PATCH/PUT /concept_maps/1/concepts/1.js
   def update
     respond_to do |format|
+      old = @concept.label
       if @concept.update(concept_params)
+        unless concept_params[:label] == old
+          @map.versionize
+        end
         format.js { }
-        #       format.json { render :show, status: :ok, location: @project }
       else
         format.js { head :ok }
-        #       format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -32,6 +33,7 @@ class ConceptsController < ApplicationController
   # DELETE /concept_maps/1/concepts/1.js
   def destroy
     @concept.destroy
+    @map.versionize
     respond_to do |format|
       format.js {}
     end

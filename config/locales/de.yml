@@ -251,6 +251,10 @@ de:
   layouts:
     backend:
       projects: "Projekte"
+  concept_maps:
+    edit:
+      code: "Dieses Begriffsnetz hat den Code"
+      help: "Hilfe anzeigen"
   projects:
     created: "Projekt angelegt"
     delete: "Projekt löschen"
@@ -273,13 +277,13 @@ de:
       example_initial_map: "Bitte TGF Format verwenden"
   are_you_sure: "Sind Sie sicher?"
   cancel: "Abbrechen"
-  concept_maps: "Begriffsnetze"
   delete: "Löschen"
   details: "Details"
   edit: "Bearbeiten"
   export: "Exportieren"
   login: "Einloggen"
   logout: "Ausloggen"
+  maps: "Begriffsnetze"
   name: "Bezeichner"
   no_description: "Keine Beschreibung"
   show: "Anzeigen"

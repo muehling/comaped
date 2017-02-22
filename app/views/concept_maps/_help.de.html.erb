@@ -1,0 +1,52 @@
+<div id="help_general">
+  <table class="table-condensed">
+    <% if @concept_map.survey.concept_labels.blank? %>
+        <tr>
+          <td>Neues Konzept anlegen</td><td>Doppelklick auf Zeichenfläche</td>
+        </tr>
+    <% end %>
+    <% if @concept_map.survey.concept_labels.blank? %>
+        <tr>
+          <td>Konzept/Verbindung bearbeiten oder löschen</td><td>Doppelklick auf Konzept/Verbindung</td>
+        </tr>
+    <% else %>
+        <tr>
+          <td>Verbindung bearbeiten oder löschen</td><td>Doppelklick auf Verbindung</td>
+        </tr>
+    <% end %>
+    <tr>
+      <td>Neue Verbindung anlegen</td><td>Klicken und halten auf Ausgangskonzept, dann auf Endkonzept klicken. </td>
+    </tr>
+    <tr>
+      <td>Konzept verschieben</td><td>Klicken und ziehen</td>
+    </tr>
+    <tr>
+      <td>Ausschnitt anpassen</td><td>Klicken und ziehen auf Zeichenfläche, Mausrad für Vergrößern/Verkleinern oder Knöpfe am unteren Rand der Zeichenfläche</td>
+    </tr>
+  </table>
+</div>
+
+<div id="help_edit" class="hidden">
+  <table class="table-condensed">
+    <tr>
+      <td>Bezeichner ändern</td><td><span class="glyphicon glyphicon-ok"></span> oder Enter</td>
+    </tr>
+    <tr>
+      <td><% if @concept_map.survey.concept_labels.blank? %>Konzept/<% end %>Verbindung löschen</td><td><span class="glyphicon glyphicon-trash"></span> (Achtung: Kein Rückgängig!)</td>
+    </tr>
+    <tr>
+      <td>Abbrechen</td><td><span class="glyphicon glyphicon-remove"></span> oder Esc oder Klick auf Zeichenfläche</td>
+    </tr>
+  </table>
+</div>
+
+<div id="help_new" class="hidden">
+  <table class="table-condensed">
+    <tr>
+      <td>Bezeichner wählen</td><td><span class="glyphicon glyphicon-ok"></span> oder Enter</td>
+    </tr>
+    <tr>
+      <td>Abbrechen</td><td><span class="glyphicon glyphicon-remove"></span> oder Esc oder Klick auf Zeichenfläche</td>
+    </tr>
+  </table>
+</div>

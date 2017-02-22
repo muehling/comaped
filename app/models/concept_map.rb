@@ -5,6 +5,11 @@ class ConceptMap < ApplicationRecord
   belongs_to :survey
   has_many :concepts, dependent: :destroy
   has_many :links, dependent: :destroy
+  has_many :versions, dependent: :destroy
+
+  def generate_slug
+    Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
+  end
 
   #Prepares a map using the information of the survey.
   #Effect: If the concepts are restricted, the allowed concepts are created.
@@ -21,6 +26,14 @@ class ConceptMap < ApplicationRecord
       unless survey.initial_map.blank?
         parse_tgf(survey.initial_map)
       end
+    end
+
+    if self.code.blank?
+      self.code = generate_slug
+      while (ConceptMap.where(code: self.code).exists? || Survey.where(code: self.code).exists?)
+        self.code = generate_slug
+      end
+      save
     end
     reload
   end
@@ -75,4 +88,19 @@ class ConceptMap < ApplicationRecord
     end
     save
   end
+
+  #Creates a JSON representation of the map
+  #Params: -
+  #Effect: -
+  #Returns: JSON data of the concept map
+  def to_json
+    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: :id)
+  end
+
+  def versionize
+    ver = self.versions.build(map: as_json)
+    ver.save
+    save
+  end
+
 end

@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :versions
   resources :concept_maps do
     resources :concepts
     resources :links
