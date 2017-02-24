@@ -58,8 +58,12 @@ en:
       projects: "Projects"
   concept_maps:
     edit:
-      code: "This concept map has the code"
+      code1: "This concept map has the code"
+      code2: "You can use this code to come back to your concept map later"
       help: "Show help"
+      mail: "Send the code by e-mail (e-mail address will not be kept)"
+      save: "There is no need to save. Every action will be saved automatically!"
+      send: "Send"
   project:
     created: "Project created"
     delete: "Delete project"
@@ -80,11 +84,18 @@ en:
       example_concepts: "e.g. Car, Engine, Environment"
       example_associations: "e.g. has, is, affects"
       example_initial_map: "Please use TGF format"
+  versions:
+    _index:
+      current: "Currently shown"
+      first: "First"
+      last: "Last"
+      versions: "Versions"
   are_you_sure: "Are you sure?"
   cancel: "Cancel"
   delete: "Delete"
   details: "Details"
   edit: "Edit"
+  email: "E-mail address"
   export: "Export"
   login: "Login"
   logout: "Logout"

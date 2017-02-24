@@ -31,6 +31,12 @@
               </div>
               <div class="row">
                 <div class="col-md-3">
+                  <p>
+                    <%= render partial: "versions/index", locals: {concept_map: @concept_map}%>
+                  </p>
+                  <p class="text-center">
+                    <%= render partial: "versions/show", locals: {concept_map: @concept_map}%>
+                  </p>
                 </div>
                 <div class="col-md-9">
                   <%= render partial: 'concept_maps/preview', locals: {concept_map: @concept_map}%>

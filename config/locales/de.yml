@@ -253,8 +253,12 @@ de:
       projects: "Projekte"
   concept_maps:
     edit:
-      code: "Dieses Begriffsnetz hat den Code"
+      code1: "Dieses Begriffsnetz hat den Code"
+      code2: "Mit diesem Code können Sie später an dem Begrifsnetz weiterarbeiten."
       help: "Hilfe anzeigen"
+      mail: "Den Code als Mail verschicken (E-Mail Adresse wird nicht gespeichert)"
+      save: "Ein Speichern ist nicht nötig, jede Aktion wird automatisch gespeichert!"
+      send: "Absenden"
   projects:
     created: "Projekt angelegt"
     delete: "Projekt löschen"
@@ -275,11 +279,18 @@ de:
       example_concepts: "z.B. Auto, Motor, Umwelt"
       example_associations: "z.B. hat, ist, bewirkt"
       example_initial_map: "Bitte TGF Format verwenden"
+  versions:
+    _index:
+      current: "Aktuell angezeigt"
+      first: "Erste"
+      last: "Letzte"
+      versions: "Versionen"
   are_you_sure: "Sind Sie sicher?"
   cancel: "Abbrechen"
   delete: "Löschen"
   details: "Details"
   edit: "Bearbeiten"
+  email: "E-Mail Adresse"
   export: "Exportieren"
   login: "Einloggen"
   logout: "Ausloggen"

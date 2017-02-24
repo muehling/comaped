@@ -97,8 +97,12 @@ class ConceptMap < ApplicationRecord
     as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: :id)
   end
 
+  #Saves a version of the current state
+  #Params: -
+  #Effect: Creates a new versions object that stores the current state
+  #Returns: -
   def versionize
-    ver = self.versions.build(map: as_json)
+    ver = self.versions.build(map: to_json.to_json)
     ver.save
     save
   end

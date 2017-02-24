@@ -3,7 +3,6 @@
       <div class="navbar-header">
         <p class="navbar-brand">CoMapEd</p>
       </div>
-      <p class="navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
       <ul class="nav navbar-nav navbar-left">
         <li><%= link_to t('export'), '#'%></li>
         <li><%= link_to t('.help'), '', onclick: "$('#help').removeClass('hidden');return false;"%></li>
@@ -16,14 +15,30 @@
 
 <div id="help" class="well" style="background-color: #f8f8f8;">
   <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-7">
       <%= render 'help' %>
     </div>
-  <div class="col-md-2">
-    <p class="pull-right lead">
-      <a href="#"><span class='glyphicon glyphicon-remove' onclick="$('#help').addClass('hidden');return false;"></span></a>
-    </p>
-  </div>
+    <div class="col-md-4">
+      <p><%= t('.save')%></p>
+      <p><%= t('.code1')%>: <b><%= @concept_map.code%></b><br/>
+        <%= t('.code2')%>
+      </p>
+      <br/>
+      <form id="mailer" class="form-inline" method="post" data-remote="true">
+        <p><%= t('.mail')%></p>
+        <div class="form-group">
+          <input id="email" class="form-control" name="emai" placeholder="<%= t('email') %>" type="email" />
+        </div>
+        <div class="form-group">
+          <button class="btn btn-sm btn-success"><%= t('.send')%></button>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-1">
+      <p class="pull-right lead">
+        <a href="#"><span class='glyphicon glyphicon-remove' onclick="$('#help').addClass('hidden');return false;"></span></a>
+      </p>
+    </div>
   </div>
 </div>
 
@@ -116,11 +131,10 @@
     network.on("dragEnd", function (params) {
       switch (mode) {
         case dragNode:
-          alert("Test");
           nodes.update({id: id, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y});
           jQuery.ajax({
             type: "PUT",
-            url: "<%= concept_map_path(@map) %>/concepts/" + id + "/",
+            url: "<%= concept_map_concepts_path(@map) %>/" + id + "/",
             data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y}}
           });
           hideForm();

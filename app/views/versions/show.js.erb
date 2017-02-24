@@ -1,0 +1,31 @@
+nodes_<%= @concept_map.id%>.clear();
+edges_<%= @concept_map.id%>.clear();
+
+<% @version.data["concepts"].each do |c| %>
+  nodes_<%= @concept_map.id%>.add({
+      id: <%= c["id"] %>,
+      label: "<%= c["label"] %>",
+      x: <%= c["x"] %>,
+      y: <%= c["y"] %>,
+      shape:'ellipse',
+      color: '#dff0d8',
+      labelHighlightBold: false
+    });
+<% end %>
+
+<% @version.data["links"].each do |l| %>
+  edges_<%= @concept_map.id%>.add({
+      id: <%= l["id"] %>,
+      from: <%= l["start_id"] %>,
+      to: <%= l["end_id"] %>,
+      label: "<%= l["label"] %>",
+      font: {align: '<%= if l["start_id"] < l["end_id"] then 'bottom' else 'top' end%>'},
+      labelHighlightBold: false,
+      arrowStrikethrough: false
+    });
+<% end %>
+
+network_<%= @concept_map.id%>.redraw();
+
+timeline.setCustomTime("<%= @version.date%>", timeBar);
+timeline.moveTo("<%= @version.date%>");
