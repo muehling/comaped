@@ -27,14 +27,15 @@ class Project < ApplicationRecord
 
   #Create a Zipfile of all maps of all surveys of this project
   #Parameter:
+  # tgf: If true, the maps are exported in TGF format, JSON is used otherwise
   # versions: If true, all versions of each map are included in the file
   #Effect: -
   #Returns: Path to a temporary Zip file
-  def export_zip(versions)
+  def to_zip(tgf, versions)
     temp = Tempfile.new("CoMapEd")
     Zip::OutputStream.open(temp.path) do |zip|
       self.surveys.each do |survey|
-        survey.export_stream(zip, versions)
+        survey.write_stream(survey.name+"/", zip, tgf, versions)
       end
     end
     temp.close

@@ -1,0 +1,12 @@
+<%= form_tag(user_project_survey_concept_maps_path(@user, @project, @survey), class: "form", remote: true) do %>
+    <p class="form-control-static"><%= t('concept_maps._form_simple.description')%>:</p>
+    <div class="form-group">
+      <%= hidden_field_tag 'type', 'simple'%>
+      <%= number_field_tag 'number', 1, class: "form-control"%>
+    </div>
+    <br/>
+    <div class="form-group">
+      <%= submit_tag t('concept_maps._form_simple.submit'), class: "btn btn-primary" %>
+      <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
+    </div>
+<% end %>

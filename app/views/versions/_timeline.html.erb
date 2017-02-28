@@ -1,0 +1,31 @@
+<div id="timeline_<%= concept_map.id %>" style="height: 160px"></div>
+
+<script type="text/javascript">
+  var container = document.getElementById('timeline_<%= concept_map.id %>');
+  var items = [
+     <%  concept_map.versions.each do |v| %>
+    {x: '<%= v.timestamp %>', y: <%= v.associations %>},
+     <% end %>
+  ];
+
+  var dataset = new vis.DataSet(items);
+  var options = {
+    start: '<%= concept_map.versions.first.timestamp %>',
+    end: '<%= concept_map.versions.last.timestamp %>',
+    height: '100%',
+    width: '100%'
+  };
+
+  function timeChanged(properties) {
+    i = 0;
+    while (i < items.length && Date.parse(items[i]['x']) <= Date.parse(properties.time))
+      ++i;
+    version = Math.max(0, i-1);
+    updatePreview();
+  };
+
+  var timeline= new vis.Graph2d(container, dataset, options);
+  timeline.on("timechanged", timeChanged);
+
+  var timeBar = timeline.addCustomTime("<%= concept_map.versions.last.timestamp%>");
+</script>

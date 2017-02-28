@@ -36,6 +36,7 @@ class ConceptMap < ApplicationRecord
       save
     end
     reload
+    versionize
   end
 
   #Retrieve a map by code or find an available survey and create a new map
@@ -51,6 +52,16 @@ class ConceptMap < ApplicationRecord
       map.save
     end
     return map
+  end
+
+  #Saves a version of the current state
+  #Params: -
+  #Effect: Creates a new versions object that stores the current state
+  #Returns: -
+  def versionize
+    ver = self.versions.build(map: to_json.to_json)
+    ver.save
+    save
   end
 
   #Creates concepts and associations based on a TGF string
@@ -94,17 +105,57 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: :id)
+    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: :id).to_json
   end
 
-  #Saves a version of the current state
+  #Creates a TGF representation of the map
   #Params: -
-  #Effect: Creates a new versions object that stores the current state
+  #Effect: -
+  #Returns: TGF data of the concept map
+  def to_tgf
+    reload(:include => [:concepts, :links])
+    res = ""
+    self.concepts.each do |concept|
+      res = res + concept.id.to_s + " " + concept.label + "\n"
+    end
+    res = res + "#\n"
+    self.links.each do |edge|
+      res = res + edge.start_id.to_s + " " + edge.end_id.to_s + " " + edge.label + "\n"
+    end
+    return res
+  end
+
+  #Creates a TGF or JSON representation of all versions of the map as a zip file
+  #Params:
+  # tgf: If true, the version will be exported to tgf format, json will be used otherwise
+  #Effect: -
+  #Returns: Path to a temporary Zip file
+  def to_zip(tgf)
+    temp = Tempfile.new("CoMapEd")
+    Zip::OutputStream.open(temp.path) do |zip|
+      write_stream('', zip, tgf)
+    end
+    temp.close
+    return temp.path
+  end
+
+  #Creates a TGF or JSON representation of all versions of the map and writes to an already open zip file
+  #Params:
+  # prefix: A path that is appended before the survey data. Must end with /, unless empty
+  # zip: A Zipfile that is already open for writing
+  # tgf: If true, the version will be exported to tgf format, json will be used otherwise
+  #Effect: The  concept map data is added to the stream 'zip'
   #Returns: -
-  def versionize
-    ver = self.versions.build(map: to_json.to_json)
-    ver.save
-    save
+  def write_stream(prefix, zip, tgf)
+    self.versions.each do |v|
+      if tgf
+        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
+        zip.print v.to_tgf.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+      else
+        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
+        zip.print v.map.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+      end
+    end
   end
 
 end

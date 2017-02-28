@@ -11,12 +11,24 @@ class SurveysController < ApplicationController
   end
 
   # GET /surveys/1
-  # GET /surveys/1.zip
+  # GET /surveys/1.text
+  # GET /surveys/1.json
   def show
     respond_to do |format|
       format.html {}
-      format.zip {
-        send_file @survey.export_zip(true), :filename => "#{@survey.name}.zip", :type=>"application/zip"
+      format.text {
+        if params.has_key?(:versions)
+          send_file @survey.to_zip(true, true), filename: @survey.name+".zip", type: "application/zip"
+        else
+          send_file @survey.to_zip(true, false), filename: @survey.name+".zip", type: "application/zip"
+        end
+      }
+      format.json {
+        if params.has_key?(:versions)
+          send_file @survey.to_zip(false, true), filename: @survey.name+".zip", type: "application/zip"
+        else
+          send_file @survey.to_zip(false, false), filename: @survey.name+".zip", type: "application/zip"
+        end
       }
     end
   end

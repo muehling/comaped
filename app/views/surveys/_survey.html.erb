@@ -18,7 +18,20 @@
       </table>
       <%= link_to t('surveys.show'), user_project_survey_path(@user, @project, survey), class: "btn btn-default" %>
       <%= link_to t('surveys.edit'), edit_user_project_survey_path(@user, @project, survey), class: "btn btn-default", remote: true %>
-      <%= link_to t('export'), user_project_survey_path(@user, @project, survey, format: 'zip'), class: "btn btn-default pull-right" %>
+      <div class="dropdown pull-right">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <%= t('export') %>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+          <li class="dropdown-header"><%= t('export.current')%></li>
+          <li><%= link_to 'JSON', user_project_survey_path(@user, @project, survey, format: 'json')%></li>
+          <li><%= link_to 'TGF', user_project_survey_path(@user, @project, survey, format: 'text')%></li>
+          <li class="dropdown-header"><%= t('export.all')%></li>
+          <li><%= link_to 'JSON', user_project_survey_path(@user, @project, survey, format: 'json', versions: true)%></li>
+          <li><%= link_to 'TGF', user_project_survey_path(@user, @project, survey, format: 'text', versions: true)%></li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

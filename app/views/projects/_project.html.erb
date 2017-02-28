@@ -16,7 +16,20 @@
       </table>
       <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-default" %>
       <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-default", remote: true %>
-      <%= link_to t('export'), user_project_path(@user, project, format: 'zip'), class: "btn btn-default pull-right" %>
+      <div class="dropdown pull-right">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <%= t('export') %>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+          <li class="dropdown-header"><%= t('export.current')%></li>
+          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json')%></li>
+          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text')%></li>
+          <li class="dropdown-header"><%= t('export.all')%></li>
+          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json', versions: true)%></li>
+          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text', versions: true)%></li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

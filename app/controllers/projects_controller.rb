@@ -10,13 +10,25 @@ class ProjectsController < ApplicationController
   end
 
   # GET /projects/1
-  # GET /projects/1.zip
+  # GET /projects/1.text
+  # GET /projects/1.json
   def show
     @surveys = @project.surveys.order(created_at: :desc)
     respond_to do |format|
       format.html {}
-      format.zip {
-        send_file @project.export_zip(true), :filename => "#{@project.name}.zip", :type=>"application/zip"
+      format.text {
+        if params.has_key?(:versions)
+          send_file @project.to_zip(true, true), filename: @project.name+".zip", type: "application/zip"
+        else
+          send_file @project.to_zip(true, false), filename: @project.name+".zip", type: "application/zip"
+        end
+      }
+      format.json {
+        if params.has_key?(:versions)
+          send_file @project.to_zip(false, true), filename: @project.name+".zip", type: "application/zip"
+        else
+          send_file @project.to_zip(false, false), filename: @project.name+".zip", type: "application/zip"
+        end
       }
     end
   end

@@ -1,4 +1,4 @@
-<%= form_tag(url_for(controller:'application', action: 'login', target: 'backend'), class: "form") do %>
+<%= form_tag(url_for(controller:'application', action: 'login'), class: "form") do %>
     <div class="from-group" >
       <label class="control-label" for="email"><%= t('.email')%></label>
       <%= text_field_tag "email", nil, type: "text", class: "form-control"%>

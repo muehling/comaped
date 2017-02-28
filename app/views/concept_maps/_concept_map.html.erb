@@ -1,15 +1,32 @@
 <div id="map_<%= concept_map.id%>">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <%= link_to concept_map.code, concept_map_path(concept_map) %>
+      <%= link_to concept_map.code, user_project_survey_concept_map_path(@user, @project, @survey, concept_map) %>
+      <p class = "pull-right">
+        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'zip') %>
+      </p>
     </div>
     <div class="panel-body">
       <div class="row">
         <div class = "col-md-6">
           <%= render partial: 'concept_maps/table', locals: {concept_map: concept_map}%>
-          <%= link_to t('show'), concept_map_path(concept_map), class: "btn btn-default" %>
-          <%= link_to t('export'), concept_map_path(concept_map, format: 'zip'), class: "btn btn-default pull-right" %>
+          <%= link_to t('show'), user_project_survey_concept_map_path(@user, @project, @survey, concept_map), class: "btn btn-default" %>
+          <div class="dropdown pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <%= t('export') %>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+              <li class="dropdown-header"><%= t('export.current')%></li>
+              <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json')%></li>
+              <li><%= link_to 'TGF', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'text')%></li>
+              <li class="dropdown-header"><%= t('export.all')%></li>
+              <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json', versions: true)%></li>
+              <li><%= link_to 'TGF', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'text', versions: true)%></li>
+            </ul>
+          </div>
         </div>
+
         <div class = "col-md-6">
           <%= render partial: 'concept_maps/preview', locals: {concept_map: concept_map}%>
         </div>

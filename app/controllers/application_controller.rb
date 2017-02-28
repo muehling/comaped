@@ -2,8 +2,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :set_locale
-  before_action :check_login_frontend, except: [:frontend, :backend, :login, :logout]  #Logout hier drin lassen? Sonst: getrennte Actions?
-  before_action :check_login_backend, except: [:frontend, :backend, :login, :logout]   #Logout hier drin lassen? Sonst: getrennte Actions?
+  before_action :check_login_frontend, except: [:frontend, :backend, :login, :map_link, :map_form, :logout]  #Logout hier drin lassen? Sonst: getrennte Actions?
+  before_action :check_login_backend, except: [:frontend, :backend, :login, :map_link, :map_form, :logout]   #Logout hier drin lassen? Sonst: getrennte Actions?
 
   #GET '/'
   def frontend
@@ -17,27 +17,12 @@ class ApplicationController < ActionController::Base
 
   #POST '/login'
   def login
-    if params[:target] == 'frontend'
-      code = params[:code]
-      unless code.nil? || code.blank?
-        @map = ConceptMap.prepare_map(code) #Retrieve map or create a new one
-        unless @map.nil?               #If a map has been found or created => Save it to session hash and continue, else return to welcome screen
-          session[:map] = @map.id
-          redirect_to edit_concept_map_path @map
-        else
-          redirect_to '/', notice: (I18n.t('application.frontend.code_not_found'))
-        end
-      else
-        render 'frontend', layout: 'login'
-      end
-    elsif params[:target] == 'backend'
-      @user = User.find_user(params[:email], params[:password])
-      unless @user.nil?
-        session[:user] = @user.id
-        redirect_to user_projects_path @user
-      else
-        redirect_to '/backend', notice: (I18n.t('application.backend.wrong_credentials'))
-      end
+    @user = User.find_user(params[:email], params[:password])
+    unless @user.nil?
+      session[:user] = @user.id
+      redirect_to user_projects_path @user
+    else
+      redirect_to '/backend', notice: (I18n.t('application.backend.wrong_credentials'))
     end
   end
 
@@ -51,6 +36,37 @@ class ApplicationController < ActionController::Base
     elsif params[:target] == 'backend'
       session[:user] = nil
       redirect_to '/backend', notice: (I18n.t('application.backend.goodbye'))
+    end
+  end
+
+  def send_code
+
+  end
+
+  #GET /map/:code
+  def map_link
+    @map = ConceptMap.find_by_code(params[:id])
+    if @map.nil?
+      redirect_to '/'
+    else
+      session[:map] = @map.id
+      redirect_to edit_concept_map_path @map
+    end
+  end
+
+  #POST /map
+  def map_form
+    code = params[:code]
+    unless code.nil? || code.blank?
+      @map = ConceptMap.prepare_map(code) #Retrieve map or create a new one
+      unless @map.nil?               #If a map has been found or created => Save it to session hash and continue, else return to welcome screen
+        session[:map] = @map.id
+        redirect_to edit_concept_map_path @map
+      else
+        redirect_to '/', notice: (I18n.t('application.frontend.code_not_found'))
+      end
+    else
+      render 'frontend', layout: 'login'
     end
   end
 

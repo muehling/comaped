@@ -54,26 +54,7 @@
                 </div>
               </div>
               <div role="tabpanel" class="tab-pane  <% if @survey.concept_maps.size > 0 %> active <% end %>" id="maps">
-                <div class="row">
-                  <div class = "col-md-12">
-                    <% count = 0 %>
-                    <% @survey.concept_maps.each do |c| %>
-                        <% if count == 0 then %>
-                            <div class = "row">
-                        <% end %>
-                        <div class = "col-md-6">
-                          <%= render c %>
-                        </div>
-                        <% if count == 1 then %>
-                            </div>
-                        <% end %>
-                        <% count = (count+1) % 2 %>
-                    <% end %>
-                    <% if count != 0 then %>
-                        </div>
-                    <% end %>
-                  </div>
-                </div>
+                <%= render 'concept_maps/index' %>
               </div>
             </div>
           </div>

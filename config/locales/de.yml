@@ -252,6 +252,9 @@ de:
     backend:
       projects: "Projekte"
   concept_maps:
+    create: "Begriffsnetze mit den folgenden Codes wurden angelegt"
+    delete: "Begriffsnetz löschen"
+    new: "Begriffsnetze erzeugen"
     edit:
       code1: "Dieses Begriffsnetz hat den Code"
       code2: "Mit diesem Code können Sie später an dem Begrifsnetz weiterarbeiten."
@@ -259,6 +262,14 @@ de:
       mail: "Den Code als Mail verschicken (E-Mail Adresse wird nicht gespeichert)"
       save: "Ein Speichern ist nicht nötig, jede Aktion wird automatisch gespeichert!"
       send: "Absenden"
+    _form_email:
+      anonymize: "Codes anonym verschicken"
+      description: "Codes für eine Liste von E-Mail Adressen generieren und versenden"
+      placeholder: "Eine E-Mail Adresse pro Zeile"
+      submit: "E-Mails verschicken"
+    _form_simple:
+      description: "Feste Anzahl an Begriffsnetzen erzeugen"
+      submit: "Codes erzeugen"
   projects:
     created: "Projekt angelegt"
     delete: "Projekt löschen"
@@ -280,6 +291,7 @@ de:
       example_associations: "z.B. hat, ist, bewirkt"
       example_initial_map: "Bitte TGF Format verwenden"
   versions:
+    delete: "Versionshistorie löschen"
     _index:
       current: "Aktuell angezeigt"
       first: "Erste"
@@ -291,7 +303,10 @@ de:
   details: "Details"
   edit: "Bearbeiten"
   email: "E-Mail Adresse"
+  error: "Es ist ein Fehler aufgetreten!"
   export: "Exportieren"
+  export.all: "Alle Versionen"
+  export.current: "Aktueller Stand"
   login: "Einloggen"
   logout: "Ausloggen"
   maps: "Begriffsnetze"

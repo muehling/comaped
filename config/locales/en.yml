@@ -57,6 +57,9 @@ en:
     backend:
       projects: "Projects"
   concept_maps:
+    create: "Concept maps with the following codes have been created"
+    delete: "Delete concept map"
+    new: "Create concept maps"
     edit:
       code1: "This concept map has the code"
       code2: "You can use this code to come back to your concept map later"
@@ -64,6 +67,14 @@ en:
       mail: "Send the code by e-mail (e-mail address will not be kept)"
       save: "There is no need to save. Every action will be saved automatically!"
       send: "Send"
+    _form_email:
+      anonymize: "Send anonymous codes"
+      description: "Create codes for a list of e-mail addresses and send the codes"
+      placeholder: "One e-mail adress per row"
+      submit: "Send e-mails"
+    _form_simple:
+      description: "Generate a fixed number of concept maps"
+      submit: "Generate codes"
   project:
     created: "Project created"
     delete: "Delete project"
@@ -85,6 +96,7 @@ en:
       example_associations: "e.g. has, is, affects"
       example_initial_map: "Please use TGF format"
   versions:
+    delete: "Delete version history"
     _index:
       current: "Currently shown"
       first: "First"
@@ -96,7 +108,10 @@ en:
   details: "Details"
   edit: "Edit"
   email: "E-mail address"
+  error: "An error occurred!"
   export: "Export"
+  export.all: "All versions"
+  export.current: "Current state"
   login: "Login"
   logout: "Logout"
   maps: "Concept maps"

@@ -1,1 +1,0 @@
-json.partial! "concept_maps/concept_map", concept_map: @concept_map

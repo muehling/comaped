@@ -1,0 +1,30 @@
+<% if @survey.code.blank? %>
+<div class="row">
+    <div class = "col-md-6">
+        <div id="new_maps">
+            <%= render 'concept_maps/new' %>
+        </div>
+    </div>
+</div>
+<% end %>
+
+<div class="row">
+    <div class = "col-md-12">
+        <% count = 0 %>
+        <% @survey.concept_maps.order(updated_at: :desc).each do |c| %>
+        <% if count == 0 then %>
+          <div class = "row">
+        <% end %>
+          <div class = "col-md-6">
+            <%= render c %>
+          </div>
+        <% if count == 1 then %>
+          </div>
+        <% end %>
+        <% count = (count+1) % 2 %>
+        <% end %>
+        <% if count != 0 then %>
+          </div>
+        <% end %>
+    </div>
+</div>

@@ -1,3 +1,9 @@
+<button class="btn btn-default" onclick="version = 0; updatePreview();"><span class="glyphicon glyphicon-fast-backward"></span></button>
+<button id="prev" class="btn btn-default" onclick="version = Math.max(0, version-1); updatePreview();"><span class="glyphicon glyphicon-step-backward"></span></button>
+<button id="play" class="btn btn-default" onclick="play();"><span class="glyphicon glyphicon-play"></span></button>
+<button id="next" class="btn btn-default" disabled="disabled" onclick="version = Math.min(max_version, version+1);; updatePreview();"><span class="glyphicon glyphicon-step-forward"></span></button>
+<button class="btn btn-default" onclick="version = max_version; updatePreview();"><span class="glyphicon glyphicon-fast-forward"></span></button>
+
 <script>
   const max_version = <%= concept_map.versions.count-1%>;
   var version = max_version;
@@ -32,9 +38,3 @@
       }
     };
 </script>
-
-<button class="btn btn-default btn-lg" onclick="version = 0; updatePreview();"><span class="glyphicon glyphicon-fast-backward"></span></button>
-<button id="prev" class="btn btn-default btn-lg" onclick="version = Math.max(0, version-1); updatePreview();"><span class="glyphicon glyphicon-step-backward"></span></button>
-<button id="play" class="btn btn-default btn-lg" onclick="play();"><span class="glyphicon glyphicon-play"></span></button>
-<button id="next" class="btn btn-default btn-lg" disabled="disabled" onclick="version = Math.min(max_version, version+1);; updatePreview();"><span class="glyphicon glyphicon-step-forward"></span></button>
-<button class="btn btn-default btn-lg" onclick="version = max_version; updatePreview();"><span class="glyphicon glyphicon-fast-forward"></span></button>

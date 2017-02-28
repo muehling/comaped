@@ -24,7 +24,7 @@
         <%= t('.code2')%>
       </p>
       <br/>
-      <form id="mailer" class="form-inline" method="post" data-remote="true">
+      <%= form_tag(url_for(controller:'application', action: 'send_code'), class: "form-inline", method: :post, remote: true) do %>
         <p><%= t('.mail')%></p>
         <div class="form-group">
           <input id="email" class="form-control" name="emai" placeholder="<%= t('email') %>" type="email" />
@@ -32,7 +32,7 @@
         <div class="form-group">
           <button class="btn btn-sm btn-success"><%= t('.send')%></button>
         </div>
-      </form>
+      <% end %>
     </div>
     <div class="col-md-1">
       <p class="pull-right lead">

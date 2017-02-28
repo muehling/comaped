@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <%= t('concept_maps.new') %>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class = "col-md-5">
+        <%= render 'form_simple' %>
+      </div>
+      <div class = "col-md-1">
+      </div>
+      <div class = "col-md-6">
+        <%= render 'form_email' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function cancelForm() {
+    $('#new_maps').html("<%= escape_javascript(render 'new') %>");
+  }
+</script>
