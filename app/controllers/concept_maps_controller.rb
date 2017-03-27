@@ -35,10 +35,15 @@ class ConceptMapsController < ApplicationController
         end
       }
       format.text {
-        if params.has_key?(:versions)
-          send_file @concept_map.to_zip(true), filename:@concept_map.code+".zip", type: "application/zip"
-        else
-          send_data @concept_map.to_tgf, filename: @concept_map.code+".tgf", type: :text
+        if params.has_key?(:email)
+          ConceptMapMailer.edited(params[:email], @map.code).deliver_later
+          head :ok
+          else
+            if params.has_key?(:versions)
+              send_file @concept_map.to_zip(true), filename:@concept_map.code+".zip", type: "application/zip"
+            else
+              send_data @concept_map.to_tgf, filename: @concept_map.code+".tgf", type: :text
+            end
         end
       }
     end
@@ -75,15 +80,17 @@ class ConceptMapsController < ApplicationController
       end
     else
       if params[:type] == "email"
+        anonymous = params[:anonymized] == '1'
         list = params[:email]
         codes = []
         list.split("\n").each do |email|
           cm = @survey.concept_maps.build
           cm.save
           codes = codes + [[email, cm.code]]
+          ConceptMapMailer.created(email, cm.code, anonymous).deliver_later
         end
         res = I18n.t('concept_maps.create') + ":<br/>"
-        if (params[:anonymized] == '1')
+        if (anonymous)
           codes.map{|x| x[1]}.sort.each do |c|
             res = res + c + "<br/>"
           end

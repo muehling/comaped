@@ -258,11 +258,7 @@ de:
     delete: "Begriffsnetz löschen"
     new: "Begriffsnetze erzeugen"
     edit:
-      code1: "Dieses Begriffsnetz hat den Code"
-      code2: "Mit diesem Code können Sie später an dem Begrifsnetz weiterarbeiten."
       help: "Hilfe anzeigen"
-      mail: "Den Code als Mail verschicken (E-Mail Adresse wird nicht gespeichert)"
-      save: "Ein Speichern ist nicht nötig, jede Aktion wird automatisch gespeichert!"
       send: "Absenden"
     _form_email:
       anonymize: "Codes anonym verschicken"
@@ -272,6 +268,9 @@ de:
     _form_simple:
       description: "Feste Anzahl an Begriffsnetzen erzeugen"
       submit: "Codes erzeugen"
+    mails:
+      created: 'Ein Begriffsnetz wurde für Sie in CoMapEd angelegt'
+      edited: 'CoMapEd: Code für Begrifffsnetz per E-Mail senden'
   projects:
     created: "Projekt angelegt"
     delete: "Projekt löschen"
@@ -292,6 +291,8 @@ de:
       password_confirmation: "Passwort bestätigen"
     show:
       change: "Daten ändern"
+    mails:
+      created: "Ein CoMapEd Benutzerkonto wurde angelegt"
   surveys:
     created: "Befragung angelegt"
     delete: "Befragung löschen"

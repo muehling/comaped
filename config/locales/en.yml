@@ -63,11 +63,7 @@ en:
     delete: "Delete concept map"
     new: "Create concept maps"
     edit:
-      code1: "This concept map has the code"
-      code2: "You can use this code to come back to your concept map later"
       help: "Show help"
-      mail: "Send the code by e-mail (e-mail address will not be kept)"
-      save: "There is no need to save. Every action will be saved automatically!"
       send: "Send"
     _form_email:
       anonymize: "Send anonymous codes"
@@ -77,6 +73,9 @@ en:
     _form_simple:
       description: "Generate a fixed number of concept maps"
       submit: "Generate codes"
+    mails:
+      created: 'A concept map has been created for you in CoMapEd'
+      edited: 'CoMapEd: Send code for concept map via email'
   projects:
     created: "Project created"
     delete: "Delete project"
@@ -97,6 +96,8 @@ en:
       password_confirmation: "Passwort bestätigen"
     show:
       change: "Edit data"
+    mails:
+      created: "A CoMapEd user account has been created"
   surveys:
     created: "Survey created"
     delete: "Delete survey"

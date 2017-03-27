@@ -1,0 +1,13 @@
+As part of a survey, a concept map has been created for you in CoMapEd.
+It has the following code:
+
+<%= @code %>
+
+You can enter this code at http://www.comaped.edu or use the following link that will take you directly to the concept map:
+
+http://www.comaped.edu/map/<%= @code %>
+
+<% if @anonymous %>
+    The survey has been created anonymously. Connecting this email address to your concept map will, in general, not be possible for the survey's creator!
+<% end %>
+

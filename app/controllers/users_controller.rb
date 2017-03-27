@@ -26,11 +26,17 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @u = User.new(user_params)
+    p = user_params
+    if p[:password].blank?
+      p[:password] = ConceptMap.generate_slug()
+      p[:password_confirmation] = p[:password]
+    end
+    @u = User.new(p)
 
     respond_to do |format|
       if @u.save
-        format.html { redirect_to @u, notice: I18n.t('users.created') }
+        UserMailer.created(@u.email, p[:password]).deliver_later
+        format.html { redirect_to users_path, notice: I18n.t('users.created') }
       else
         format.html { render :edit }
       end
@@ -59,14 +65,14 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def is_allowed
-      unless @user.id == 1
+      if @user.id != 1
         redirect_to '/backend'
       end
     end
 
     def set_user
       @u = User.find(params[:id])
-      if @u.nil? || (@u.id != @user.id && @user.id != 1)
+      if @u.nil? || (@u.id != @user.id &&  @user.id != 1)
         redirect_to '/backend'
       end
     end

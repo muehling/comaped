@@ -7,7 +7,7 @@ class ConceptMap < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
 
-  def generate_slug
+  def self.generate_slug
     Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
   end
 
@@ -33,9 +33,9 @@ class ConceptMap < ApplicationRecord
     end
 
     if self.code.blank?
-      self.code = generate_slug
+      self.code = ConceptMap.generate_slug
       while (ConceptMap.where(code: self.code).exists? || Survey.where(code: self.code).exists?)
-        self.code = generate_slug
+        self.code = ConceptMap.generate_slug
       end
       save
     end

@@ -27,21 +27,7 @@
       <%= render 'help' %>
     </div>
     <div class="col-md-4">
-      <p><%= t('.save')%></p>
-      <p><%= t('.code1')%>: <b><%= @concept_map.code%></b><br/>
-        <%= t('.code2')%>
-      </p>
-      <br/>
-      <%= form_tag(url_for(controller:'application', action: 'send_code'), class: "form-inline", method: :post, remote: true) do %>
-        <p><%= t('.mail')%></p>
-        <div class="form-group">
-          <input id="email" class="form-control" name="emai" placeholder="<%= t('email') %>" type="email" />
-        </div>
-        <div class="form-group">
-          <button class="btn btn-sm btn-success"><%= t('.send')%></button>
-        </div>
-      <% end %>
-    </div>
+      <%= render 'mail_form' %>
     <div class="col-md-1">
       <p class="pull-right lead">
         <a href="#"><span class='glyphicon glyphicon-remove' onclick="$('#help').addClass('hidden');return false;"></span></a>
