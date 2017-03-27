@@ -1,0 +1,18 @@
+<div id="maps" class = "col-md-12">
+  <% count = 0 %>
+  <% @maps.each do |c| %>
+      <% if count == 0 then %>
+          <div class = "row">
+      <% end %>
+      <div class = "col-md-6">
+        <%= render c %>
+      </div>
+      <% if count == 1 then %>
+          </div>
+      <% end %>
+      <% count = (count+1) % 2 %>
+  <% end %>
+  <% if count != 0 then %>
+      </div>
+  <% end %>
+</div>

@@ -5,7 +5,7 @@
       <p class = "pull-right">
         <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_survey_path(@user, @project, survey), remote: true %>
         &nbsp;
-        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_path(@user, @project, survey, format: 'zip') %>
+        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_path(@user, @project, survey, format: 'json', versions: true) %>
       </p>
     </div>
     <div class="panel-body">

@@ -1,8 +1,25 @@
 class ConceptMapsController < ApplicationController
-  before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
-  before_action :set_project_survey, only: [:show, :new, :create, :destroy]
+
   skip_before_action :check_login_frontend, except: [:edit]
-  skip_before_action :check_login_backend, only: [:edit]
+  skip_before_action :check_login_backend, only: [:edit, :show]
+  before_action :login_for_show, only: [:show]
+  before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
+  before_action :set_project_survey, only: [:new, :create, :destroy, :index]
+
+
+  # GET /concept_maps/:page.js
+
+  def index
+    @page = params[:page].to_i || 0
+    @maps = @survey.concept_maps.offset(@page*10).limit(10).order(updated_at: :desc)
+    respond_to do |format|
+      format.js {
+        if @maps.size == 0
+          head :ok
+        end
+      }
+    end
+  end
 
   # GET /concept_maps/1
   # GET /concept_maps/1.text
@@ -99,14 +116,23 @@ class ConceptMapsController < ApplicationController
 
     def set_project_survey
       @project = Project.find(params[:project_id])
-      unless !@project.nil? && @project.user == @user
+      if @project.nil? || @project.user != @user
         redirect_to '/backend'
       else
         @survey = Survey.find(params[:survey_id])
-        unless !@survey.nil? && @survey.project == @project
+        if @survey.nil? || @survey.project != @project
           redirect_to '/backend'
         end
       end
     end
+
+  def login_for_show
+    if params.has_key?(:prohect_id)
+      check_login_backend
+      set_project_survey
+    else
+        check_login_frontend
+    end
+  end
 
 end

@@ -9,22 +9,17 @@
 <% end %>
 
 <div class="row">
-    <div class = "col-md-12">
-        <% count = 0 %>
-        <% @survey.concept_maps.order(updated_at: :desc).each do |c| %>
-        <% if count == 0 then %>
-          <div class = "row">
-        <% end %>
-          <div class = "col-md-6">
-            <%= render c %>
-          </div>
-        <% if count == 1 then %>
-          </div>
-        <% end %>
-        <% count = (count+1) % 2 %>
-        <% end %>
-        <% if count != 0 then %>
-          </div>
-        <% end %>
-    </div>
+  <%= render 'concept_maps/maps' %>
 </div>
+
+<script>
+  var page = 0;
+  var ready = true;
+
+  $(window).on('scroll', function() {
+    if (ready && ($(window).scrollTop() > $(document).height() - $(window).height() - 60)) {
+      ready = false;
+      $.getScript("<%= user_project_survey_concept_maps_path(@user, @project, @survey)%>" + "?page=" + (page+1))
+    }
+  });
+</script>

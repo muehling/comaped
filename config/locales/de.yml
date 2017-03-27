@@ -250,7 +250,9 @@ de:
       goodbye: "Vielen Dank für die Benutzung von CoMapEd!\nSie können zu Ihrem Begriffsnetz mit dem Code %{code} zurückkehren."
   layouts:
     backend:
+      my_data: "Meine Daten"
       projects: "Projekte"
+      users: "Benutzerverwaltung"
   concept_maps:
     create: "Begriffsnetze mit den folgenden Codes wurden angelegt"
     delete: "Begriffsnetz löschen"
@@ -275,10 +277,21 @@ de:
     delete: "Projekt löschen"
     destroyed: "Projekt gelöscht"
     edit: "Projekt bearbeiten"
+    import: "Projekt importieren"
     new: "Neues Projekt"
     show: "Projekt öffnen"
     project:
       surveys: "Befragungen"
+  users:
+    created: "Benutzer angelegt"
+    destroyed: "Benutzer gelöscht"
+    edit: "Nutzerdaten bearbeiten"
+    new: "Nutzer anlegen"
+    updated: "Nutzerdaten geändert"
+    _form:
+      password_confirmation: "Passwort bestätigen"
+    show:
+      change: "Daten ändern"
   surveys:
     created: "Befragung angelegt"
     delete: "Befragung löschen"
@@ -312,4 +325,5 @@ de:
   maps: "Begriffsnetze"
   name: "Bezeichner"
   no_description: "Keine Beschreibung"
+  projects.text: "Projekte"
   show: "Anzeigen"

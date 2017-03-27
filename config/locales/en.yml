@@ -55,7 +55,9 @@ en:
       goodbye: "Thank you for using CoMapEd!\nYou may return to your map using the code %{code} later on."
   layouts:
     backend:
+      my_data: "My data"
       projects: "Projects"
+      users: "Manage users"
   concept_maps:
     create: "Concept maps with the following codes have been created"
     delete: "Delete concept map"
@@ -75,19 +77,30 @@ en:
     _form_simple:
       description: "Generate a fixed number of concept maps"
       submit: "Generate codes"
-  project:
+  projects:
     created: "Project created"
     delete: "Delete project"
-    destroyed: "Project deleted"
+    destroyed: "Project was deleted"
     edit: "Edit project"
+    import: "Import project"
     new: "New project"
     show: "Open project"
     project:
       surveys: "Surveys"
-  survey:
+  users:
+    created: "User created"
+    destroyed: "User was deleted"
+    edit: "Edit user data"
+    new: "New user"
+    updated: "User data  updated"
+    _form:
+      password_confirmation: "Passwort bestätigen"
+    show:
+      change: "Edit data"
+  surveys:
     created: "Survey created"
     delete: "Delete survey"
-    destroyed: "Survey deleted"
+    destroyed: "Survey was deleted"
     edit: "Edit survey"
     new: "New survey"
     show: "Show survey"
@@ -117,4 +130,5 @@ en:
   maps: "Concept maps"
   name: "Name"
   no_description: "No description"
+  projects.text: "Projekte"
   show: "Anzeigen"

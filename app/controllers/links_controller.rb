@@ -18,7 +18,7 @@ class LinksController < ApplicationController
   # PATCH/PUT /concept_maps/1/links/1.js
   def update
     respond_to do |format|
-      if @link.update(link_params)
+      if @link.update(link_params.permit(:label))
         @map.versionize
         format.js {}
       else

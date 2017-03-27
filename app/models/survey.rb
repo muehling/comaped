@@ -15,7 +15,7 @@ class Survey < ApplicationRecord
     return (start_date.nil? || start_date <= Date.today) && (end_date.nil? || Date.today <= self.end_date)
   end
 
-  #Create a Zipfile of all maps of this survey
+  #Create a Zipfile of all maps of this survey. Also includes a JSON file with the surveys's attributes.
   #Parameter:
   # tgf: If true, the maps are exported in TGF format, JSON is used otherwise
   # versions: If true, all versions of each map are included in the file
@@ -30,7 +30,7 @@ class Survey < ApplicationRecord
     return temp.path
   end
 
-  #Write all maps of this survey in an already open output stream
+  #Write all maps of this survey in an already open output stream. Also includes a JSON file with the survey's attributes.
   #Parameter:
   # prefix: A path that is appended before the survey data. Must end with / unless empty
   # zip: A Zipfile that is already open for writing
@@ -39,6 +39,8 @@ class Survey < ApplicationRecord
   #Effect: The  survey data is added to the stream 'zip'
   #Returns: -
   def write_stream(prefix, zip, tgf, versions)
+    zip.put_next_entry(prefix + 'survey.json')
+    zip.print self.as_json(only: [:name, :description, :code, :introduction, :association_labels, :concept_labels, :initial_map, :start_date, :end_date]).to_json.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
     self.concept_maps.each do |map|
       if versions
         map.write_stream(prefix + map.code + "/", zip, tgf)

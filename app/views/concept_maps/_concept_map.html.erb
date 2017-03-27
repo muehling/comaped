@@ -3,7 +3,7 @@
     <div class="panel-heading">
       <%= link_to concept_map.code, user_project_survey_concept_map_path(@user, @project, @survey, concept_map) %>
       <p class = "pull-right">
-        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'zip') %>
+        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json', versions: true) %>
       </p>
     </div>
     <div class="panel-body">

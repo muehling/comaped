@@ -15,7 +15,10 @@ class SurveysController < ApplicationController
   # GET /surveys/1.json
   def show
     respond_to do |format|
-      format.html {}
+      format.html {
+        @maps = @survey.concept_maps.limit(10).order(updated_at: :desc)
+        @page = 0
+      }
       format.text {
         if params.has_key?(:versions)
           send_file @survey.to_zip(true, true), filename: @survey.name+".zip", type: "application/zip"

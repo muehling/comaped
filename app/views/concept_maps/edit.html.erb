@@ -4,7 +4,15 @@
         <p class="navbar-brand">CoMapEd</p>
       </div>
       <ul class="nav navbar-nav navbar-left">
-        <li><%= link_to t('export'), '#'%></li>
+        <ul class="nav navbar-nav navbar-left">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('export')%><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
+              <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
+            </ul>
+          </li>
+        </ul>
         <li><%= link_to t('.help'), '', onclick: "$('#help').removeClass('hidden');return false;"%></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -48,14 +56,19 @@
   <div class="panel-body">
     <form id="form" class="form-inline" method="post" data-remote="true">
       <div class="form-group">
-        <input id="entry" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
+        <% if @concept_map.survey.association_labels.blank? %>
+            <input id="entry_link" class="form-control" name="link[label]" placeholder="<%= t :name %>" type="text" />
+        <% else %>
+            <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
+        <% end %>
+        <input id="entry_concept" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
         <input id="x" type="hidden" name="concept[x]"/>
         <input id="y" type="hidden" name="concept[y]"/>
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
       </div>
       <div class="form-group">
-        <button class="btn btn-sm btn-success" onclick="hideForm();"><span class="glyphicon glyphicon-ok"></span></button>
+        <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
         <button class="btn btn-sm btn-default"onclick="hideForm();return false;"><span class="glyphicon glyphicon-remove"></span></button>
         <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
       </div>
@@ -222,43 +235,51 @@
 
     function showForm() {
       updateHelp();
-        switch (mode) {
+      $("#panel").removeClass("hidden");
+      $("#panel").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
+      switch (mode) {
             case addNode:
-              $("#entry").val("");
-              $("#entry").attr("name", "concept[label]");
+              $("#entry_concept").val("");
+              $("#entry_concept").removeClass("hidden");
+              $("#entry_link").addClass("hidden");
               $("#delete").addClass("hidden");
               $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
               $("#form").attr('method', 'post');
               $("#x").attr("value", canvasX);
               $("#y").attr("value", canvasY);
+              $("#entry_concept").focus();
               break;
             case editNode:
-              $("#entry").val(nodes.get(id).label);
-              $("#entry").attr("name", "concept[label]");
+              $("#entry_concept").val(nodes.get(id).label);
+              $("#entry_concept").removeClass("hidden");
+              $("#entry_link").addClass("hidden");
               $("#delete").removeClass("hidden");
               $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>/' + id);
               $("#form").attr('method', 'put');
               $("#x").attr("value", canvasX);
               $("#y").attr("value", canvasY);
+              $("#entry_concept").focus();
               break;
             case editEdge:
-              $("#entry").val(edges.get(id).label);
-              $("#entry").attr("name", "link[label]");
+              $("#entry_link").val(edges.get(id).label);
+              $("#entry_link").removeClass("hidden");
+              $("#entry_concept").addClass("hidden");
               $("#delete").removeClass("hidden");
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
               $("#form").attr('method', 'put');
+              $("#entry_link").focus();
               break;
             case addEdge:
-              $("#entry").val("");
-              $("#entry").attr("name", "link[label]");
+              $("#entry_link").val("");
+              $("#entry_link").removeClass("hidden");
+              $("#entry_concept").addClass("hidden");
               $("#delete").addClass("hidden");
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
               $("#form").attr('method', 'post');
+              $("#entry_link").focus();
+
         }
-        $("#panel").removeClass("hidden");
-        $("#panel").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
-        $("#entry").focus();
-    }
+   }
 
     //Edit/Create Aktion beenden
     function hideForm() {
@@ -270,10 +291,38 @@
     }
 
     //Form bei ESC oder Enter schließen
-    $("#entry").on('keyup', function (e) {
-      if (e.keyCode == 13 || e.keyCode == 27)
+    $("#entry_concept").on('keyup', function (e) {
+      if (e.keyCode == 27)
         hideForm();
     });
+    $("#entry_link").on('keyup', function (e) {
+      if (e.keyCode == 27)
+        hideForm();
+    });
+
+    function validateForm() {
+      if (mode == addNode || mode == editNode) {
+        t = $('#entry_concept').val();
+        hideForm();
+        node = nodes.get({
+          filter: function (item) {
+            return (item.label.toLocaleLowerCase() === t.toLocaleLowerCase());
+          }
+        });
+
+        if (node == null)
+            return true;
+        else {
+          network.focus(node[0].id);
+          return false;
+        }
+      }
+      else {
+        hideForm();
+        return true;
+      }
+
+    }
 
     function updateHelp() {
       $('#help_general').addClass("hidden");

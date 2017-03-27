@@ -18,8 +18,12 @@ class ConceptMap < ApplicationRecord
   def after_create
     self.accesses ||= 0
     unless survey.concept_labels.blank?
-      survey.concept_labels.split(',').each do |c|
-        concepts.build(label: c).save
+      labels = survey.concept_labels.split(',')
+      step = 2*Math::PI/labels.length
+      count = 0
+      labels.each do |c|
+        concepts.build(label: c, x: (labels.length/5.0)*100*(Math.sin(count*step) + 1), y: (labels.length/5.0)*100*(Math.cos(count*step) + 1)).save
+        count = count + 1
       end
       save
     else
@@ -59,7 +63,7 @@ class ConceptMap < ApplicationRecord
   #Effect: Creates a new versions object that stores the current state
   #Returns: -
   def versionize
-    ver = self.versions.build(map: to_json.to_json)
+    ver = self.versions.build(map: to_json)
     ver.save
     save
   end
@@ -80,12 +84,15 @@ class ConceptMap < ApplicationRecord
     end
     hash = Hash.new
     unless node_defs.nil?
+      step = 2*Math::PI/node_defs.lines.count
+      count = 0
       node_defs.each_line do |line|
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
-          c = concepts.build(:label => l[1].strip!)
+          c = concepts.build(label: l[1].strip, x: (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), y: (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1))
           c.save
           hash[l[0]] = c
+          count = count + 1
         end
       end
     end
@@ -93,7 +100,7 @@ class ConceptMap < ApplicationRecord
       edge_defs.each_line do |line|
         l = line.split(' ', 3)
         unless (l[0].nil? || l[1].nil? || hash[l[0]].nil? || hash[l[1]].nil? || l[2].nil? || l[2].blank?)
-          links.build(:start => hash[l[0]], :end => hash[l[1]], :label => l[2]).save
+          links.build(start: hash[l[0]], end: hash[l[1]], label: l[2].strip).save
         end
       end
     end
