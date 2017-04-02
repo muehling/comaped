@@ -22,6 +22,8 @@ de:
         initial_map: "Vorgegebenens Begriffsnetz"
         introduction: "Einführungstext"
         start_date: "Verfügbar ab"
+      user:
+        capabilities: "Rechte"
     errors:
       messages:
         record_invalid: 'Gültigkeitsprüfung ist fehlgeschlagen: %{errors}'
@@ -277,6 +279,8 @@ de:
     destroyed: "Projekt gelöscht"
     edit: "Projekt bearbeiten"
     import: "Projekt importieren"
+    imported: "Projekt importiert"
+    imported_error: "Fehler beim Importieren"
     new: "Neues Projekt"
     show: "Projekt öffnen"
     project:
@@ -321,10 +325,12 @@ de:
   export: "Exportieren"
   export.all: "Alle Versionen"
   export.current: "Aktueller Stand"
+  file: "Datei"
+  import: "Importieren"
   login: "Einloggen"
   logout: "Ausloggen"
   maps: "Begriffsnetze"
   name: "Bezeichner"
   no_description: "Keine Beschreibung"
-  projects.text: "Projekte"
+  projects_text: "Projekte"
   show: "Anzeigen"

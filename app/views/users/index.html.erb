@@ -4,14 +4,14 @@
     <div class="panel panel-default">
       <div class="panel-body">
 
-        <table class = "table">
+        <table class = "table table-hover">
           <thead>
-          <td><%= t('email') %></td><td><%= t('projects.text') %></td><td><%= t('maps') %></td><td></td>
+          <td><%= t('email') %></td><td><%= t('activerecord.attributes.user.capabilities') %></td><td><%= t('projects_text') %></td><td><%= t('maps') %></td><td></td>
           </thead>
           <tbody>
           <% @users.each do |user| %>
             <tr>
-              <td><%= user.email %></td><td><%= user.projects.count %></td><td><%= user.concept_map_count %></td>
+              <td><%= link_to user.email, user %></td><td><%= user.capabilities %></td><td><%= link_to user.projects.count, user_projects_path(user) %></td><td><%= user.concept_map_count %></td>
               <td>
                 <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_path(user) %>
               &nbsp;

@@ -4,7 +4,7 @@ class ConceptMapsController < ApplicationController
   skip_before_action :check_login_backend, only: [:edit, :show]
   before_action :login_for_show, only: [:show]
   before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
-  before_action :set_project_survey, only: [:new, :create, :destroy, :index]
+  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index]
 
 
   # GET /concept_maps/:page.js
@@ -121,7 +121,11 @@ class ConceptMapsController < ApplicationController
       end
     end
 
-    def set_project_survey
+    def set_user_project_survey
+      @user = User.find(params[:user_id])
+      if @user.nil? || (@user.id != @login.id &&  !@login.admin?)
+        redirect_to '/backend'
+      end
       @project = Project.find(params[:project_id])
       if @project.nil? || @project.user != @user
         redirect_to '/backend'
@@ -134,9 +138,9 @@ class ConceptMapsController < ApplicationController
     end
 
   def login_for_show
-    if params.has_key?(:prohect_id)
+    if params.has_key?(:project_id)
       check_login_backend
-      set_project_survey
+      set_user_project_survey
     else
         check_login_frontend
     end

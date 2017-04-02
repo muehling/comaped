@@ -93,7 +93,7 @@ class ApplicationController < ActionController::Base
 
   def check_login_backend
     if session.has_key?(:user)
-      @user = User.find(session[:user])
+      @login = User.find(session[:user])
     else
       redirect_to '/backend'
     end

@@ -28,7 +28,7 @@ class ConceptMap < ApplicationRecord
       save
     else
       unless survey.initial_map.blank?
-        parse_tgf(survey.initial_map)
+        import_tgf(survey.initial_map)
       end
     end
 
@@ -68,12 +68,12 @@ class ConceptMap < ApplicationRecord
     save
   end
 
-  #Creates concepts and associations based on a TGF string
+  #Imports concepts and associations based on a TGF string
   #Params:
   # data: A string in TGF format
   #Effect: The necessary concepts and associations are created
   #Returns: -
-  def parse_tgf(data)
+  def import_tgf(data)
     parts = data.split('#')
     if parts.nil?
       node_defs = data
@@ -82,7 +82,7 @@ class ConceptMap < ApplicationRecord
       node_defs = parts[0]
       edge_defs = parts[1]
     end
-    hash = Hash.new
+    dict = Hash.new
     unless node_defs.nil?
       step = 2*Math::PI/node_defs.lines.count
       count = 0
@@ -91,7 +91,7 @@ class ConceptMap < ApplicationRecord
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
           c = concepts.build(label: l[1].strip, x: (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), y: (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1))
           c.save
-          hash[l[0]] = c
+          dict[l[0]] = c
           count = count + 1
         end
       end
@@ -99,10 +99,31 @@ class ConceptMap < ApplicationRecord
     unless edge_defs.nil?
       edge_defs.each_line do |line|
         l = line.split(' ', 3)
-        unless (l[0].nil? || l[1].nil? || hash[l[0]].nil? || hash[l[1]].nil? || l[2].nil? || l[2].blank?)
-          links.build(start: hash[l[0]], end: hash[l[1]], label: l[2].strip).save
+        unless (l[0].nil? || l[1].nil? || dict[l[0]].nil? || dict[l[1]].nil? || l[2].nil? || l[2].blank?)
+          links.build(start: dict[l[0]], end: dict[l[1]], label: l[2].strip).save
         end
       end
+    end
+    save
+  end
+
+  #Imports concepts and associations based on a JSON representation of a concept map object
+  #Params:
+  # data: A JSON string
+  #Effect: The necessary concepts and associations are created
+  #Returns: -
+  def import_json(data)
+    vals = ActiveSupport::JSON.decode(data)
+    dict = Hash.new
+    vals["concepts"].each do |c|
+      t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
+      t.save
+      t.reload
+      dict[c["id"]] = t
+    end
+    vals["links"].each do |l|
+      t = self.links.build(label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
+      t.save
     end
     save
   end

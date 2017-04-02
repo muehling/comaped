@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :is_allowed, only: [:create, :index, :destroy]
+  before_action :is_allowed, only: [:create, :index, :new]
   before_action :set_user, only: [:edit, :update, :destroy, :show]
   skip_before_action :check_login_frontend
 
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
-    @u = User.new
+    @user = User.new
     render :edit
   end
 
@@ -31,11 +31,11 @@ class UsersController < ApplicationController
       p[:password] = ConceptMap.generate_slug()
       p[:password_confirmation] = p[:password]
     end
-    @u = User.new(p)
+    @user = User.new(p)
 
     respond_to do |format|
-      if @u.save
-        UserMailer.created(@u.email, p[:password]).deliver_later
+      if @user.save
+        UserMailer.created(@user.email, p[:password]).deliver_later
         format.html { redirect_to users_path, notice: I18n.t('users.created') }
       else
         format.html { render :edit }
@@ -46,8 +46,8 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   def update
     respond_to do |format|
-      if @u.update(user_params)
-        format.html { redirect_to @u, notice: I18n.t('users.updated') }
+      if @user.update(user_params)
+        format.html { redirect_to @user, notice: I18n.t('users.updated') }
       else
         format.html { render :edit }
       end
@@ -56,7 +56,7 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
-    @u.destroy
+    @user.destroy
     respond_to do |format|
       format.html { redirect_to users_url, notice: I18n.t('users.destroyed') }
     end
@@ -65,20 +65,24 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def is_allowed
-      if @user.id != 1
+      if !@login.admin?
         redirect_to '/backend'
       end
     end
 
     def set_user
-      @u = User.find(params[:id])
-      if @u.nil? || (@u.id != @user.id &&  @user.id != 1)
+      @user = User.find(params[:id])
+      if @user.nil? || (@user.id != @login.id &&  !@login.admin?)
         redirect_to '/backend'
       end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.fetch(:user, {}).permit([:email, :password, :password_confirmation])
+      if @user.admin?
+        params.fetch(:user, {}).permit([:email, :password, :password_confirmation, :capabilities])
+      else
+        params.fetch(:user, {}).permit([:email, :password, :password_confirmation])
+      end
     end
 end

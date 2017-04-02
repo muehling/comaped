@@ -15,6 +15,28 @@ class Survey < ApplicationRecord
     return (start_date.nil? || start_date <= Date.today) && (end_date.nil? || Date.today <= self.end_date)
   end
 
+  #Import data from a ZIP file in the same format that to_zip creates
+  #Parameter:
+  # data: The ZIP stream data
+  # prefix: A path that will be used as a prefix when looking for data in the zip file. Used when importing surveys from a project's export. If non-empty, must end with '/''
+  #Effect: -
+  #Returns: A new object created from the data in the ZIP, including all surveys and concept maps or nil if an error occurrs.
+  def self.import_zip(data, prefix)
+    zip = Zip::ImportStream(data)
+    file = zip.glob(prefix + 'survey.json').first
+    survey = Survey.build(JSON.parse(file.get_input_stream.read))
+    toDo = zip.glob(prefix + '*.json')
+    toDo.each do |c|
+      if c.name.split('/')[1] != "survey.json"
+        map = survey.concept_maps.build
+        map.save
+        map.import_json(c.get_input_stream.read)
+      end
+    end
+    survey.save
+    return survey
+  end
+
   #Create a Zipfile of all maps of this survey. Also includes a JSON file with the surveys's attributes.
   #Parameter:
   # tgf: If true, the maps are exported in TGF format, JSON is used otherwise

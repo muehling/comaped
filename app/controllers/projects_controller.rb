@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  before_action :set_user
   before_action :set_project, only: [:show, :edit, :update, :destroy]
   skip_before_action :check_login_frontend
 
@@ -44,13 +45,23 @@ class ProjectsController < ApplicationController
 
   # POST /projects.js
   def create
-    @project = @user.projects.build(project_params)
     respond_to do |format|
-      if @project.save
-        format.js { redirect_to user_project_path(@user, @project), notice: I18n.t('projects.created')}
-      else
-        format.js { render :new }
-      end
+      format.js {
+        @project = @user.projects.build(project_params)
+        if @project.save
+         redirect_to user_project_path(@user, @project), notice: I18n.t('projects.created')
+        else
+          render :new
+        end
+      }
+      format.html {
+        @project = Project.import_zip(params[:file])
+        unless @project.nil?
+          redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')
+        else
+          redirect_to user_projects_path(@user), notice: I18n.t('projects.imported_error')
+        end
+      }
     end
   end
 
@@ -75,9 +86,17 @@ class ProjectsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+  def set_user
+    @user = User.find(params[:user_id])
+    if @user.nil? || (@user.id != @login.id &&  !@login.admin?)
+      redirect_to '/backend'
+    end
+  end
+
     def set_project
       @project = Project.find(params[:id])
-      unless !@project.nil? && @project.user == @user
+      if @project.nil? || (@project.user != @user)
         redirect_to '/backend'
       end
     end

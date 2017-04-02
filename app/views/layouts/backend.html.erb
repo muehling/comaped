@@ -4,11 +4,11 @@
         <p class="navbar-brand">CoMapEd</p>
       </div>
       <ul class="nav navbar-nav navbar-left">
-        <li><%= link_to t('.projects'), user_projects_path(@user)%></li>
-        <li><%= link_to t('.my_data'), user_path(@user)%></li>
+        <li><%= link_to t('.projects'), user_projects_path(@login)%></li>
+        <li><%= link_to t('.my_data'), user_path(@login)%></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <% if @user.id == 1 %>
+        <% if @login.admin? %>
             <li><%= link_to t('.users'), users_path%></li>
         <% end %>
         <li><%= link_to t('logout'), logout_path(target: 'backend')%></li>

@@ -4,6 +4,14 @@ class User < ApplicationRecord
 
   has_many :projects, dependent: :destroy
 
+  #Check whether the user has admin capabilities
+  #Parameter: -
+  #Effect: -
+  #Returns: true if the use has admin capabilities, false otherwise
+  def admin?
+    self.capabilities == "admin"
+  end
+
   #Count all concept maps of this user
   #Parameter: -
   #Effect: -

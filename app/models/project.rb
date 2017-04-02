@@ -6,6 +6,23 @@ class Project < ApplicationRecord
   belongs_to :user
   has_many :surveys, dependent: :destroy
 
+  #Import data from a ZIP file in the same format that to_zip creates
+  #Parameter:
+  # data: The ZIP stream data
+  #Effect: -
+  #Returns: A new object created from the data in the ZIP, including all surveys and concept maps or nil if an error occurrs.
+  def self.import_zip(data)
+    zip = Zip::ImportStream(data)
+    file = zip.glob('project.json').first
+    project = Project.build(JSON.parse(file.get_input_stream.read))
+    toDo = zip.glob('*/survey.json')..map{|m| m.name.split('/')[0]}
+    toDo.each do |s|
+      project.surveys.build(Survey.import_zip(data, s + '/'))
+    end
+    project.save
+    return project
+  end
+
   #Collect all concept maps of this project
   #Parameter: -
   #Effect: -

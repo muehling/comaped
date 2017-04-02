@@ -1,5 +1,5 @@
 class SurveysController < ApplicationController
-  before_action :set_project
+  before_action :set_user_project
   before_action :set_survey, only: [:show, :edit, :update, :destroy]
   skip_before_action :check_login_frontend
 
@@ -82,14 +82,18 @@ class SurveysController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_survey
       @survey = Survey.find(params[:id])
-      unless !@survey.nil? && @survey.project == @project
+      if @survey.nil? || @survey.project != @project
         redirect_to '/backend'
       end
     end
 
-    def set_project
+    def set_user_project
+      @user = User.find(params[:user_id])
+      if @user.nil? || (@user.id != @login.id &&  !@login.admin?)
+        redirect_to '/backend'
+      end
       @project = Project.find(params[:project_id])
-      unless !@project.nil? && @project.user == @user
+      if @project.nil? || (@project.user != @user && !@user.admin?)
         redirect_to '/backend'
       end
     end
