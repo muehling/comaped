@@ -15,26 +15,69 @@ class Survey < ApplicationRecord
     return (start_date.nil? || start_date <= Date.today) && (end_date.nil? || Date.today <= self.end_date)
   end
 
+  #Import data from either a ZIP file in the same format that to_zip creates, or a JSON file
+  #Parameter:
+  # file: Path to a file
+  #Effect: The attributes of the survey are modified, if data points to a valid JSON representation. If data points to a ZIP file, import_zip is called.
+  #Returns: true if the import succeeded, false if an error occurred
+  def import_file(file)
+    temp = file.path.split('.')
+    type = temp[temp.length-1].downcase
+    return from_json(File.read(file), "(Import) ") if type == "json"
+    return import_zip(file, '') if type == "zip"
+  end
+
+  #Set attributes from a JSON string
+  #Parameter:
+  # data: JSON data that represents a Project object
+  # name_prefix: A string that is prepended before the name taken from the JSON data
+  #Effect: The attributes of the project are modified.
+  #Returns: true if the update succeeded, false if an error occurred
+  def from_json(data, name_prefix)
+    vals = ActiveSupport::JSON.decode(data)
+    update_attributes(vals.slice("name", "description", "introduction", "association_labels", "concept_labels", "initial_map"))
+    self.name = name_prefix + self.name
+    return save
+  end
+
   #Import data from a ZIP file in the same format that to_zip creates
   #Parameter:
-  # data: The ZIP stream data
+  # file: Path to a ZIP file
   # prefix: A path that will be used as a prefix when looking for data in the zip file. Used when importing surveys from a project's export. If non-empty, must end with '/''
-  #Effect: -
-  #Returns: A new object created from the data in the ZIP, including all surveys and concept maps or nil if an error occurrs.
-  def self.import_zip(data, prefix)
-    zip = Zip::ImportStream(data)
-    file = zip.glob(prefix + 'survey.json').first
-    survey = Survey.build(JSON.parse(file.get_input_stream.read))
+  #Effect: The attributes of the survey are modified, if a survey.json file is found. Concept maps are imported into the project if present
+  #Returns: true if the import succeeded, false if an error occurred
+  def import_zip(file, prefix)
+    zip = Zip::File.open(file)
+    f = zip.glob(prefix + 'survey.json').first
+    unless from_json(f.get_input_stream.read, "(Import) ")
+      return false
+    end
+
     toDo = zip.glob(prefix + '*.json')
     toDo.each do |c|
-      if c.name.split('/')[1] != "survey.json"
-        map = survey.concept_maps.build
+      name = c.name.split('/')[1]
+      name ||= c.name
+      if name != "survey.json"
+        map = self.concept_maps.build
+        map.code = "I_" + name.split(".")[0]
         map.save
-        map.import_json(c.get_input_stream.read)
+        map.from_json(c.get_input_stream.read)
       end
     end
-    survey.save
-    return survey
+
+    toDo = zip.glob(prefix + '*.tgf')
+    toDo.each do |c|
+      name = c.name.split('/')[1]
+      name ||= c.name
+      map = self.concept_maps.build
+      map.code = "I_" + name.split(".")[0]
+      map.save
+      map.from_tgf(c.get_input_stream.read)
+    end
+
+    #TODO Versions!
+
+    return save
   end
 
   #Create a Zipfile of all maps of this survey. Also includes a JSON file with the surveys's attributes.

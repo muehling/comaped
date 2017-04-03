@@ -6,23 +6,6 @@ class Project < ApplicationRecord
   belongs_to :user
   has_many :surveys, dependent: :destroy
 
-  #Import data from a ZIP file in the same format that to_zip creates
-  #Parameter:
-  # data: The ZIP stream data
-  #Effect: -
-  #Returns: A new object created from the data in the ZIP, including all surveys and concept maps or nil if an error occurrs.
-  def self.import_zip(data)
-    zip = Zip::ImportStream(data)
-    file = zip.glob('project.json').first
-    project = Project.build(JSON.parse(file.get_input_stream.read))
-    toDo = zip.glob('*/survey.json')..map{|m| m.name.split('/')[0]}
-    toDo.each do |s|
-      project.surveys.build(Survey.import_zip(data, s + '/'))
-    end
-    project.save
-    return project
-  end
-
   #Collect all concept maps of this project
   #Parameter: -
   #Effect: -
@@ -40,6 +23,52 @@ class Project < ApplicationRecord
       return true if s.available
     end
     return false
+  end
+
+  #Import data from either a ZIP file in the same format that to_zip creates, or a JSON file
+  #Parameter:
+  # file: Path to a file
+  #Effect: The attributes of the project are modified, if data points to a valid JSON representation. If data points to a ZIP file, import_zip is called.
+  #Returns: true if the import succeeded, false if an error occurred
+  def import_file(file)
+    temp = file.path.split('.')
+    type = temp[temp.length-1].downcase
+    return from_json(File.read(file), "(Import) ") if type == "json"
+    return import_zip(file) if type == "zip"
+  end
+
+  #Set attributes from a JSON string
+  #Parameter:
+  # data: JSON data that represents a Project object
+  # name_prefix: A string that is prepended before the name taken from the JSON data
+  #Effect: The attributes of the project are modified.
+  #Returns: true if the update succeeded, false if an error occurred
+  def from_json(data, name_prefix)
+    vals = ActiveSupport::JSON.decode(data)
+    update_attributes(vals.slice("name", "description"))
+    self.name = name_prefix + self.name
+    return save
+  end
+
+  #Import data from a ZIP file in the same format that to_zip creates
+  #Parameter:
+  # file: Path to a ZIP file
+  #Effect: The attributes of the project are modified, if a project.json file is found. Surveys are imported into the project if present
+  #Returns: true if the import succeeded, false if an error occurred
+  def import_zip(file)
+    zip = Zip::File.open(file)
+    f = zip.glob('project.json').first
+    unless from_json(f.get_input_stream.read, "(Import) ")
+      return false
+    end
+    toDo = zip.glob('*/survey.json').map{|m| m.name.split('/')[0]}
+    toDo.each do |s|
+      t = self.surveys.build
+      unless t.import_zip(file, s + '/')
+        return false
+      end
+    end
+    return save
   end
 
   #Create a Zipfile of all maps of all surveys of this project. Also includes a JSON file with the project's attributes.

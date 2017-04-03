@@ -3,9 +3,8 @@ class ConceptMapsController < ApplicationController
   skip_before_action :check_login_frontend, except: [:edit]
   skip_before_action :check_login_backend, only: [:edit, :show]
   before_action :login_for_show, only: [:show]
-  before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
   before_action :set_user_project_survey, only: [:new, :create, :destroy, :index]
-
+  before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
 
   # GET /concept_maps/:page.js
 
@@ -51,6 +50,14 @@ class ConceptMapsController < ApplicationController
 
   # GET /concept_maps/new
   def new
+    respond_to do |format|
+      format.js {
+      }
+      format.zip {
+        @concept_map = ConceptMap.new
+        render 'import.js.erb', content_type: Mime::JS
+      }
+    end
   end
 
   # GET /concept_maps/1/edit
@@ -69,42 +76,55 @@ class ConceptMapsController < ApplicationController
 
   # POST /concept_maps
   def create
-    res = I18n.t('error')
-    if params[:type] == "simple"
-      count = params[:number].to_i || 0
-      res = I18n.t('concept_maps.create') + ":<br/>"
-      count.times do
-        cm = @survey.concept_maps.build
-        cm.save
-        res = res + cm.code + "<br/>"
-      end
-    else
-      if params[:type] == "email"
-        anonymous = params[:anonymized] == '1'
-        list = params[:email]
-        codes = []
-        list.split("\n").each do |email|
-          cm = @survey.concept_maps.build
-          cm.save
-          codes = codes + [[email, cm.code]]
-          ConceptMapMailer.created(email, cm.code, anonymous).deliver_later
-        end
-        res = I18n.t('concept_maps.create') + ":<br/>"
-        if (anonymous)
-          codes.map{|x| x[1]}.sort.each do |c|
-            res = res + c + "<br/>"
+    respond_to do |format|
+      format.js {
+        res = I18n.t('error')
+        if params[:type] == "simple"
+          count = params[:number].to_i || 0
+          res = I18n.t('concept_maps.create') + ":<br/>"
+          count.times do
+            cm = @survey.concept_maps.build
+            cm.save
+            res = res + cm.code + "<br/>"
           end
         else
-          res = res + "<table class='table table-condensed' style='width: auto'><tbody>"
-          codes.each do |c|
-            res = res + "<tr><td>" + c[1] + "</td><td>" + c[0] + "</td></tr>"
+          if params[:type] == "email"
+            anonymous = params[:anonymized] == '1'
+            list = params[:email]
+            codes = []
+            list.split("\n").each do |email|
+              cm = @survey.concept_maps.build
+              cm.save
+              codes = codes + [[email, cm.code]]
+              ConceptMapMailer.created(email, cm.code, anonymous).deliver_later
+            end
+            res = I18n.t('concept_maps.create') + ":<br/>"
+            if (anonymous)
+              codes.map{|x| x[1]}.sort.each do |c|
+                res = res + c + "<br/>"
+              end
+            else
+              res = res + "<table class='table table-condensed' style='width: auto'><tbody>"
+              codes.each do |c|
+                res = res + "<tr><td>" + c[1] + "</td><td>" + c[0] + "</td></tr>"
+              end
+              res = res + "</tbody></table>"
+            end
           end
-          res = res + "</tbody></table>"
         end
-      end
+        redirect_to user_project_survey_path(@user, @project, @survey), notice: res
+      }
+      format.html {
+        @concept_map = @survey.concept_maps.build
+        if params.has_key?(:concept_map) && !params[:concept_map][:file].nil? && @concept_map.import_file(params[:concept_map][:file].tempfile)
+          redirect_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), notice: I18n.t('concept_maps.imported')
+        else
+          redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('error_import')
+        end
+      }
     end
-    redirect_to user_project_survey_path(@user, @project, @survey), notice: res
-  end
+
+   end
 
   # DELETE /concept_maps/1
   def destroy

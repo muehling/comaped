@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <%= t('concept_maps.import') %>
+  </div>
+  <div class="panel-body">
+    <%= form_for([@user, @project, @survey, @concept_map], class: "form") do |f| %>
+        <div class="form-group <%= "has-error" unless @project.errors[:name].blank? %>">
+          <%= f.label t('file'), class: "control-label" %>
+          <%= f.file_field "file" %>
+        </div>
+        <div class="form-group">
+          <%= f.submit t('import'), :class => "btn btn-primary" %>
+          <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
+        </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+    function cancelForm() {
+      $('#new_maps').html("<%= escape_javascript render('new.html.erb') %>");
+    }
+</script>

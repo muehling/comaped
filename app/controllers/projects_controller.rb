@@ -37,6 +37,13 @@ class ProjectsController < ApplicationController
   # GET /projects/new.js
   def new
     @project = Project.new
+    respond_to do |format|
+      format.js {
+      }
+      format.zip {
+        render 'import.js.erb', content_type: Mime::JS
+      }
+    end
   end
 
   # GET /projects/1/edit.js
@@ -55,11 +62,11 @@ class ProjectsController < ApplicationController
         end
       }
       format.html {
-        @project = Project.import_zip(params[:file])
-        unless @project.nil?
+        @project = @user.projects.build
+        if params.has_key?(:project) && !params[:project][:file].nil? && @project.import_file(params[:project][:file].tempfile)
           redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')
         else
-          redirect_to user_projects_path(@user), notice: I18n.t('projects.imported_error')
+          redirect_to user_projects_path(@user), notice: I18n.t('error_import')
         end
       }
     end

@@ -1,12 +1,10 @@
-<% if @survey.code.blank? %>
 <div class="row">
-    <div class = "col-md-6">
-        <div id="new_maps">
-            <%= render 'concept_maps/new' %>
-        </div>
-    </div>
+  <div class = "col-md-6">
+      <div id="new_maps">
+          <%= render 'concept_maps/new' %>
+      </div>
+  </div>
 </div>
-<% end %>
 
 <div class="row">
   <%= render 'concept_maps/maps' %>

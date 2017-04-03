@@ -61,6 +61,8 @@ en:
   concept_maps:
     create: "Concept maps with the following codes have been created"
     delete: "Delete concept map"
+    import: "Import concept maps"
+    imported: "Concept maps imported"
     new: "Create concept maps"
     edit:
       help: "Show help"
@@ -83,7 +85,6 @@ en:
     edit: "Edit project"
     import: "Import project"
     imported: "Project imported"
-    imported_error: "Error occurred during import"
     new: "New project"
     show: "Open project"
     project:
@@ -105,6 +106,7 @@ en:
     delete: "Delete survey"
     destroyed: "Survey was deleted"
     edit: "Edit survey"
+    import: "Import survey"
     new: "New survey"
     show: "Show survey"
     form_detail:
@@ -125,6 +127,7 @@ en:
   edit: "Edit"
   email: "E-mail address"
   error: "An error occurred!"
+  error_import: "Error occurred during import"
   export: "Export"
   export.all: "All versions"
   export.current: "Current state"

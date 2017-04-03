@@ -1,5 +1,17 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <%= link_to raw("<span class='glyphicon glyphicon-plus'></span> ") + t('concept_maps.new'), new_user_project_survey_concept_map_path(@user, @project, @survey), remote: true %>
+<div class="row">
+  <div class = "col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <%= link_to raw("<span class='glyphicon glyphicon-plus'></span> ") + t('concept_maps.new'), new_user_project_survey_concept_map_path(@user, @project, @survey), remote: true %>
+      </div>
+    </div>
+  </div>
+  <div class = "col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <%= link_to raw("<span class='glyphicon glyphicon-import'></span> ") + t('concept_maps.import'), new_user_project_survey_concept_map_path(@user, @project, @survey, format: :zip), remote: true %>
+      </div>
+    </div>
   </div>
 </div>
+

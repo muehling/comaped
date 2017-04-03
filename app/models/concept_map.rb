@@ -28,17 +28,14 @@ class ConceptMap < ApplicationRecord
       save
     else
       unless survey.initial_map.blank?
-        import_tgf(survey.initial_map)
+        from_tgf(survey.initial_map)
       end
     end
 
-    if self.code.blank?
+    while (self.code.blank? || ConceptMap.where(code: self.code).exists? || Survey.where(code: self.code).exists?)
       self.code = ConceptMap.generate_slug
-      while (ConceptMap.where(code: self.code).exists? || Survey.where(code: self.code).exists?)
-        self.code = ConceptMap.generate_slug
-      end
-      save
     end
+    save
     reload
     versionize
   end
@@ -68,12 +65,50 @@ class ConceptMap < ApplicationRecord
     save
   end
 
+  #Import data from aeither a ZIP file in the same format that to_zip creates, or a JSON file
+  #Parameter:
+  # file: Path to a file
+  #Effect: The attributes of the survey are modified, if data points to a valid JSON representation. If data points to a ZIP file, import_zip is called.
+  #Returns: true if the import succeeded, false if an error occurred
+  def import_file(file)
+    save                 # ID ist notwendig für imports...
+    temp = file.path.split('.')
+    type = temp[temp.length-1].downcase
+    return from_json(File.read(file), 'I_') if type == "json"
+    return from_tgf(File.read(file)) if type == "tgf"
+    # TODO Verions?
+  end
+
+  #Imports concepts and associations based on a JSON representation of a concept map object
+  #Params:
+  # data: A JSON string
+  # code_prefix: A string that is prepended before the code taken from the JSON data
+  #Effect: The necessary concepts and associations are created, also the code is restored from the JSON data
+  #Returns: true if the import succeeded, false if an error occurred
+  def from_json(data, code_prefix)
+    vals = ActiveSupport::JSON.decode(data)
+    dict = Hash.new
+    self.code = codeprefix + vals["code"]
+    save
+    vals["concepts"].each do |c|
+      t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
+      t.save
+      t.reload
+      dict[c["id"]] = t
+    end
+    vals["links"].each do |l|
+      t = self.links.build(label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
+      t.save
+    end
+    return save
+  end
+
   #Imports concepts and associations based on a TGF string
   #Params:
   # data: A string in TGF format
   #Effect: The necessary concepts and associations are created
-  #Returns: -
-  def import_tgf(data)
+  #Returns: true if the import succeeded, false if an error occurred
+  def from_tgf(data)
     parts = data.split('#')
     if parts.nil?
       node_defs = data
@@ -104,28 +139,7 @@ class ConceptMap < ApplicationRecord
         end
       end
     end
-    save
-  end
-
-  #Imports concepts and associations based on a JSON representation of a concept map object
-  #Params:
-  # data: A JSON string
-  #Effect: The necessary concepts and associations are created
-  #Returns: -
-  def import_json(data)
-    vals = ActiveSupport::JSON.decode(data)
-    dict = Hash.new
-    vals["concepts"].each do |c|
-      t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
-      t.save
-      t.reload
-      dict[c["id"]] = t
-    end
-    vals["links"].each do |l|
-      t = self.links.build(label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
-      t.save
-    end
-    save
+    return save
   end
 
   #Creates a JSON representation of the map
@@ -133,7 +147,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: :id).to_json
+    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
   end
 
   #Creates a TGF representation of the map

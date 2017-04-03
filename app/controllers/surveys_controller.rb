@@ -39,6 +39,13 @@ class SurveysController < ApplicationController
   # GET /surveys/new.js
   def new
     @survey = Survey.new
+    respond_to do |format|
+      format.js {
+      }
+      format.zip {
+        render 'import.js.erb', content_type: Mime::JS
+      }
+    end
   end
 
   # GET /surveys/1/edit.js
@@ -47,14 +54,23 @@ class SurveysController < ApplicationController
 
   # POST /surveys
   def create
-    @survey = @project.surveys.build(survey_params)
-
     respond_to do |format|
-      if @survey.save
-        format.js { redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.created')}
-      else
-        format.js { render :new }
-      end
+      format.js {
+        @survey = @project.surveys.build(survey_params)
+        if @survey.save
+          redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.created')
+        else
+          render :new
+        end
+      }
+      format.html {
+        @survey = @project.surveys.build
+        if params.has_key?(:survey) && !params[:survey][:file].nil? && @survey.import_file(params[:survey][:file].tempfile)
+          redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.imported')
+        else
+          redirect_to user_project_path(@user, @project), notice: I18n.t('error_import')
+        end
+      }
     end
   end
 

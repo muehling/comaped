@@ -258,6 +258,8 @@ de:
   concept_maps:
     create: "Begriffsnetze mit den folgenden Codes wurden angelegt"
     delete: "Begriffsnetz löschen"
+    import: "Begriffsnetze importieren"
+    imported: "Begriffsnetze importiert"
     new: "Begriffsnetze erzeugen"
     edit:
       help: "Hilfe anzeigen"
@@ -280,7 +282,6 @@ de:
     edit: "Projekt bearbeiten"
     import: "Projekt importieren"
     imported: "Projekt importiert"
-    imported_error: "Fehler beim Importieren"
     new: "Neues Projekt"
     show: "Projekt öffnen"
     project:
@@ -302,6 +303,8 @@ de:
     delete: "Befragung löschen"
     destroyed: "Befragung gelöscht"
     edit: "Befragung bearbeiten"
+    import: "Befragung importieren"
+    imported: "Befragung importiert"
     new: "Neue Befragung"
     show: "Befragung anzeigen"
     form_detail:
@@ -322,6 +325,7 @@ de:
   edit: "Bearbeiten"
   email: "E-Mail Adresse"
   error: "Es ist ein Fehler aufgetreten!"
+  error_import: "Fehler beim Importieren"
   export: "Exportieren"
   export.all: "Alle Versionen"
   export.current: "Aktueller Stand"
