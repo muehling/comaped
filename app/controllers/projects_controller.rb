@@ -62,8 +62,14 @@ class ProjectsController < ApplicationController
         end
       }
       format.html {
-        @project = @user.projects.build
-        if params.has_key?(:project) && !params[:project][:file].nil? && @project.import_file(params[:project][:file].tempfile)
+        if params.has_key?(:project) && !params[:project][:file].nil?
+          res = true
+          params[:project][:file].each do |f|
+            @project = @user.projects.build
+            res = res && @project.import_file(f.tempfile)
+          end
+        end
+        if res
           redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')
         else
           redirect_to user_projects_path(@user), notice: I18n.t('error_import')

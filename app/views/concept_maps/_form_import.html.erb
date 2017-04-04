@@ -3,13 +3,13 @@
     <%= t('concept_maps.import') %>
   </div>
   <div class="panel-body">
-    <%= form_for([@user, @project, @survey, @concept_map], class: "form") do |f| %>
-        <div class="form-group <%= "has-error" unless @project.errors[:name].blank? %>">
+    <%= form_for([@user, @project, @survey, @concept_map], class: "form", multipart: true) do |f| %>
+        <div class="form-group">
           <%= f.label t('file'), class: "control-label" %>
-          <%= f.file_field "file" %>
+          <%= f.file_field "file", accept: '.tgf, .json, .zip', multiple: true, onchange: "$('#submit').removeClass('disabled');" %>
         </div>
         <div class="form-group">
-          <%= f.submit t('import'), :class => "btn btn-primary" %>
+          <%= f.submit t('import'), class: "btn btn-primary disabled", id: "submit" %>
           <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
         </div>
     <% end %>

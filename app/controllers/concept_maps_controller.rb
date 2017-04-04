@@ -115,8 +115,14 @@ class ConceptMapsController < ApplicationController
         redirect_to user_project_survey_path(@user, @project, @survey), notice: res
       }
       format.html {
-        @concept_map = @survey.concept_maps.build
-        if params.has_key?(:concept_map) && !params[:concept_map][:file].nil? && @concept_map.import_file(params[:concept_map][:file].tempfile)
+        if params.has_key?(:concept_map) && !params[:concept_map][:file].nil?
+          res = true
+          params[:concept_map][:file].each do |f|
+            @concept_map = @survey.concept_maps.build
+            res = res && @concept_map.import_file(f.tempfile, f.original_filename.split('.')[0])
+          end
+        end
+        if res
           redirect_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), notice: I18n.t('concept_maps.imported')
         else
           redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('error_import')

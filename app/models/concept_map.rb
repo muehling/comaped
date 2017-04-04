@@ -32,7 +32,7 @@ class ConceptMap < ApplicationRecord
       end
     end
 
-    while (self.code.blank? || ConceptMap.where(code: self.code).exists? || Survey.where(code: self.code).exists?)
+    while self.code.blank? || Survey.where(code: self.code).exists? || (!ConceptMap.find_by_code(self.code).nil? && ConceptMap.find_by_code(self.code) != self)
       self.code = ConceptMap.generate_slug
     end
     save
@@ -68,15 +68,17 @@ class ConceptMap < ApplicationRecord
   #Import data from aeither a ZIP file in the same format that to_zip creates, or a JSON file
   #Parameter:
   # file: Path to a file
+  # code: Will be used as an initial code for the map. May be overwritten if importing from JSON.
   #Effect: The attributes of the survey are modified, if data points to a valid JSON representation. If data points to a ZIP file, import_zip is called.
   #Returns: true if the import succeeded, false if an error occurred
-  def import_file(file)
-    save                 # ID ist notwendig für imports...
+  def import_file(file, code)
+    self.code = 'I_' + code
+    save
     temp = file.path.split('.')
     type = temp[temp.length-1].downcase
     return from_json(File.read(file), 'I_') if type == "json"
     return from_tgf(File.read(file)) if type == "tgf"
-    # TODO Verions?
+    # TODO Verions / ZIP
   end
 
   #Imports concepts and associations based on a JSON representation of a concept map object
@@ -88,7 +90,7 @@ class ConceptMap < ApplicationRecord
   def from_json(data, code_prefix)
     vals = ActiveSupport::JSON.decode(data)
     dict = Hash.new
-    self.code = codeprefix + vals["code"]
+    self.code = code_prefix + (vals["code"] || '')
     save
     vals["concepts"].each do |c|
       t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])

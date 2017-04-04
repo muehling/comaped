@@ -64,8 +64,14 @@ class SurveysController < ApplicationController
         end
       }
       format.html {
-        @survey = @project.surveys.build
-        if params.has_key?(:survey) && !params[:survey][:file].nil? && @survey.import_file(params[:survey][:file].tempfile)
+        if params.has_key?(:survey) && !params[:survey][:file].nil?
+          res = true
+          params[:survey][:file].each do |f|
+            @survey = @project.surveys.build
+            res = res && @survey.import_file(f.tempfile)
+          end
+        end
+        if res
           redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.imported')
         else
           redirect_to user_project_path(@user, @project), notice: I18n.t('error_import')
