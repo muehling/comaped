@@ -37,7 +37,7 @@ class ConceptMap < ApplicationRecord
     end
     save
     reload
-    versionize
+    versionize(DateTime.now)
   end
 
   #Retrieve a map by code or find an available survey and create a new map
@@ -56,11 +56,13 @@ class ConceptMap < ApplicationRecord
   end
 
   #Saves a version of the current state
-  #Params: -
+  #Params:
+  # date: Is stored as the versions create/modified date
   #Effect: Creates a new versions object that stores the current state
   #Returns: -
-  def versionize
+  def versionize(date)
     ver = self.versions.build(map: to_json)
+    ver.created_at = date
     ver.save
     save
   end
@@ -78,7 +80,7 @@ class ConceptMap < ApplicationRecord
     type = temp[temp.length-1].downcase
     return from_json(File.read(file), 'I_') if type == "json"
     return from_tgf(File.read(file)) if type == "tgf"
-    # TODO Verions / ZIP
+    return import_zip(file, '') if type == "zip"
   end
 
   #Imports concepts and associations based on a JSON representation of a concept map object
@@ -144,6 +146,39 @@ class ConceptMap < ApplicationRecord
     return save
   end
 
+  #Imports several versions of a concept map from a ZIP archive
+  #Params:
+  # file: Path to a ZIP file
+  # prefix: A path that will be used as a prefix when looking for data in the zip file. Used when importing concept maps from a project's or surveys's export. If non-empty, must end with '/''
+  #Effect: The necessary versions are created based upon the timestamp in the filename,
+  #Returns: true if the import of all versions succeeded, false if an error occurred
+  def import_zip(file, prefix)
+    zip = Zip::File.open(file)
+    toDo = zip.glob(prefix + '*.json') + zip.glob(prefix + '*.tgf')
+    res = true
+    pos = 0
+    toDo.sort.each do |c|
+      name = c.name.split('/')[-1]
+      name ||= c.name
+      type = name.split('.')[1]
+      if type == "json"
+        res = res && from_json(c.get_input_stream.read, 'I_')
+      end
+      if type == "tgf"
+        res = res && from_tgf(c.get_input_stream.read)
+      end
+      if pos < toDo.size-1
+        versionize(DateTime.parse(name.split('.')[0]))
+        concepts.clear
+        concepts.reload
+        links.clear
+        links.reload
+      end
+      pos = pos+1
+    end
+    return res
+  end
+
   #Creates a JSON representation of the map
   #Params: -
   #Effect: -
@@ -193,10 +228,10 @@ class ConceptMap < ApplicationRecord
   def write_stream(prefix, zip, tgf)
     self.versions.each do |v|
       if tgf
-        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
+        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M:%S") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
         zip.print v.to_tgf.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
       else
-        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
+        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M:%S") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
         zip.print v.map.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
       end
     end

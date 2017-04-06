@@ -7,7 +7,7 @@ class LinksController < ApplicationController
     @link = @map.links.build(label: link_params[:label], start_id: link_params[:start].to_i, end_id: link_params[:end].to_i)
     respond_to do |format|
       if @link.save
-        @map.versionize
+        @map.versionize(DateTime.now)
         format.js {}
       else
         format.js {head :ok}
@@ -19,7 +19,7 @@ class LinksController < ApplicationController
   def update
     respond_to do |format|
       if @link.update(link_params.permit(:label))
-        @map.versionize
+        @map.versionize(DateTime.now)
         format.js {}
       else
         format.js { head :ok }
@@ -30,7 +30,7 @@ class LinksController < ApplicationController
   # DELETE /concept_maps/1/links/1.js
   def destroy
     @link.destroy
-    @map.versionize
+    @map.versionize(DateTime.now)
     respond_to do |format|
       format.js {}
     end

@@ -58,7 +58,7 @@ class Project < ApplicationRecord
   def import_zip(file)
     zip = Zip::File.open(file)
     f = zip.glob('project.json').first
-    unless from_json(f.get_input_stream.read, "(Import) ")
+    if f.nil? || !from_json(f.get_input_stream.read, "(Import) ")
       return false
     end
     toDo = zip.glob('*/survey.json').map{|m| m.name.split('/')[0]}

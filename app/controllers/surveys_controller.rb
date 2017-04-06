@@ -72,9 +72,13 @@ class SurveysController < ApplicationController
           end
         end
         if res
-          redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.imported')
+          if params[:survey][:file].size == 1
+            redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.imported')
+          else
+            redirect_to user_project_surveys_path(@user, @project), notice: I18n.t('surveys.imported')
+          end
         else
-          redirect_to user_project_path(@user, @project), notice: I18n.t('error_import')
+          redirect_to user_project_surveys_path(@user, @project), notice: I18n.t('error_import')
         end
       }
     end

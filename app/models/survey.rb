@@ -49,33 +49,38 @@ class Survey < ApplicationRecord
   def import_zip(file, prefix)
     zip = Zip::File.open(file)
     f = zip.glob(prefix + 'survey.json').first
-    unless from_json(f.get_input_stream.read, "(Import) ")
+    if f.nil? || !from_json(f.get_input_stream.read, "(Import) ")
       return false
     end
 
-    toDo = zip.glob(prefix + '*.json')
-    toDo.each do |c|
-      name = c.name.split('/')[1]
-      name ||= c.name
+    files = zip.glob(prefix + '*.json') + zip.glob(prefix + '*.tgf')
+    zip = zip.glob(prefix + '*/*.json') + zip.glob(prefix + '*/*.tgf')
+
+    files.each do |f|
+      parts = f.name.split('/')
+      name = f.name
+      name = parts[-1] unless parts.nil?
       if name != "survey.json"
-        map = self.concept_maps.build
-        map.code = "I_" + name.split(".")[0]
-        map.save
-        map.from_json(c.get_input_stream.read)
+        if name.split('.')[1] == 'tgf'
+          map = self.concept_maps.build
+          map.code = "I_" + name.split('.')[0]
+          map.save
+          map.from_tgf(f.get_input_stream.read)
+        else
+          if name.split('.')[1] == 'json'
+            map = self.concept_maps.build
+            map.from_json(f.get_input_stream.read, 'I_')
+          end
+        end
       end
     end
 
-    toDo = zip.glob(prefix + '*.tgf')
-    toDo.each do |c|
-      name = c.name.split('/')[1]
-      name ||= c.name
+    zip.map{|f| f.name.split('/')[-2]}.uniq.each do |f|
       map = self.concept_maps.build
-      map.code = "I_" + name.split(".")[0]
+      map.code = "I_" + f
       map.save
-      map.from_tgf(c.get_input_stream.read)
+      map.import_zip(file, prefix + f + '/')
     end
-
-    #TODO Versions!
 
     return save
   end

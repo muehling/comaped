@@ -7,7 +7,7 @@ class ConceptsController < ApplicationController
     @concept = @map.concepts.build(concept_params)
     respond_to do |format|
       if @concept.save
-        @map.versionize
+        @map.versionize(DateTime.now)
         format.js {}
       else
         format.js {head :ok}
@@ -21,7 +21,7 @@ class ConceptsController < ApplicationController
       old = @concept.label
       if @concept.update(concept_params)
         unless concept_params[:label] == old
-          @map.versionize
+          @map.versionize(DateTime.now)
         end
         format.js { }
       else
@@ -33,7 +33,7 @@ class ConceptsController < ApplicationController
   # DELETE /concept_maps/1/concepts/1.js
   def destroy
     @concept.destroy
-    @map.versionize
+    @map.versionize(DateTime.now)
     respond_to do |format|
       format.js {}
     end

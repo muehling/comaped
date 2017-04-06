@@ -70,7 +70,11 @@ class ProjectsController < ApplicationController
           end
         end
         if res
-          redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')
+          if params[:project][:file].size == 1
+            redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')
+          else
+            redirect_to user_projects_path(@user), notice: I18n.t('projects.imported')
+          end
         else
           redirect_to user_projects_path(@user), notice: I18n.t('error_import')
         end

@@ -123,7 +123,11 @@ class ConceptMapsController < ApplicationController
           end
         end
         if res
-          redirect_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), notice: I18n.t('concept_maps.imported')
+          if params[:concept_map][:file].size == 1
+            redirect_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), notice: I18n.t('concept_maps.imported')
+          else
+            redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('concept_maps.imported')
+          end
         else
           redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('error_import')
         end
