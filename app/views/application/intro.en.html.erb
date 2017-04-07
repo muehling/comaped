@@ -1,1 +1,23 @@
-
+<div class="well">
+  <h3>What is a concept map?</h3>
+  <p>
+    A concept map is a way of organizing and visualizing knowledge.<br/>
+    It consists of a set of concepts (labels) and connections between them.<br/>
+    The connections also have (short) labels, often a verb maybe also a preposition.
+  </p>
+  <p>
+    To connected concepts are forming a "fact".<br/>
+    For example, the concepts "car" and "motor" could be connected with the label "has".<br/>
+    This would represent the fact that cars have motors.<br/>
+    A concept can also be connected to itself, but between two concepts there can only be one connection in a concept map.<br/>
+    Concepts can be arranged freely.<br/>
+    A concept map could look like this:
+  </p>
+  <p>
+    <%= image_tag('example_map_en.png', width: '50%', height: '50%') %>
+  </p>
+  <p>
+    You are now asked to create a concept map yourself.
+  </p>
+  <%= link_to 'Continue', edit_concept_map_path(@concept_map), :class => "btn btn-primary btn-medium" %>
+</div>
