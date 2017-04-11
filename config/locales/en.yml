@@ -67,8 +67,8 @@ en:
     edit:
       action_edit_link: "Edit or delete link"
       action_edit_node: "Edit or delete concept"
-      action_new_link: "Create new concept"
-      action_new_node: "Create new link"
+      action_new_link: "Create new link"
+      action_new_node: "Create new concept"
       code: "This concept map has the code"
       help: "Show help"
       mail: "Send as e-mail"
