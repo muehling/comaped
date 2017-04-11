@@ -1,4 +1,6 @@
 class LinksController < ApplicationController
+
+  skip_before_action :check_login_backend
   before_action :set_concept_map
   before_action :set_link, only: [:edit, :update, :destroy]
 

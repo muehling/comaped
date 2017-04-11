@@ -1,4 +1,6 @@
 class ConceptsController < ApplicationController
+
+  skip_before_action :check_login_backend
   before_action :set_concept_map
   before_action :set_concept, only: [:edit, :update, :destroy]
 

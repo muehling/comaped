@@ -280,7 +280,7 @@ de:
       submit: "Codes erzeugen"
     mails:
       created: 'Ein Begriffsnetz wurde für Sie in CoMapEd angelegt'
-      edited: 'CoMapEd: Code für Begrifffsnetz per E-Mail senden'
+      edited: 'CoMapEd: Code für Begriffsnetz per E-Mail senden'
   projects:
     created: "Projekt angelegt"
     delete: "Projekt löschen"
