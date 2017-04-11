@@ -66,7 +66,7 @@ Rails.application.configure do
   # Defaults to:
   config.action_mailer.sendmail_settings = {
      location: '/usr/sbin/sendmail',
-     arguments: '-i -f admin@comaped.de'
+     arguments: '-i -f comaped@informatik.uni-kiel.de'
   }
   config.action_mailer.perform_deliveries = true
 
