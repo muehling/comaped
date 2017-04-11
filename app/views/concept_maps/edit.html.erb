@@ -12,7 +12,8 @@
         <button type="submit" class="btn btn-default" onclick="$.ajax({url: '<%= concept_map_path(@concept_map, format: :text)%>' + '?email=' + $('#email').val()});return false;"><%= t('.send')%></button>
       </form>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to t('.help'), '', onclick: "$('#help').removeClass('hidden');return false;"%></li>
+        <li><%= link_to t('.info'), '', onclick: "$('#info').removeClass('hidden');return false;"%></li>
+        <li><%= link_to t('.help'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('export') %><span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -25,18 +26,28 @@
     </div>
 <% end %>
 
-<div id="help" class="well <% if @concept_map.accesses > 2 %> hidden <% end %>" style="background-color: #f8f8f8;">
-  <div class="row">
-    <%= render 'help' %>
-    <div class="col-md-1">
-      <p class="pull-right lead">
-        <a href="#"><span class='glyphicon glyphicon-remove' onclick="$('#help').addClass('hidden');return false;"></span></a>
-      </p>
-    </div>
+<% if @concept_map.accesses <= 2 && !@concept_map.survey.introduction.blank? %>
+  <div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <%= @concept_map.survey.introduction %>
   </div>
+<% end %>
+
+
+<div id="info" class="alert alert-info <% if @concept_map.accesses > 2 %> hidden <% end %>">
+  <button type="button" class="close" aria-label="Close" onclick="$('#info').addClass('hidden');return false;"><span aria-hidden="true">&times;</span></button>
+  <%= render 'info'%>
 </div>
 
-<div id="map" class="well" style="background-color: #f8f8f8; height: 100%"></div>
+<div id="context_help" class="alert alert-info">
+  <button type="button" class="close" aria-label="Close" onclick="$('#context_help').addClass('hidden');return false;"><span aria-hidden="true">&times;</span></button>
+  <p id="context_help_text">
+  </p>
+  <%= render 'context_help'%>
+</div>
+
+<div id="map" class="well" style="background-color: #f8f8f8; height: 100%">
+</div>
 
 <div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
   <div class="panel-body">
@@ -118,18 +129,27 @@
     };
 
     var network = new vis.Network(container, data, options);
+    $('#context_help_text').html($('#ch_normal').html());
 
     network.on("hoverNode", function (params) {
+      if (mode == none)
+        $('#context_help_text').html($('#ch_hovernode').html());
       network.canvas.body.container.style.cursor = 'pointer'
     });
     network.on("hoverEdge", function (params) {
+      if (mode == none)
+        $('#context_help_text').html($('#ch_hoveredge').html());
       network.canvas.body.container.style.cursor = 'pointer'
     });
 
     network.on("blurNode", function (params) {
+      if (mode == none)
+        $('#context_help_text').html($('#ch_normal').html());
       network.canvas.body.container.style.cursor = 'default'
     });
     network.on("blurEdge", function (params) {
+      if (mode == none)
+        $('#context_help_text').html($('#ch_normal').html());
       network.canvas.body.container.style.cursor = 'default'
     });
 
@@ -220,6 +240,7 @@
         if (params.nodes.length > 0) {
           id = params.nodes[0];
           mode = addEdge;
+          $('#context_help_text').html($('#ch_addedge').html());
         }
         else {
           <% if @concept_map.survey.concept_labels.blank? %>
@@ -340,15 +361,12 @@
     }
 
     function updateHelp() {
-      $('#help_general').addClass("hidden");
-      $('#help_edit').addClass("hidden");
-      $('#help_new').addClass("hidden");
       switch (mode) {
-        case none: $('#help_general').removeClass("hidden"); break;
+        case none: $('#context_help_text').html($('#ch_normal').html()); break;
         case editEdge:
-        case editNode: $('#help_edit').removeClass("hidden"); break;
+        case editNode: $('#context_help_text').html($('#ch_edit').html()); break;
         case addNode:
-        case addEdge: $('#help_new').removeClass("hidden"); break;
+        case addEdge: $('#context_help_text').html($('#ch_new').html()); break;
       }
     }
 </script>
