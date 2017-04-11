@@ -29,10 +29,6 @@ server 'levumi.informatik.uni-kiel.de', user: 'comaped', roles: %w{app db web}
 
 set :rails_env, :production
 
-namespace :deploy do
-  after :deploy, :'passenger:restart'
-end
-
 # Custom SSH Options
 # ==================
 # You may pass any option but keep in mind that net/ssh understands a
