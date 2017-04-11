@@ -1,0 +1,94 @@
+<div class="col-md-5">
+  <p>
+    You can add concepts and connections to the canvas<br>
+    On the right you can see how everything works
+  </p>
+  <p>
+    You can come back to this concept map using the code above.<br/>
+    Either write down the code or send yourself an e-mail above.<br/>
+    The system will not store the e-mail address!
+  </p>
+  <p>
+    There is no need to save. Every action will be saved automatically!<br/>
+    If you want to work on your concept map outside of CoMapEd or print it, <br/>
+    you can export it in two different formats.<br/>
+    You can open TGF files for example with the free program yEd.<br/>
+    You can close this help and come back to it later.
+  </p>
+</div>
+<div class="col-md-6">
+  <div id="help_general">
+    <table class="table table-condensed table-bordered">
+      <thead>
+      <td>Goal</td><td>Action</td>
+      </thead>
+      <tbody>
+      <% if @concept_map.survey.concept_labels.blank? %>
+          <tr>
+            <td>Create a new concept</td><td>Click and hold on the canvas</td>
+          </tr>
+      <% end %>
+      <% if @concept_map.survey.concept_labels.blank? %>
+          <tr>
+            <td>Edit or remove a concept/connection</td><td>Click on concept/connection</td>
+          </tr>
+      <% else %>
+          <tr>
+            <td>Edit or remove connection</td><td>Click on connection</td>
+          </tr>
+      <% end %>
+      <tr>
+        <td>Create a new connection</td><td>Click and hold on starting concept, then click on ending concept</td>
+      </tr>
+      <tr>
+        <td>Move concept</td><td>Click and drag</td>
+      </tr>
+      <tr>
+        <td>Pan and zoom</td><td>1) Click and drag on the canvas, scroll for zooming <br/> 2) Buttons on the lower part of the canvas</td>
+      </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <div id="help_edit" class="hidden">
+    <table class="table table-condensed table-bordered">
+      <thead>
+      <td>Goal</td><td>Action</td>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Change label</td><td><span class="glyphicon glyphicon-ok"></span> or Return</td>
+      </tr>
+      <tr>
+        <td>Remove <% if @concept_map.survey.concept_labels.blank? %>Concept/<% end %>Connection</td><td><span class="glyphicon glyphicon-trash"></span> (Caution: No undo!)</td>
+      </tr>
+      <tr>
+        <td>Cancel</td><td><span class="glyphicon glyphicon-remove"></span> or  Esc or click on canvas<br/></td>
+      </tr>
+      <tr><td>&nbsp;</td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="help_new" class="hidden">
+    <table class="table table-condensed table-bordered">
+      <thead>
+      <td>Goal</td><td>Action</td>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Set label</td><td><span class="glyphicon glyphicon-ok"></span> or Enter</td>
+      </tr>
+      <tr>
+        <td>Cancel</td><td><span class="glyphicon glyphicon-remove"></span> or  Esc or click on canvas<br/></td>
+      </tr>
+      <tr><td>&nbsp;</td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
