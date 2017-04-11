@@ -3,7 +3,18 @@ id: <%= concept.id %>,
 label: "<%= concept.label %>",
 x: <%= concept.x || 0 %>,
 y: <%= concept.y || 0 %>,
-shape:'ellipse',
-color: '#dff0d8',
-labelHighlightBold: false,
+shape: 'ellipse',
+borderWidth: 2,
+color: {
+  background: '#dff0d8',
+  border: '#dff0d8',
+  hover: {
+    background: '#cfe0c8',
+    border: '#cfe0c8'
+  },
+  highlight:{
+    background: '#dff0d8',
+    border: '#449d44'
+  }
+}
 }

@@ -5,5 +5,11 @@ to: <%= link.end.id  %>,
 label: "<%= link.label %>",
 font: {align: '<%= if link.start.id < link.end.id then 'bottom' else 'top' end%>'},
 labelHighlightBold: false,
-arrowStrikethrough: false
+arrowStrikethrough: false,
+color: {
+  color: '#a0a0a0',
+  hover: '#808080',
+  highlight:'#808080'
+},
+hoverWidth: 0.5
 }

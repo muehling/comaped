@@ -119,6 +119,20 @@
 
     var network = new vis.Network(container, data, options);
 
+    network.on("hoverNode", function (params) {
+      network.canvas.body.container.style.cursor = 'pointer'
+    });
+    network.on("hoverEdge", function (params) {
+      network.canvas.body.container.style.cursor = 'pointer'
+    });
+
+    network.on("blurNode", function (params) {
+      network.canvas.body.container.style.cursor = 'default'
+    });
+    network.on("blurEdge", function (params) {
+      network.canvas.body.container.style.cursor = 'default'
+    });
+
     //Drag: Knoten verschieben - Anfang
     network.on("dragStart", function (params) {
       if (params.nodes.length > 0) {
@@ -141,7 +155,7 @@
       }
     });
 
-    //Klick: Aktuelle Aktion abbrechen oder neue Kante erstellen - Ende
+    //Klick: Aktuelle Aktion abbrechen, Edit Node, Edit Edge, Add Node, Add Edge
     network.on("click", function (params) {
       switch (mode) {
         case editEdge:
@@ -153,8 +167,8 @@
           if (params.nodes.length > 0) {
             $('#start').val(id);
             $('#end').val(params.nodes[0]);
-            canvasX = params.pointer.canvas.x;
-            canvasY = params.pointer.canvas.y;
+            canvasX = Math.min(nodes.get(id).x, nodes.get(params.nodes[0]).x) + Math.abs(nodes.get(id).x - nodes.get(params.nodes[0]).x) / 2;
+            canvasY = Math.min(nodes.get(id).y, nodes.get(params.nodes[0]).y) + Math.abs(nodes.get(id).y - nodes.get(params.nodes[0]).y) / 2;
             edge = edges.get({
               filter: function (item) {
                 return (item.from == $('#start').val() && item.to == $('#end').val());
@@ -168,44 +182,54 @@
           }
           else
             hideForm();
+          break;
+        case none:
+          if (params.nodes.length > 0) {
+            id = params.nodes[0];
+            setTimeout(function() {
+            <% if @concept_map.survey.concept_labels.blank? %>
+              if (mode == none) {
+                canvasX = nodes.get(id).x;
+                canvasY = nodes.get(id).y;
+                mode = editNode;
+                showForm();
+              }
+            <% end %>
+            },
+                175);
+          }
+          else
+            if (params.edges.length > 0) {
+              id = params.edges[0];
+              setTimeout(function() {
+                if (mode == none) {
+                  canvasX = params.pointer.canvas.x;
+                  canvasY = params.pointer.canvas.y;
+                  mode = editEdge;
+                  showForm();
+                }
+              },
+                  175);
+            }
       }
     });
 
     //Hold: Neue Kante erstellen - Anfang
     network.on("hold", function (params) {
-      if (mode == none && params.nodes.length > 0) {
-        id = params.nodes[0];
-        mode = addEdge;
-      }
-    });
-
-    //Doppelklick => Edit Node / Edit Edge / Add Node
-    network.on("doubleClick", function (params) {
+      if (mode == none) {
         if (params.nodes.length > 0) {
+          id = params.nodes[0];
+          mode = addEdge;
+        }
+        else {
           <% if @concept_map.survey.concept_labels.blank? %>
-            id = params.nodes[0];
-            canvasX = nodes.get(id).x;
-            canvasY = nodes.get(id).y;
-            mode = editNode;
+            canvasX = params.pointer.canvas.x;
+            canvasY = params.pointer.canvas.y;
+            mode = addNode;
             showForm();
           <% end %>
         }
-        else
-          if (params.edges.length > 0) {
-            id = params.edges[0];
-            canvasX = params.pointer.canvas.x;
-            canvasY = params.pointer.canvas.y;
-            mode = editEdge;
-            showForm();
-          }
-          else {
-            <% if @concept_map.survey.concept_labels.blank? %>
-              canvasX = params.pointer.canvas.x;
-              canvasY = params.pointer.canvas.y;
-              mode = addNode;
-              showForm();
-            <% end %>
-          }
+      }
     });
 
     function destroy() {
