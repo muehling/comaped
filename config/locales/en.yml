@@ -52,7 +52,7 @@ en:
     frontend:
       code_not_found: "Code not found!"
       enter_code: "Please enter your code here"
-      goodbye: "Thank you for using CoMapEd!\nYou may return to your map using the code %{code} later on."
+      goodbye: "Thank you for using CoMapEd!<br/>You may return to your map using the code <b>%{code}</b> later on."
   layouts:
     backend:
       my_data: "My data"
@@ -65,7 +65,13 @@ en:
     imported: "Concept maps imported"
     new: "Create concept maps"
     edit:
+      action_edit_link: "Edit or delete link"
+      action_edit_node: "Edit or delete concept"
+      action_new_link: "Create new concept"
+      action_new_node: "Create new link"
+      code: "This concept map has the code"
       help: "Show help"
+      mail: "Send as e-mail"
       send: "Send"
     _form_email:
       anonymize: "Send anonymous codes"

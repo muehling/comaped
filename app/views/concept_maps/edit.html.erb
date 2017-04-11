@@ -3,31 +3,31 @@
       <div class="navbar-header">
         <p class="navbar-brand">CoMapEd</p>
       </div>
-      <ul class="nav navbar-nav navbar-left">
-        <ul class="nav navbar-nav navbar-left">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('export')%><span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
-              <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
-            </ul>
-          </li>
-        </ul>
-        <li><%= link_to t('.help'), '', onclick: "$('#help').removeClass('hidden');return false;"%></li>
-      </ul>
+      <p class = "navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
+      <p class = "navbar-text"><%= t('.mail')%>:</p>
+      <form class="navbar-form navbar-left">
+        <div class="form-group">
+          <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
+        </div>
+        <button type="submit" class="btn btn-default" onclick="$.ajax({url: '<%= concept_map_path(@concept_map, format: :text)%>' + '?email=' + $('#email').val()});return false;"><%= t('.send')%></button>
+      </form>
       <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to t('.help'), '', onclick: "$('#help').removeClass('hidden');return false;"%></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('export') %><span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
+            <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
+          </ul>
+        </li>
         <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
       </ul>
     </div>
 <% end %>
 
-<div id="help" class="well" style="background-color: #f8f8f8;">
+<div id="help" class="well <% if @concept_map.accesses > 2 %> hidden <% end %>" style="background-color: #f8f8f8;">
   <div class="row">
-    <div class="col-md-7">
-      <%= render 'help' %>
-    </div>
-    <div class="col-md-4">
-      <%= render 'mail_form' %>
+    <%= render 'help' %>
     <div class="col-md-1">
       <p class="pull-right lead">
         <a href="#"><span class='glyphicon glyphicon-remove' onclick="$('#help').addClass('hidden');return false;"></span></a>
@@ -40,6 +40,7 @@
 
 <div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
   <div class="panel-body">
+    <p><em id="action"></em></p>
     <form id="form" class="form-inline" method="post" data-remote="true">
       <div class="form-group">
         <% if @concept_map.survey.association_labels.blank? %>
@@ -140,14 +141,6 @@
       }
     });
 
-    //Hold: Neue Kante erstellen - Anfang
-    network.on("hold", function (params) {
-      if (mode == none && params.nodes.length > 0) {
-        id = params.nodes[0];
-        mode = addEdge;
-      }
-    });
-
     //Klick: Aktuelle Aktion abbrechen oder neue Kante erstellen - Ende
     network.on("click", function (params) {
       switch (mode) {
@@ -175,6 +168,14 @@
           }
           else
             hideForm();
+      }
+    });
+
+    //Hold: Neue Kante erstellen - Anfang
+    network.on("hold", function (params) {
+      if (mode == none && params.nodes.length > 0) {
+        id = params.nodes[0];
+        mode = addEdge;
       }
     });
 
@@ -225,6 +226,7 @@
       $("#panel").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
       switch (mode) {
             case addNode:
+              $('#action').html("<%= t('.action_new_node')%>");
               $("#entry_concept").val("");
               $("#entry_concept").removeClass("hidden");
               $("#entry_link").addClass("hidden");
@@ -236,6 +238,7 @@
               $("#entry_concept").focus();
               break;
             case editNode:
+              $('#action').html("<%= t('.action_edit_node')%>");
               $("#entry_concept").val(nodes.get(id).label);
               $("#entry_concept").removeClass("hidden");
               $("#entry_link").addClass("hidden");
@@ -247,6 +250,7 @@
               $("#entry_concept").focus();
               break;
             case editEdge:
+              $('#action').html("<%= t('.action_edit_link')%>");
               $("#entry_link").val(edges.get(id).label);
               $("#entry_link").removeClass("hidden");
               $("#entry_concept").addClass("hidden");
@@ -256,6 +260,7 @@
               $("#entry_link").focus();
               break;
             case addEdge:
+              $('#action').html("<%= t('.action_new_link')%>");
               $("#entry_link").val("");
               $("#entry_link").removeClass("hidden");
               $("#entry_concept").addClass("hidden");

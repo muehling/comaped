@@ -249,7 +249,7 @@ de:
     frontend:
       code_not_found: "Code nicht gefunden!"
       enter_code: "Bitte den Zugangscode eingeben"
-      goodbye: "Vielen Dank für die Benutzung von CoMapEd!\nSie können zu Ihrem Begriffsnetz mit dem Code %{code} zurückkehren."
+      goodbye: "Vielen Dank für die Benutzung von CoMapEd!<br/>Sie können zu Ihrem Begriffsnetz mit dem Code <b>%{code}</b> zurückkehren."
   layouts:
     backend:
       my_data: "Meine Daten"
@@ -262,7 +262,13 @@ de:
     imported: "Begriffsnetze importiert"
     new: "Begriffsnetze erzeugen"
     edit:
+      action_edit_link: "Verbindung bearbeiten/löschen"
+      action_edit_node: "Konzept bearbeiten/löschen"
+      action_new_link: "Neue Verbindung anlegen"
+      action_new_node: "Neues Konzept anlegen"
+      code: "Dieses Begriffsnetz hat den Code"
       help: "Hilfe anzeigen"
+      mail: "Als E-Mail schicken"
       send: "Absenden"
     _form_email:
       anonymize: "Codes anonym verschicken"
