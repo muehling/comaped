@@ -7,6 +7,7 @@ class ConceptMapMailer < ApplicationMailer
   end
 
   def edited(email, code)
+    @code = code
     mail(to: email, subject: I18n.t('concept_maps.mails.edited'))
   end
 
