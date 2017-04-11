@@ -5,7 +5,6 @@
 
 server 'levumi.informatik.uni-kiel.de', user: 'comaped', roles: %w{app db web}
 
-
 # role-based syntax
 # ==================
 
@@ -28,7 +27,11 @@ server 'levumi.informatik.uni-kiel.de', user: 'comaped', roles: %w{app db web}
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
 
+set :rails_env, :production
 
+namespace :deploy do
+  after :deploy, :'passenger:restart'
+end
 
 # Custom SSH Options
 # ==================
