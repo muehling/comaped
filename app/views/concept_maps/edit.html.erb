@@ -6,14 +6,19 @@
       <p class = "navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
       <p class = "navbar-text"><%= t('.mail')%>:</p>
       <form class="navbar-form navbar-left">
-        <div class="form-group">
+        <div id="emailgroup" class="form-group">
           <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
         </div>
-        <button type="submit" class="btn btn-default" onclick="$.ajax({url: '<%= concept_map_path(@concept_map, format: :text)%>' + '?email=' + $('#email').val()});return false;"><%= t('.send')%></button>
+        <button id="submit" type="submit" class="btn btn-default" onclick="sendMail();return false;"><%= t('.send')%></button>
       </form>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to t('.info'), '', onclick: "$('#info').removeClass('hidden');return false;"%></li>
-        <li><%= link_to t('.help'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.help') %><span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><%= link_to t('.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
+            <li><%= link_to t('.help_info'), '', onclick: "$('#info').removeClass('hidden');return false;"%></li>
+          </ul>
+        </li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('export') %><span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -39,7 +44,7 @@
   <%= render 'info'%>
 </div>
 
-<div id="context_help" class="alert alert-info">
+<div id="context_help" class="alert alert-info <% if @concept_map.accesses > 2 %> hidden <% end %>">
   <button type="button" class="close" aria-label="Close" onclick="$('#context_help').addClass('hidden');return false;"><span aria-hidden="true">&times;</span></button>
   <p id="context_help_text">
   </p>
@@ -266,11 +271,11 @@
     }
 
     function showForm() {
-      updateHelp();
       $("#panel").removeClass("hidden");
       $("#panel").attr("style", "position:absolute;left:" + ($("#map").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
       switch (mode) {
             case addNode:
+              $('#context_help_text').html($('#ch_new').html());
               $('#action').html("<%= t('.action_new_node')%>");
               $("#entry_concept").val("");
               $("#entry_concept").removeClass("hidden");
@@ -283,6 +288,7 @@
               $("#entry_concept").focus();
               break;
             case editNode:
+              $('#context_help_text').html($('#ch_edit').html());
               $('#action').html("<%= t('.action_edit_node')%>");
               $("#entry_concept").val(nodes.get(id).label);
               $("#entry_concept").removeClass("hidden");
@@ -295,6 +301,7 @@
               $("#entry_concept").focus();
               break;
             case editEdge:
+              $('#context_help_text').html($('#ch_edit').html());
               $('#action').html("<%= t('.action_edit_link')%>");
               $("#entry_link").val(edges.get(id).label);
               $("#entry_link").removeClass("hidden");
@@ -305,6 +312,7 @@
               $("#entry_link").focus();
               break;
             case addEdge:
+              $('#context_help_text').html($('#ch_new').html());
               $('#action').html("<%= t('.action_new_link')%>");
               $("#entry_link").val("");
               $("#entry_link").removeClass("hidden");
@@ -323,7 +331,7 @@
         $("#panel").focusout();
         network.unselectAll();
         mode = none;
-        updateHelp();
+        $('#context_help_text').html($('#ch_normal').html());
     }
 
     //Form bei ESC oder Enter schließen
@@ -360,13 +368,19 @@
 
     }
 
-    function updateHelp() {
-      switch (mode) {
-        case none: $('#context_help_text').html($('#ch_normal').html()); break;
-        case editEdge:
-        case editNode: $('#context_help_text').html($('#ch_edit').html()); break;
-        case addNode:
-        case addEdge: $('#context_help_text').html($('#ch_new').html()); break;
+    function sendMail() {
+      $('#emailgroup').removeClass('has-error');
+      $('#emailgroup').removeClass('has-success');
+      $('#submit').removeClass('btn-danger');
+      $('#submit').removeClass('btn-success');
+      if ($('#email').is(':valid') && $('#email').val() != '') {
+        $.ajax({url: '<%= concept_map_path(@concept_map, format: :text)%>' + '?email=' + $('#email').val()});
+        $('#submit').addClass('btn-success');
+        $('#emailgroup').addClass('has-success');
+      }
+      else {
+        $('#submit').addClass('btn-danger');
+        $('#emailgroup').addClass('has-error');
       }
     }
 </script>

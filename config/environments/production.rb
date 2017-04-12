@@ -66,11 +66,11 @@ Rails.application.configure do
   # Defaults to:
   config.action_mailer.sendmail_settings = {
      location: '/usr/sbin/sendmail',
-     arguments: '-i -f comaped@informatik.uni-kiel.de'
+     arguments: '-i -f noreply@comaped.de'
   }
   config.action_mailer.perform_deliveries = true
 
-  config.action_mailer.default_options = {from: 'admin@comaped.de'}
+  config.action_mailer.default_options = {from: 'noreply@comaped.de'}
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

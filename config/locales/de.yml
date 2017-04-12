@@ -267,8 +267,9 @@ de:
       action_new_link: "Neue Verbindung anlegen"
       action_new_node: "Neues Konzept anlegen"
       code: "Dieses Begriffsnetz hat den Code"
-      help: "Kurzhilfe anzeigen"
-      info: "Informationen anzeigen"
+      help: "Hilfe anzeigen"
+      help_info: "Informationen"
+      help_short: "Kurzhilfe"
       mail: "Als E-Mail schicken"
       send: "Absenden"
     _form_email:

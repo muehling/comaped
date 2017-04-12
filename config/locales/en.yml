@@ -70,8 +70,9 @@ en:
       action_new_link: "Create new link"
       action_new_node: "Create new concept"
       code: "This concept map has the code"
-      help: "Show quick help"
-      info: "Show information"
+      help: "Show help"
+      help_info: "Information"
+      help_short: "Quick help"
       mail: "Send as e-mail"
       send: "Send"
     _form_email:

@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'admin@comaped.de'
+  default from: 'noreply@comaped.de'
   layout 'mailer'
 end
