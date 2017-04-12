@@ -21,6 +21,6 @@
 .byebug_history
 
 #Ignore secrets
-/config/database.yaml
-/config/secrets.yaml
+/config/database.yml
+/config/secrets.yml
 
