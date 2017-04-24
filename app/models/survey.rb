@@ -49,12 +49,17 @@ class Survey < ApplicationRecord
   def import_zip(file, prefix)
     zip = Zip::File.open(file)
     f = zip.glob(prefix + 'survey.json').first
-    if f.nil? || !from_json(f.get_input_stream.read, "(Import) ")
+    if f.nil?
+      self.name = "(Import)"
+      if !self.save
+        return false
+      end
+    elsif !from_json(f.get_input_stream.read, "(Import) ")
       return false
     end
 
     files = zip.glob(prefix + '*.json') + zip.glob(prefix + '*.tgf')
-    zip = zip.glob(prefix + '*/*.json') + zip.glob(prefix + '*/*.tgf')
+    versions = zip.glob(prefix + '*/*.json') + zip.glob(prefix + '*/*.tgf')
 
     files.each do |f|
       parts = f.name.split('/')
@@ -75,7 +80,7 @@ class Survey < ApplicationRecord
       end
     end
 
-    zip.map{|f| f.name.split('/')[-2]}.uniq.each do |f|
+    versions.map{|f| f.name.split('/')[-2]}.uniq.each do |f|
       map = self.concept_maps.build
       map.code = "I_" + f
       map.save

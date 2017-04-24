@@ -77,9 +77,9 @@ class ConceptMap < ApplicationRecord
     self.code = 'I_' + code
     save
     temp = file.path.split('.')
-    type = temp[temp.length-1].downcase
-    return from_json(File.read(file), 'I_') if type == "json"
-    return from_tgf(File.read(file)) if type == "tgf"
+    type = temp[-1].downcase
+    return from_json(File.read(file).encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_'), 'I_') if type == "json"
+    return from_tgf(File.read(file).encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_')) if type == "tgf"
     return import_zip(file, '') if type == "zip"
   end
 
@@ -157,18 +157,20 @@ class ConceptMap < ApplicationRecord
     toDo = zip.glob(prefix + '*.json') + zip.glob(prefix + '*.tgf')
     res = true
     pos = 0
+    versions.clear
+    versions.reload
     toDo.sort.each do |c|
       name = c.name.split('/')[-1]
       name ||= c.name
-      type = name.split('.')[1]
+      type = name.split('.')[-1]
       if type == "json"
-        res = res && from_json(c.get_input_stream.read, 'I_')
+        res = res && from_json(c.get_input_stream.read.encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_'), 'I_')
       end
       if type == "tgf"
-        res = res && from_tgf(c.get_input_stream.read)
+        res = res && from_tgf(c.get_input_stream.read.encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_'))
       end
+      versionize(DateTime.parse(name.split('.')[0..-2].join(':')))
       if pos < toDo.size-1
-        versionize(DateTime.parse(name.split('.')[0]))
         concepts.clear
         concepts.reload
         links.clear
@@ -228,10 +230,10 @@ class ConceptMap < ApplicationRecord
   def write_stream(prefix, zip, tgf)
     self.versions.each do |v|
       if tgf
-        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M:%S") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
+        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
         zip.print v.to_tgf.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
       else
-        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H:%M:%S") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
+        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
         zip.print v.map.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
       end
     end
