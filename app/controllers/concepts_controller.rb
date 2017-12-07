@@ -6,7 +6,13 @@ class ConceptsController < ApplicationController
 
   # POST /concept_maps/1/concepts.js
   def create
-    @concept = @map.concepts.build(concept_params)
+    #builds a concept (has:)
+    # - label
+    # - a hash with:
+    #   - x-ccordinate
+    #   - y-coordinate
+    #   - color
+    @concept = @map.concept.build(label: concept_params[:label], data: {"x" => concept_params[:x], "y" => concept_params[:y], "color" => '#dff0d8'})
     respond_to do |format|
       if @concept.save
         @map.versionize(DateTime.now)
@@ -21,7 +27,9 @@ class ConceptsController < ApplicationController
   def update
     respond_to do |format|
       old = @concept.label
-      if @concept.update(concept_params)
+      #update concept and check if update succeed
+      #TODO: angucken ob Params noch besser (direkt als Hash) übergeben werden können
+      if @concept.update(label: concept_params[:label], data: {"x" => concept_params[:x], "y" => concept_params[:y]})
         unless concept_params[:label] == old
           @map.versionize(DateTime.now)
         end
@@ -59,7 +67,7 @@ class ConceptsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_params
-    params.fetch(:concept, {}).permit([:label, :x, :y])
+    params.fetch(:concept, {}).permit([:label, :x, :y, :color])
   end
 
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170222214240) do
+ActiveRecord::Schema.define(version: 20171207101337) do
 
   create_table "concept_maps", force: :cascade do |t|
     t.string   "code"
@@ -22,11 +22,10 @@ ActiveRecord::Schema.define(version: 20170222214240) do
 
   create_table "concepts", force: :cascade do |t|
     t.string   "label"
-    t.float    "x"
-    t.float    "y"
     t.integer  "concept_map_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.text     "data"
   end
 
   create_table "links", force: :cascade do |t|
