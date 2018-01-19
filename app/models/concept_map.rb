@@ -21,7 +21,7 @@ class ConceptMap < ApplicationRecord
       labels = survey.concept_labels.split(',')
       step = 2*Math::PI/labels.length
       count = 0
-      labels.uniq each do |c|
+      labels.uniq.each do |c|
         concepts.build(label: c.strip, x: (labels.length/5.0)*100*(Math.sin(count*step) + 1), y: (labels.length/5.0)*100*(Math.cos(count*step) + 1)).save
         count = count + 1
       end
