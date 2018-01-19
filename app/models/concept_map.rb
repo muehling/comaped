@@ -32,7 +32,7 @@ class ConceptMap < ApplicationRecord
       end
     end
 
-    while self.code.blank? || Survey.where(code: self.code).exists? || (!ConceptMap.find_by_code(self.code).nil? && ConceptMap.find_by_code(self.code) != self)
+    while self.code.nil? || self.code.blank? || Survey.where(code: self.code).exists? || (ConceptMap.where(code: self.code).exists? && ConceptMap.find_by_code(self.code) != self)
       self.code = ConceptMap.generate_slug
     end
     save
