@@ -8,7 +8,7 @@ class ConceptMap < ApplicationRecord
   has_many :versions, dependent: :destroy
 
   def self.generate_slug
-    Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
+    Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6].to_s
   end
 
   #Prepares a map using the information of the survey.
@@ -21,8 +21,8 @@ class ConceptMap < ApplicationRecord
       labels = survey.concept_labels.split(',')
       step = 2*Math::PI/labels.length
       count = 0
-      labels.each do |c|
-        concepts.build(label: c, x: (labels.length/5.0)*100*(Math.sin(count*step) + 1), y: (labels.length/5.0)*100*(Math.cos(count*step) + 1)).save
+      labels.uniq each do |c|
+        concepts.build(label: c.strip, x: (labels.length/5.0)*100*(Math.sin(count*step) + 1), y: (labels.length/5.0)*100*(Math.cos(count*step) + 1)).save
         count = count + 1
       end
       save
