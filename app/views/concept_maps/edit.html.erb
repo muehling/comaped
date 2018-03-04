@@ -73,22 +73,23 @@
       </div>
       <div class="form-group" >
         <div class="dropdown" style="display: inline-block">
-          <button id="currentColor" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="background-color: #dff0d8;color: black">Farbe
+          <div id="currentColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: #dff0d8;color: black">
+            Farbe
             <span class="caret"></span>
-          </button>
+          </div>
           <div class="dropdown-menu">
             <table>
               <tr>
-                <td style="padding-left: 5px;"><button id="color1" class="btn" style="width: 30px;height:30px;background-color: #dff0d8;" onclick="changeColor('color1')"></button></td>
-                <td style="padding-left: 5px;"><button id="color2" class="btn" style="width: 30px;height:30px;background-color: greenyellow" onclick="changeColor('color2')"></button></td>
-                <td style="padding-left: 5px;"><button id="color3" class="btn" style="width: 30px;height:30px;background-color: green" onclick="changeColor('color3')"></button></td>
-                <td style="padding-left: 5px;"><button id="color4" class="btn" style="width: 30px;height:30px;background-color: plum" onclick="changeColor('color4')"></button></td>
+                <td style="padding-left: 5px;"><div id="color1" class="btn" style="width: 30px;height:30px;background-color: #dff0d8;" onclick="changeColor('color1')"></div></td>
+                <td style="padding-left: 5px;"><div id="color2" class="btn" style="width: 30px;height:30px;background-color: greenyellow" onclick="changeColor('color2')"></div></td>
+                <td style="padding-left: 5px;"><div id="color3" class="btn" style="width: 30px;height:30px;background-color: green" onclick="changeColor('color3')"></div></td>
+                <td style="padding-left: 5px;"><div id="color4" class="btn" style="width: 30px;height:30px;background-color: plum" onclick="changeColor('color4')"></div></td>
               </tr>
               <tr>
-                <td style="padding-left:5px; padding-top: 2px"><button id="color5" class="btn" style="width: 30px;height:30px;background-color: yellow" onclick="changeColor('color5')"></button></td>
-                <td style="padding-left: 5px; padding-top: 2px"><button id="color6" class="btn" style="width: 30px;height:30px;background-color: orange" onclick="changeColor('color6')"></button></td>
-                <td style="padding-left: 5px; padding-top: 2px"><button id="color7" class="btn" style="width: 30px;height:30px;background-color: blue" onclick="changeColor('color7')"></button></td>
-                <td style="padding-left: 5px; padding-top: 2px"><button id="color8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue" onclick="changeColor('color8')"></button></td>
+                <td style="padding-left:5px; padding-top: 2px"><div id="color5" class="btn" style="width: 30px;height:30px;background-color: yellow" onclick="changeColor('color5')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="color6" class="btn" style="width: 30px;height:30px;background-color: orange" onclick="changeColor('color6')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="color7" class="btn" style="width: 30px;height:30px;background-color: blue" onclick="changeColor('color7')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="color8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue" onclick="changeColor('color8')"></div></td>
               </tr>
             </table>
           </div>
@@ -96,7 +97,6 @@
         <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
         <button class="btn btn-sm btn-default"onclick="hideForm();return false;"><span class="glyphicon glyphicon-remove"></span></button>
         <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
-
       </div>
     </form>
   </div>
@@ -420,6 +420,7 @@
         $('#currentColor').css('background-color', $('#'+colorID).css('background-color'));
         color = $('#currentColor').css('background-color');
         $("#color").attr("value", color);
+        return false;
 
     }
 
