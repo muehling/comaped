@@ -92,7 +92,7 @@ en:
     destroyed: "Project was deleted"
     edit: "Edit project"
     import: "Import project"
-    imported: "Project imported"
+    imported: "Project imported successfully"
     new: "New project"
     show: "Open project"
     project:
@@ -115,6 +115,7 @@ en:
     destroyed: "Survey was deleted"
     edit: "Edit survey"
     import: "Import survey"
+    imported: "Survey imported successfully"
     new: "New survey"
     show: "Show survey"
     form_detail:
