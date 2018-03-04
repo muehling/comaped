@@ -16,6 +16,7 @@ class ConceptMap < ApplicationRecord
   #        Otherwise, if a start map is given, the necessary concepts and links are created.
   #Returns: -
   def after_create
+    self.backgroundcolor ="#f8f8f8"
     self.accesses ||= 0
     unless survey.concept_labels.blank?
       labels = survey.concept_labels.split(',').map{|s| s.strip}.uniq
@@ -25,6 +26,7 @@ class ConceptMap < ApplicationRecord
         concepts.build(label: c, data:{"x"=> (labels.length/5.0)*100*(Math.sin(count*step) + 1), "y"=> (labels.length/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"}).save
         count = count + 1
       end
+
       save
     else
       unless survey.initial_map.blank?

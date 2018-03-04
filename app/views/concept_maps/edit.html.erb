@@ -13,6 +13,28 @@
       </form>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
+          <div id="currentBackgroundColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%=@concept_map.backgroundcolor%>;color: black">
+            Farbe
+            <span class="caret"></span>
+          </div>
+          <div class="dropdown-menu">
+            <table>
+              <tr>
+                <td style="padding-left: 5px;"><div id="backgroundcolor1" class="btn" style="width: 30px;height:30px;background-color: #f8f8f8; border: solid" onclick="changeBackgroundColor('backgroundcolor1')"></div></td>
+                <td style="padding-left: 5px;"><div id="backgroundcolor2" class="btn" style="width: 30px;height:30px;background-color: lavender;border: solid" onclick="changeBackgroundColor('backgroundcolor2')"></div></td>
+                <td style="padding-left: 5px;"><div id="backgroundcolor3" class="btn" style="width: 30px;height:30px;background-color: navajowhite;border: solid" onclick="changeBackgroundColor('backgroundcolor3')"></div></td>
+                <td style="padding-left: 5px;"><div id="backgroundcolor4" class="btn" style="width: 30px;height:30px;background-color: darkred;border: solid" onclick="changeBackgroundColor('backgroundcolor4')"></div></td>
+              </tr>
+              <tr>
+                <td style="padding-left:5px; padding-top: 2px"><div id="backgroundcolor5" class="btn" style="width: 30px;height:30px;background-color: azure;border: solid" onclick="changeBackgroundColor('backgroundcolor5')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="backgroundcolor6" class="btn" style="width: 30px;height:30px;background-color: lightpink;border: solid" onclick="changeBackgroundColor('backgroundcolor6')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="backgroundcolor7" class="btn" style="width: 30px;height:30px;background-color: mediumpurple;border: solid" onclick="changeBackgroundColor('backgroundcolor7')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="backgroundcolor8" class="btn" style="width: 30px;height:30px;background-color: olivedrab;border: solid" onclick="changeBackgroundColor('backgroundcolor8')"></div></td>
+              </tr>
+            </table>
+          </div>
+        </li>
+        <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.help') %><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><%= link_to t('.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
@@ -51,7 +73,7 @@
   <%= render 'context_help'%>
 </div>
 
-<div id="map" class="well" style="background-color: #f8f8f8; height: 100%">
+<div id="map" class="well" style="background-color: <%= @concept_map.backgroundcolor%>; height: 100%">
 </div>
 
 <div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
@@ -88,7 +110,7 @@
               <tr>
                 <td style="padding-left:5px; padding-top: 2px"><div id="color5" class="btn" style="width: 30px;height:30px;background-color: yellow" onclick="changeColor('color5')"></div></td>
                 <td style="padding-left: 5px; padding-top: 2px"><div id="color6" class="btn" style="width: 30px;height:30px;background-color: orange" onclick="changeColor('color6')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="color7" class="btn" style="width: 30px;height:30px;background-color: blue" onclick="changeColor('color7')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="color7" class="btn" style="width: 30px;height:30px;background-color: dodgerblue" onclick="changeColor('color7')"></div></td>
                 <td style="padding-left: 5px; padding-top: 2px"><div id="color8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue" onclick="changeColor('color8')"></div></td>
               </tr>
             </table>
@@ -109,6 +131,7 @@
     const addEdge = 3;
     const editEdge = 4;
     const dragNode = 5;
+    var oldColor = null;
 
     var mode = none;
     var canvasX = 0, canvasY = 0, id = 0, color=$('#currentColor').css('background-color');
@@ -240,8 +263,7 @@
                   canvasY = nodes.get(id).y;
                   mode = editNode;
                   $('#currentColor').css('background-color', nodes.get(id).color.background);
-                  color = $('#currentColor').css('background-color');
-                  $("#color").attr("value", color);
+                  oldColor = $('#currentColor').css('background-color');
                   showForm();
               }
             <% end %>
@@ -256,6 +278,8 @@
                   canvasX = params.pointer.canvas.x;
                   canvasY = params.pointer.canvas.y;
                   mode = editEdge;
+                    $('#currentColor').css('background-color', nodes.get(id).color.background);
+                    color = $('#currentColor').css('background-color');
                   showForm();
                 }
               },
@@ -386,15 +410,22 @@
           }
         });
 
-        if (node == null)
-            return true;
+        if (node == null){
+
+            return true;}
         else {
-          network.focus(node[0].id);
-          return false;
+            if(oldColor!=color){
+                hideForm();
+                return true;
+            }
+            else{
+                network.focus(node[0].id);
+                return false;
+            }
         }
       }
       else {
-        hideForm();
+          hideForm();
         return true;
       }
 
@@ -421,6 +452,18 @@
         color = $('#currentColor').css('background-color');
         $("#color").attr("value", color);
         return false;
+
+    }
+
+    function changeBackgroundColor(colorID) {
+        backgroundColor = $('#'+ colorID).css('background-color');
+        $('#map').css('background-color',backgroundColor);
+        $('#currentBackgroundColor').css('background-color',backgroundColor);
+        jQuery.ajax({
+            type: "PUT",
+            url: "<%= concept_map_path(@map) %>",
+            data: {"concept_map": {'backgroundcolor': backgroundColor}}
+        });
 
     }
 

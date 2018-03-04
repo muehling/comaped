@@ -1,7 +1,7 @@
 class ConceptMapsController < ApplicationController
 
   skip_before_action :check_login_frontend, except: [:edit]
-  skip_before_action :check_login_backend, only: [:edit, :show]
+  skip_before_action :check_login_backend, only: [:edit, :show, :update]
   before_action :login_for_show, only: [:show]
   before_action :set_user_project_survey, only: [:new, :create, :destroy, :index]
   before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
@@ -17,6 +17,12 @@ class ConceptMapsController < ApplicationController
           head :ok
         end
       }
+    end
+  end
+
+  def update
+      if @concept_map.update(concept_map_params)
+          @map.versionize(DateTime.now)
     end
   end
 
@@ -146,7 +152,14 @@ class ConceptMapsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
       @concept_map = ConceptMap.find(params[:id])
-      if @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
+      puts(@concept_map)
+      puts(params.inspect)
+      puts(!@concept_map.nil?)
+      puts(concept_map_params.has_key?(:backgroundcolor))
+      puts(@concept_map!=@map)
+      puts(@concept_map.survey.project.user!=@user)
+      if concept_map_params.has_key?(:backgroundcolor) && !@concept_map.nil?
+      elsif @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
       end
     end
@@ -175,5 +188,8 @@ class ConceptMapsController < ApplicationController
         check_login_frontend
     end
   end
-
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def concept_map_params
+    params.fetch(:concept_map, {}).permit(:backgroundcolor, :code, :acesses)
+  end
 end
