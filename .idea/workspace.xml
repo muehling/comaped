@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf9980ee-620a-4bfb-a911-2e4931052b98" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.generators" afterPath="$PROJECT_DIR$/.idea/.generators" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path=".idea/dataSources.local.xml" />
@@ -676,7 +675,7 @@
       <workItem from="1519292422765" duration="1525000" />
       <workItem from="1519294120924" duration="4547000" />
       <workItem from="1520165606562" duration="7979000" />
-      <workItem from="1520174428648" duration="1613000" />
+      <workItem from="1520174428648" duration="1673000" />
     </task>
     <task id="LOCAL-00001" summary="Farbe Hash">
       <created>1520165729775</created>
@@ -706,11 +705,18 @@
       <option name="project" value="LOCAL" />
       <updated>1520173528256</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="generators und workspace-Datei">
+      <created>1520176080559</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1520176080559</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="382059000" />
+    <option name="totallyTimeSpent" value="382119000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -783,7 +789,8 @@
     <MESSAGE value="Farbe Hash Teil2" />
     <MESSAGE value="Farbe Hash Teil3" />
     <MESSAGE value="Farbe in der Map ändern" />
-    <option name="LAST_COMMIT_MESSAGE" value="Farbe in der Map ändern" />
+    <MESSAGE value="generators und workspace-Datei" />
+    <option name="LAST_COMMIT_MESSAGE" value="generators und workspace-Datei" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
