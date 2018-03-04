@@ -264,6 +264,7 @@
                   mode = editNode;
                   $('#currentColor').css('background-color', nodes.get(id).color.background);
                   oldColor = $('#currentColor').css('background-color');
+                  color = $('#currentColor').css('background-color');
                   showForm();
               }
             <% end %>
@@ -280,6 +281,7 @@
                   mode = editEdge;
                     $('#currentColor').css('background-color', nodes.get(id).color.background);
                     color = $('#currentColor').css('background-color');
+                    $('#color').css('background-color', color);
                   showForm();
                 }
               },
@@ -410,18 +412,12 @@
           }
         });
 
-        if (node == null){
-
-            return true;}
+        if (node == null||oldColor!=color){
+            return true;
+        }
         else {
-            if(oldColor!=color){
-                hideForm();
-                return true;
-            }
-            else{
-                network.focus(node[0].id);
-                return false;
-            }
+            network.focus(node[0].id);
+            return false;
         }
       }
       else {
