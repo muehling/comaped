@@ -313,7 +313,8 @@
               $("#y").attr("value", canvasY);
               $("#color").attr("value", color);
               $("#entry_concept").focus();
-              break;
+              $("#currentColor").show();
+                break;
             case editNode:
               $('#context_help_text').html($('#ch_edit').html());
               $('#action').html("<%= t('.action_edit_node')%>");
@@ -327,7 +328,8 @@
               $("#y").attr("value", canvasY);
               $("#color").attr("value", color);
               $("#entry_concept").focus();
-              break;
+              $("#currentColor").show();
+                break;
             case editEdge:
               $('#context_help_text').html($('#ch_edit').html());
               $('#action').html("<%= t('.action_edit_link')%>");
@@ -338,13 +340,15 @@
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
               $("#form").attr('method', 'put');
               $("#entry_link").focus();
-              break;
+              $("#currentColor").hide();
+                break;
             case addEdge:
               $('#context_help_text').html($('#ch_new').html());
               $('#action').html("<%= t('.action_new_link')%>");
               $("#entry_link").val("");
               $("#entry_link").removeClass("hidden");
               $("#entry_concept").addClass("hidden");
+              $("#currentColor").hide();
               $("#delete").addClass("hidden");
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
               $("#form").attr('method', 'post');
