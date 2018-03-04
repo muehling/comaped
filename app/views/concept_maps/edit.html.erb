@@ -65,8 +65,9 @@
             <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
         <% end %>
         <input id="entry_concept" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
-        <input id="x" type="hidden" name="concept[x]"/>
-        <input id="y" type="hidden" name="concept[y]"/>
+        <input id="x" type="hidden" name="concept[data[x]]"/>
+        <input id="y" type="hidden" name="concept[data[y]]"/>
+        <input id="color" type="hidden" name="concept[data[color]]"/>
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
       </div>
@@ -88,8 +89,7 @@
     const dragNode = 5;
 
     var mode = none;
-    var canvasX = 0, canvasY = 0, id = 0;
-
+    var canvasX = 0, canvasY = 0, id = 0, color="#dff0d8";
     var nodes = new vis.DataSet([
         <% @concept_map.concepts.each do |c| %>
         <%= render c %>,
@@ -174,7 +174,7 @@
           jQuery.ajax({
             type: "PUT",
             url: "<%= concept_map_concepts_path(@map) %>/" + id + "/",
-            data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y}}
+            data: {"concept": {'label': nodes.get(id).label, 'data':{'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y, 'color':nodes.get(id).color.background}}}
           });
           hideForm();
       }
@@ -251,6 +251,7 @@
           <% if @concept_map.survey.concept_labels.blank? %>
             canvasX = params.pointer.canvas.x;
             canvasY = params.pointer.canvas.y;
+
             mode = addNode;
             showForm();
           <% end %>
@@ -285,6 +286,7 @@
               $("#form").attr('method', 'post');
               $("#x").attr("value", canvasX);
               $("#y").attr("value", canvasY);
+              $("#color").attr("value", color);
               $("#entry_concept").focus();
               break;
             case editNode:
@@ -298,6 +300,7 @@
               $("#form").attr('method', 'put');
               $("#x").attr("value", canvasX);
               $("#y").attr("value", canvasY);
+              $("#color").attr("value", color);
               $("#entry_concept").focus();
               break;
             case editEdge:

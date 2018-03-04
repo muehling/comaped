@@ -1,19 +1,19 @@
 {
 id: <%= concept.id %>,
 label: "<%= concept.label %>",
-x: <%= concept.x || 0 %>,
-y: <%= concept.y || 0 %>,
+x: <%= concept.data["x"] || 0 %>,
+y: <%= concept.data["y"] || 0 %>,
 shape: 'ellipse',
 borderWidth: 2,
 color: {
-  background: '#dff0d8',
-  border: '#dff0d8',
+  background: '<%= concept.data["color"]%>',
+  border: '<%= concept.data["color"]%>',
   hover: {
-    background: '#cfe0c8',
-    border: '#cfe0c8'
+    background: '<%= concept.data["color"]%>',
+    border: '<%= concept.data["color"]%>'
   },
   highlight:{
-    background: '#dff0d8',
+    background: '<%= concept.data["color"]%>',
     border: '#449d44'
   }
 }

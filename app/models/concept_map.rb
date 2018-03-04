@@ -22,7 +22,7 @@ class ConceptMap < ApplicationRecord
       step = 2*Math::PI/labels.length
       count = 0
       labels.each do |c|
-        concepts.build(label: c, x: (labels.length/5.0)*100*(Math.sin(count*step) + 1), y: (labels.length/5.0)*100*(Math.cos(count*step) + 1)).save
+        concepts.build(label: c, data:{"x"=> (labels.length/5.0)*100*(Math.sin(count*step) + 1), "y"=> (labels.length/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"}).save
         count = count + 1
       end
       save

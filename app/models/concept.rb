@@ -5,6 +5,13 @@ class Concept < ApplicationRecord
 
   validate :concept_present_and_unique
 
+  serialize :data, Hash           #Speichert Infos als Key/Value Paare. Feste Keys:
+                                  #-x: x-Koordinate
+                                  #-y: y-Koordinate
+                                  #-color: Farbe für das Konzept
+
+
+
   def concept_present_and_unique
     if label.blank?
       errors.add(:label, "Blank")
