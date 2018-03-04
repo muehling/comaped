@@ -71,10 +71,32 @@
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
       </div>
-      <div class="form-group">
+      <div class="form-group" >
+        <div class="dropdown" style="display: inline-block">
+          <button id="currentColor" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="background-color: #dff0d8;color: black">Farbe
+            <span class="caret"></span>
+          </button>
+          <div class="dropdown-menu">
+            <table>
+              <tr>
+                <td style="padding-left: 5px;"><button id="color1" class="btn" style="width: 30px;height:30px;background-color: #dff0d8;" onclick="changeColor('color1')"></button></td>
+                <td style="padding-left: 5px;"><button id="color2" class="btn" style="width: 30px;height:30px;background-color: greenyellow" onclick="changeColor('color2')"></button></td>
+                <td style="padding-left: 5px;"><button id="color3" class="btn" style="width: 30px;height:30px;background-color: green" onclick="changeColor('color3')"></button></td>
+                <td style="padding-left: 5px;"><button id="color4" class="btn" style="width: 30px;height:30px;background-color: plum" onclick="changeColor('color4')"></button></td>
+              </tr>
+              <tr>
+                <td style="padding-left:5px; padding-top: 2px"><button id="color5" class="btn" style="width: 30px;height:30px;background-color: yellow" onclick="changeColor('color5')"></button></td>
+                <td style="padding-left: 5px; padding-top: 2px"><button id="color6" class="btn" style="width: 30px;height:30px;background-color: orange" onclick="changeColor('color6')"></button></td>
+                <td style="padding-left: 5px; padding-top: 2px"><button id="color7" class="btn" style="width: 30px;height:30px;background-color: blue" onclick="changeColor('color7')"></button></td>
+                <td style="padding-left: 5px; padding-top: 2px"><button id="color8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue" onclick="changeColor('color8')"></button></td>
+              </tr>
+            </table>
+          </div>
+        </div>
         <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
         <button class="btn btn-sm btn-default"onclick="hideForm();return false;"><span class="glyphicon glyphicon-remove"></span></button>
         <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
+
       </div>
     </form>
   </div>
@@ -89,7 +111,7 @@
     const dragNode = 5;
 
     var mode = none;
-    var canvasX = 0, canvasY = 0, id = 0, color="#dff0d8";
+    var canvasX = 0, canvasY = 0, id = 0, color=$('#currentColor').css('background-color');
     var nodes = new vis.DataSet([
         <% @concept_map.concepts.each do |c| %>
         <%= render c %>,
@@ -214,10 +236,13 @@
             setTimeout(function() {
             <% if @concept_map.survey.concept_labels.blank? %>
               if (mode == none) {
-                canvasX = nodes.get(id).x;
-                canvasY = nodes.get(id).y;
-                mode = editNode;
-                showForm();
+                  canvasX = nodes.get(id).x;
+                  canvasY = nodes.get(id).y;
+                  mode = editNode;
+                  $('#currentColor').css('background-color', nodes.get(id).color.background);
+                  color = $('#currentColor').css('background-color');
+                  $("#color").attr("value", color);
+                  showForm();
               }
             <% end %>
             },
@@ -386,4 +411,13 @@
         $('#emailgroup').addClass('has-error');
       }
     }
+
+    function changeColor(colorID) {
+        $('#currentColor').css('background-color', $('#'+colorID).css('background-color'));
+        color = $('#currentColor').css('background-color');
+        $("#color").attr("value", color);
+
+    }
+
+
 </script>
