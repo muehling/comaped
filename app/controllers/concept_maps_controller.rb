@@ -22,7 +22,6 @@ class ConceptMapsController < ApplicationController
 
   def update
       if @concept_map.update(concept_map_params)
-          @map.versionize(DateTime.now)
     end
   end
 
@@ -152,13 +151,7 @@ class ConceptMapsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
       @concept_map = ConceptMap.find(params[:id])
-      puts(@concept_map)
-      puts(params.inspect)
-      puts(!@concept_map.nil?)
-      puts(concept_map_params.has_key?(:backgroundcolor))
-      puts(@concept_map!=@map)
-      puts(@concept_map.survey.project.user!=@user)
-      if concept_map_params.has_key?(:backgroundcolor) && !@concept_map.nil?
+      if concept_map_params.has_key?(:data)&&concept_map_params[:data].has_key?(:background_color) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
       elsif @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
       end
@@ -190,6 +183,6 @@ class ConceptMapsController < ApplicationController
   end
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_map_params
-    params.fetch(:concept_map, {}).permit(:backgroundcolor, :code, :acesses)
+    params.fetch(:concept_map, {}).permit(:data=>[:background_color])
   end
 end

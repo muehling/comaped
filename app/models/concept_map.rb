@@ -7,6 +7,10 @@ class ConceptMap < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
 
+  serialize :data, Hash           #Speichert Infos als Key/Value Paare. Feste Keys:
+                                  #-background_color: Hintergrundfarbe einer Map
+
+
   def self.generate_slug
     Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6].to_s
   end
@@ -16,7 +20,7 @@ class ConceptMap < ApplicationRecord
   #        Otherwise, if a start map is given, the necessary concepts and links are created.
   #Returns: -
   def after_create
-    self.backgroundcolor ="#f8f8f8"
+    self.data["background_color"] ="#f8f8f8"
     self.accesses ||= 0
     unless survey.concept_labels.blank?
       labels = survey.concept_labels.split(',').map{|s| s.strip}.uniq

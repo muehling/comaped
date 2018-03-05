@@ -6,15 +6,31 @@ y: <%= concept.data["y"] || 0 %>,
 shape: 'ellipse',
 borderWidth: 2,
 color: {
-  background: '<%= concept.data["color"]%>',
-  border: '<%= concept.data["color"]%>',
-  hover: {
+<%if @user.nil?%>
+    background: '<%= concept.data["color"]%>',
+    border: '<%= concept.data["color"]%>',
+    hover: {
     background: '<%= concept.data["color"]%>',
     border: '<%= concept.data["color"]%>'
-  },
-  highlight:{
+    },
+    highlight:{
     background: '<%= concept.data["color"]%>',
+    border: '#449d44',
+    borderWidth: 20
+    }
+    }
+<%else%>
+    background: '#dff0d8',
+    border: '#dff0d8',
+    hover: {
+    background: '#cfe0c8',
+    border: '#cfe0c8'
+    },
+    highlight:{
+    background: '#dff0d8',
     border: '#449d44'
-  }
-}
+    }
+    }
+<%end%>
+
 }
