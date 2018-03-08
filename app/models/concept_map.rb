@@ -101,7 +101,7 @@ class ConceptMap < ApplicationRecord
     self.code = code_prefix + (vals["code"] || '')
     save
     vals["concepts"].each do |c|
-      t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
+      t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
       t.save
       t.reload
       dict[c["id"]] = t
@@ -134,7 +134,7 @@ class ConceptMap < ApplicationRecord
       node_defs.each_line do |line|
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
-          c = concepts.build(label: l[1].strip, x: (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), y: (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1))
+          c = concepts.build(label: l[1].strip, data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
           c.save
           dict[l[0]] = c
           count = count + 1

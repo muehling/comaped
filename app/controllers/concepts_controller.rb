@@ -60,10 +60,10 @@ class ConceptsController < ApplicationController
   private
 
   def set_concepts
-    if(params.has_key?(:id))
-      @concepts = [Concept.find(params[:id])]
-    else
+    if(params[:concepts].has_key?(:concepts_data))
       @concepts = Concept.find(params[:concepts][:concepts_data].keys)
+    else
+      @concepts = [Concept.find(params[:id])]
     end
     unless !@concepts.nil?&&@concepts.pluck(:concept_map_id).uniq.first == @concept_map.id&&@concepts.pluck(:concept_map_id).uniq.size==1
       redirect_to '/'
@@ -79,7 +79,7 @@ class ConceptsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_params
-    params.fetch(:concepts, {}).permit(:label, :data=>[:x, :y, :color], concepts_data:[:label, data:[:x,:y,:color]])
+    params.fetch(:concepts, {}).permit(concepts_data:[:label, data:[:x,:y,:color]])
   end
 
 end

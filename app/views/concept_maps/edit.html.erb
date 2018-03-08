@@ -253,8 +253,8 @@
         switch (mode) {
             case dragNode:
                 concepts_data = {};
-                newX = params.pointer.canvas.x
-                newY = params.pointer.canvas.y
+                newX = params.pointer.canvas.x;
+                newY = params.pointer.canvas.y;
 
                 nodesArray.forEach(function (element) {
                     concepts_data[element] = {'label': nodes.get(element).label, 'data':{'x': (nodes.get(element).x -(oldX-newX)), 'y': (nodes.get(element).y -(oldY-newY)), 'color':nodes.get(element).color.background}};
@@ -263,7 +263,7 @@
                 });
                 jQuery.ajax({
                     type: "PUT",
-                    url: "<%= concept_map_concepts_path(@map) %>",
+                    url: "<%= concept_map_concepts_path(@map) %>/" + "-1" + "/",
                     data: {"concepts": {"concepts_data":concepts_data}}
                 });
                 hideForm();
@@ -567,7 +567,7 @@
         });
         jQuery.ajax({
             type: "PUT",
-            url: "<%= concept_map_concepts_path(@map) %>",
+            url: "<%= concept_map_concepts_path(@map) %>/" + "-1" + "/",
             data: {"concepts": {"concepts_data":concepts_data}}
         });
         nodesArray =[];
@@ -576,6 +576,5 @@
         $('#context_help_text').html($('#ch_normal').html());
     }
 
-    alert("Was machen mit Zeile 300+301? Kann Andreas darauf verzichten?")
 
 </script>

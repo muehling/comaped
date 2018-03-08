@@ -11,7 +11,6 @@ class Concept < ApplicationRecord
                                   #-color: Farbe für das Konzept
 
 
-
   def concept_present_and_unique
     if label.blank?
       errors.add(:label, "Blank")
