@@ -1,1 +1,3 @@
-nodes.update(<%= render @concept%>);
+<%@concepts.each do |c|%>
+nodes.update(<%= render c%>);
+<%end%>

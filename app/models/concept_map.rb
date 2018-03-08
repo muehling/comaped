@@ -192,7 +192,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
+    as_json(include: {concepts: {only: [:id, :label, :data]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
   end
 
   #Creates a TGF representation of the map

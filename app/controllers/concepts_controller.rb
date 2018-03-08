@@ -2,7 +2,7 @@ class ConceptsController < ApplicationController
 
   skip_before_action :check_login_backend
   before_action :set_concept_map
-  before_action :set_concept, only: [:edit, :update, :destroy]
+  before_action :set_concepts, only: [:edit, :update, :destroy]
 
   # POST /concept_maps/1/concepts.js
   def create
@@ -20,20 +20,36 @@ class ConceptsController < ApplicationController
   # PATCH/PUT /concept_maps/1/concepts/1.js
   def update
     respond_to do |format|
-      old = @concept.label
-      if @concept.update(concept_params)
-        unless concept_params[:label] == old
-          @map.versionize(DateTime.now)
+      @concepts.each do |c|
+        old = c.label
+        if(concept_params.has_key?(:data))
+          if c.update(concept_params)
+            @concept = c
+            unless concept_params[:label] == old
+              @map.versionize(DateTime.now)
+            end
+            format.js { }
+          else
+            format.js { head :ok }
+          end
+        else
+          if c.update(concept_params[:concepts_data][c.id.to_s])
+            @concept = c
+            unless concept_params[:concepts_data][c.id.to_s][:label] == old
+              @map.versionize(DateTime.now)
+            end
+            format.js { }
+          else
+            format.js { head :ok }
+          end
         end
-        format.js { }
-      else
-        format.js { head :ok }
       end
     end
   end
 
   # DELETE /concept_maps/1/concepts/1.js
   def destroy
+    @concept = @concepts.first
     @concept.destroy
     @map.versionize(DateTime.now)
     respond_to do |format|
@@ -43,9 +59,13 @@ class ConceptsController < ApplicationController
 
   private
 
-  def set_concept
-    @concept = Concept.find(params[:id])
-    unless !@concept.nil? && @concept.concept_map == @concept_map
+  def set_concepts
+    if(params.has_key?(:id))
+      @concepts = [Concept.find(params[:id])]
+    else
+      @concepts = Concept.find(params[:concepts][:concepts_data].keys)
+    end
+    unless !@concepts.nil?&&@concepts.pluck(:concept_map_id).uniq.first == @concept_map.id&&@concepts.pluck(:concept_map_id).uniq.size==1
       redirect_to '/'
     end
   end
@@ -59,7 +79,7 @@ class ConceptsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_params
-    params.fetch(:concept, {}).permit([:label, :x, :y, :data=>[:x, :y, :color]])
+    params.fetch(:concepts, {}).permit(:label, :data=>[:x, :y, :color], concepts_data:[:label, data:[:x,:y,:color]])
   end
 
 end

@@ -12,9 +12,31 @@
         <button id="submit" type="submit" class="btn btn-default" onclick="sendMail();return false;"><%= t('.send')%></button>
       </form>
       <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown" style="margin-right: 10px">
+          <div id="currentButtonColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: #dff0d8;color: black">
+            Buttonfarbe
+            <span class="caret"></span>
+          </div>
+          <div class="dropdown-menu">
+            <table>
+              <tr>
+                <td style="padding-left: 5px;"><div id="buttoncolor1" class="btn" style="width: 30px;height:30px;background-color: #dff0d8;" onclick="multiButtonColor('buttoncolor1')"></div></td>
+                <td style="padding-left: 5px;"><div id="buttoncolor2" class="btn" style="width: 30px;height:30px;background-color: greenyellow;" onclick="multiButtonColor('buttoncolor2')"></div></td>
+                <td style="padding-left: 5px;"><div id="buttoncolor3" class="btn" style="width: 30px;height:30px;background-color: green;" onclick="multiButtonColor('buttoncolor3')"></div></td>
+                <td style="padding-left: 5px;"><div id="buttoncolor4" class="btn" style="width: 30px;height:30px;background-color: plum;" onclick="multiButtonColor('buttoncolor4')"></div></td>
+              </tr>
+              <tr>
+                <td style="padding-left:5px; padding-top: 2px"><div id="buttoncolor5" class="btn" style="width: 30px;height:30px;background-color: yellow;" onclick="multiButtonColor('buttoncolor5')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="buttoncolor6" class="btn" style="width: 30px;height:30px;background-color: orange;" onclick="multiButtonColor('buttoncolor6')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="buttoncolor7" class="btn" style="width: 30px;height:30px;background-color: dodgerblue;" onclick="multiButtonColor('buttoncolor7')"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="buttoncolor8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue;" onclick="multiButtonColor('buttoncolor8')"></div></td>
+              </tr>
+            </table>
+          </div>
+        </li>
         <li class="dropdown">
           <div id="currentBackgroundColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%=@concept_map.data['background_color']%>;color: black">
-            Farbe
+            Hintergrundfarbe
             <span class="caret"></span>
           </div>
           <div class="dropdown-menu">
@@ -90,10 +112,10 @@
         <% else %>
             <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
         <% end %>
-        <input id="entry_concept" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
-        <input id="x" type="hidden" name="concept[data[x]]"/>
-        <input id="y" type="hidden" name="concept[data[y]]"/>
-        <input id="color" type="hidden" name="concept[data[color]]"/>
+        <input id="entry_concept" class="form-control" name="concepts[label]" placeholder="<%= t :name %>" type="text" />
+        <input id="x" type="hidden" name="concepts[data[x]]"/>
+        <input id="y" type="hidden" name="concepts[data[y]]"/>
+        <input id="color" type="hidden" name="concepts[data[color]]"/>
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
       </div>
@@ -136,6 +158,11 @@
     const editEdge = 4;
     const dragNode = 5;
     var oldColor = null;
+    var oldX = 0;
+    var oldY = 0;
+    var toggle = false;
+    var nodesArray = [];
+    var edge = [];
 
     var mode = none;
     var canvasX = 0, canvasY = 0, id = 0, color=$('#currentColor').css('background-color');
@@ -179,6 +206,7 @@
             navigationButtons: true,
             selectConnectedEdges: false,
             hoverConnectedEdges: false,
+            multiselect: true
         }
     };
 
@@ -209,25 +237,42 @@
 
     //Drag: Knoten verschieben - Anfang
     network.on("dragStart", function (params) {
-      if (params.nodes.length > 0) {
+      if(params.nodes.length > 0) {
         id = params.nodes[0];
         mode = dragNode;
+        oldX = params.pointer.canvas.x;
+        oldY = params.pointer.canvas.y;
       }
     });
 
     //Drag: Knoten verschieben - Ende
     network.on("dragEnd", function (params) {
-      switch (mode) {
-        case dragNode:
-          nodes.update({id: id, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y});
-          jQuery.ajax({
-            type: "PUT",
-            url: "<%= concept_map_concepts_path(@map) %>/" + id + "/",
-            data: {"concept": {'label': nodes.get(id).label, 'data':{'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y, 'color':nodes.get(id).color.background}}}
-          });
-          hideForm();
-      }
+        nodesArray=params.nodes;
+
+
+        switch (mode) {
+            case dragNode:
+                concepts_data = {};
+                newX = params.pointer.canvas.x
+                newY = params.pointer.canvas.y
+
+                nodesArray.forEach(function (element) {
+                    concepts_data[element] = {'label': nodes.get(element).label, 'data':{'x': (nodes.get(element).x -(oldX-newX)), 'y': (nodes.get(element).y -(oldY-newY)), 'color':nodes.get(element).color.background}};
+                    nodes.update({id: element, 'x': (nodes.get(element).x -(oldX-newX)), 'y': (nodes.get(element).y -(oldY-newY))});
+
+                });
+                jQuery.ajax({
+                    type: "PUT",
+                    url: "<%= concept_map_concepts_path(@map) %>",
+                    data: {"concepts": {"concepts_data":concepts_data}}
+                });
+                hideForm();
+        }
     });
+
+    x: -1358.875
+    y: -384.5
+
 
     //Klick: Aktuelle Aktion abbrechen, Edit Node, Edit Edge, Add Node, Add Edge
     network.on("click", function (params) {
@@ -238,58 +283,74 @@
           hideForm();
           break;
         case addEdge:
-          if (params.nodes.length > 0) {
-            $('#start').val(id);
-            $('#end').val(params.nodes[0]);
-            canvasX = Math.min(nodes.get(id).x, nodes.get(params.nodes[0]).x) + Math.abs(nodes.get(id).x - nodes.get(params.nodes[0]).x) / 2;
-            canvasY = Math.min(nodes.get(id).y, nodes.get(params.nodes[0]).y) + Math.abs(nodes.get(id).y - nodes.get(params.nodes[0]).y) / 2;
-            edge = edges.get({
-              filter: function (item) {
-                return (item.from == $('#start').val() && item.to == $('#end').val());
-              }
-            }, {returnType: 'Array'});
-            if (edge.length > 0) {
-              id = edge[0].id;
-              mode = editEdge;
+            if(toggle){
+                nodesArray = params.nodes;
             }
-            showForm();
-          }
-          else
-            hideForm();
-          break;
-        case none:
-          if (params.nodes.length > 0) {
-            id = params.nodes[0];
-            setTimeout(function() {
-            <% if @concept_map.survey.concept_labels.blank? %>
-              if (mode == none) {
-                  canvasX = nodes.get(id).x;
-                  canvasY = nodes.get(id).y;
-                  mode = editNode;
-                  $('#currentColor').css('background-color', nodes.get(id).color.background);
-                  oldColor = $('#currentColor').css('background-color');
-                  color = $('#currentColor').css('background-color');
-                  showForm();
-              }
-            <% end %>
-            },
-                175);
-          }
-          else
-            if (params.edges.length > 0) {
-              id = params.edges[0];
-              setTimeout(function() {
-                if (mode == none) {
-                  canvasX = params.pointer.canvas.x;
-                  canvasY = params.pointer.canvas.y;
-                  mode = editEdge;
-                    $('#currentColor').css('background-color', nodes.get(id).color.background);
-                    color = $('#currentColor').css('background-color');
-                    $('#color').css('background-color', color);
-                  showForm();
+            else{
+                if (params.nodes.length > 0) {
+                    $('#start').val(id);
+                    if(id == params.nodes[0]){
+                        $('#end').val(params.nodes[1]);
+                    }
+                    else{
+                        $('#end').val(params.nodes[0]);
+                    }
+
+
+                    canvasX = Math.min(nodes.get(id).x, nodes.get(params.nodes[0]).x) + Math.abs(nodes.get(id).x - nodes.get(params.nodes[0]).x) / 2;
+                    canvasY = Math.min(nodes.get(id).y, nodes.get(params.nodes[0]).y) + Math.abs(nodes.get(id).y - nodes.get(params.nodes[0]).y) / 2;
+                    edge = edges.get({
+                        filter: function (item) {
+                            return (item.from == $('#start').val() && item.to == $('#end').val());
+                        }
+                    }, {returnType: 'Array'});
+                    if (edge.length > 0) {
+                        id = edge[0].id;
+                        mode = editEdge;
+
+                    }
+                    showForm();
                 }
-              },
-                  175);
+                else
+                    hideForm();
+            }
+            break;
+        case none:
+            if(toggle){
+                nodesArray = params.nodes;
+            }
+            else{
+                if (params.nodes.length > 0) {
+                    id = params.nodes[0];
+                    setTimeout(function() {
+                            <% if @concept_map.survey.concept_labels.blank? %>
+                            if (mode == none) {
+                                canvasX = nodes.get(id).x;
+                                canvasY = nodes.get(id).y;
+                                mode = editNode;
+                                $('#currentColor').css('background-color', nodes.get(id).color.background);
+                                oldColor = $('#currentColor').css('background-color');
+                                color = $('#currentColor').css('background-color');
+                                showForm();
+                            }
+                            <% end %>
+                        },
+                        175);
+                }
+                else
+                if (params.edges.length > 0) {
+                    id = params.edges[0];
+
+                    setTimeout(function() {
+                            if (mode == none) {
+                                canvasX = params.pointer.canvas.x;
+                                canvasY = params.pointer.canvas.y;
+                                mode = editEdge;
+                                showForm();
+                            }
+                        },
+                        175);
+                }
             }
       }
     });
@@ -299,6 +360,7 @@
       if (mode == none) {
         if (params.nodes.length > 0) {
           id = params.nodes[0];
+          nodesArray = params.nodes;
           mode = addEdge;
           $('#context_help_text').html($('#ch_addedge').html());
         }
@@ -306,12 +368,23 @@
           <% if @concept_map.survey.concept_labels.blank? %>
             canvasX = params.pointer.canvas.x;
             canvasY = params.pointer.canvas.y;
-
             mode = addNode;
             showForm();
           <% end %>
         }
       }
+      else if(mode==addEdge){
+          $("#panel").addClass("hidden");
+          $("#panel").focusout();
+          nodesArray = params.nodes;
+      }
+      else if (edge.length > 0) {
+            mode = none;
+          $("#panel").addClass("hidden");
+          $("#panel").focusout();
+          nodesArray = params.nodes;
+
+        }
     });
 
     function destroy() {
@@ -396,6 +469,7 @@
         $('#context_help_text').html($('#ch_normal').html());
     }
 
+
     //Form bei ESC oder Enter schließen
     $("#entry_concept").on('keyup', function (e) {
       if (e.keyCode == 27)
@@ -404,6 +478,21 @@
     $("#entry_link").on('keyup', function (e) {
       if (e.keyCode == 27)
         hideForm();
+    });
+
+
+    $(window).on('keydown', function (e) {
+        if(e.keyCode==17){
+            toggle = true;
+        }
+
+    });
+
+    $(window).on('keyup',function (e) {
+        if(e.keyCode==17){
+            toggle=false;
+        }
+
     });
 
     function validateForm() {
@@ -468,5 +557,25 @@
 
     }
 
+    function multiButtonColor(colorID) {
+        $('#currentButtonColor').css('background-color', $('#'+colorID).css('background-color'));
+        color = $('#currentButtonColor').css('background-color');
+        concepts_data = {};
+        nodesArray.forEach(function (element) {
+            concepts_data[element] = {'label': nodes.get(element).label, 'data':{'x': nodes.get(element).x, 'y': nodes.get(element).y, 'color':color}};
+
+        });
+        jQuery.ajax({
+            type: "PUT",
+            url: "<%= concept_map_concepts_path(@map) %>",
+            data: {"concepts": {"concepts_data":concepts_data}}
+        });
+        nodesArray =[];
+        network.unselectAll();
+        mode = none;
+        $('#context_help_text').html($('#ch_normal').html());
+    }
+
+    alert("Was machen mit Zeile 300+301? Kann Andreas darauf verzichten?")
 
 </script>
