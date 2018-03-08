@@ -112,10 +112,10 @@
         <% else %>
             <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
         <% end %>
-        <input id="entry_concept" class="form-control" name="concepts[label]" placeholder="<%= t :name %>" type="text" />
-        <input id="x" type="hidden" name="concepts[data[x]]"/>
-        <input id="y" type="hidden" name="concepts[data[y]]"/>
-        <input id="color" type="hidden" name="concepts[data[color]]"/>
+        <input id="entry_concept" class="form-control" name="concepts[concepts_data[label]]" placeholder="<%= t :name %>" type="text" />
+        <input id="x" type="hidden" name="concepts[concepts_data[data[x]]]"/>
+        <input id="y" type="hidden" name="concepts[concepts_data[data[y]]]"/>
+        <input id="color" type="hidden" name="concepts[concepts_data[data[color]]]"/>
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
       </div>
@@ -369,6 +369,7 @@
             canvasX = params.pointer.canvas.x;
             canvasY = params.pointer.canvas.y;
             mode = addNode;
+
             showForm();
           <% end %>
         }
@@ -414,6 +415,7 @@
               $("#form").attr('method', 'post');
               $("#x").attr("value", canvasX);
               $("#y").attr("value", canvasY);
+              color = $('#currentColor').css('background-color');
               $("#color").attr("value", color);
               $("#entry_concept").focus();
               $("#currentColor").show();

@@ -6,7 +6,7 @@ class ConceptsController < ApplicationController
 
   # POST /concept_maps/1/concepts.js
   def create
-    @concept = @map.concepts.build(concept_params)
+    @concept = @map.concepts.build(concept_params[:concepts_data])
     respond_to do |format|
       if @concept.save
         @map.versionize(DateTime.now)
@@ -22,8 +22,11 @@ class ConceptsController < ApplicationController
     respond_to do |format|
       @concepts.each do |c|
         old = c.label
-        if(concept_params.has_key?(:data))
-          if c.update(concept_params)
+        puts(concept_params.has_key?(:id))
+        puts(concept_params[:id]!="-1")
+        if(params.has_key?(:id)&&params[:id]!="-1")
+          puts("fghjklö")
+          if c.update(concept_params[:concepts_data])
             @concept = c
             unless concept_params[:label] == old
               @map.versionize(DateTime.now)
@@ -60,7 +63,7 @@ class ConceptsController < ApplicationController
   private
 
   def set_concepts
-    if(params[:concepts].has_key?(:concepts_data))
+    if(params[:concepts].has_key?(:concepts_data)&& (params[:id]=="-1"||params[:id].nil?))
       @concepts = Concept.find(params[:concepts][:concepts_data].keys)
     else
       @concepts = [Concept.find(params[:id])]
