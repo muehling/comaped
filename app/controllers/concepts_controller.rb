@@ -25,7 +25,6 @@ class ConceptsController < ApplicationController
         puts(concept_params.has_key?(:id))
         puts(concept_params[:id]!="-1")
         if(params.has_key?(:id)&&params[:id]!="-1")
-          puts("fghjklö")
           if c.update(concept_params[:concepts_data])
             @concept = c
             unless concept_params[:label] == old

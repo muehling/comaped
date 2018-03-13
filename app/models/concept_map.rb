@@ -100,8 +100,13 @@ class ConceptMap < ApplicationRecord
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
     save
+
     vals["concepts"].each do |c|
-      t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+      if(!c["color"].nil?)
+        t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+      else
+        t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+      end
       t.save
       t.reload
       dict[c["id"]] = t
@@ -192,7 +197,26 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :data]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
+    res = ""
+    res = res + '{"id":' + self.id.to_s + ',"code":"' +self.code.to_s + '","concepts":['
+    self.concepts.each_with_index do |concept,i|
+      nextConcept = self.concepts[i+1]
+      if(nextConcept.nil?)
+        res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"' + concept.data["color"].to_s + '"}'
+      else
+        res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"' + concept.data["color"].to_s + '"},'
+      end
+    end
+    res = res + '],"links":['
+    self.links.each_with_index do |link, i|
+      nextLink = self.links[i+1]
+      if(nextLink.nil?)
+        res = res +'{"id":' + link.id.to_s + ',"start_id":' + link.start_id.to_s + ',"end_id":' + link.end_id.to_s + ',"label":"' + link.label + '"}'
+      else
+        res = res +'{"id":' + link.id.to_s + ',"start_id":' + link.start_id.to_s + ',"end_id":' + link.end_id.to_s + ',"label":"' + link.label + '"},'
+      end
+    end
+    res = res + "]}"
   end
 
   #Creates a TGF representation of the map

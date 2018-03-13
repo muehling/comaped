@@ -19,4 +19,8 @@ class Concept < ApplicationRecord
       errors.add(:label, "Unique")
     end
   end
+
+  def to_json
+    return "hallo"
+  end
 end
