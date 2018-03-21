@@ -1,80 +1,270 @@
+<style>
+  p.sidebar {
+    color: #fff;
+    font-size: 14px;
+    margin-left: 32px;
+    margin-right: 15px;
+  }
+
+  a.menu {
+    font-size: 18px;
+    text-decoration: none;
+  }
+
+  .sidenav {
+    height: 100%;
+    width: 0px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #1b809e;
+    opacity: 1;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+  }
+
+  .sidenav .closebtn:hover {
+    color: #C2E1FF;
+  }
+
+  .sidenav .closebtn {
+    position: absolute;
+    text-decoration: none;
+    top: 0;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    display: block;
+  }
+
+  button.colorShades {
+    width: 25px;
+    height: 25px;
+    border-color: #fff;
+    pointer-events: none;
+  }
+
+  .export {
+    width: 150px;
+    box-shadow: 2px 2px #778899;
+  }
+
+  li.color {
+    padding-bottom:5px;
+  }
+
+  input.color {
+    width: 115px;
+    height: 22px;
+    border-color: #fff;
+    border-radius:5px;
+    margin-left: 10px;
+    text-align: center;
+    box-shadow: 1px 1px #778899;
+  }
+
+  td.colorSelection {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  td.colorSelection2 {
+    padding-left: 5px;
+    padding-top: 2px;
+  }
+
+  div.col {
+    width: 25px;
+    height:25px;
+    border: 1px solid white;
+  }
+
+  div.col2 {
+    width: 25px;
+    height:25px;
+    border: 1px solid white;
+  }
+
+  .accordion {
+    background-color: #1b809e;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px 8px 8px 32px;
+    width: 100%;
+    border: 1px solid #1e8dae;
+    text-align: left;
+    outline: none;
+    font-size: 20px;
+    font-weight: bold;
+    transition: 0.4s;
+  }
+
+  .active, .accordion:hover {
+    background-color: #1e8dae;
+  }
+
+  .accordion:after {
+    content: '\002B';
+    color: #fff;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+  }
+
+  .active:after {
+    content: "\2212";
+  }
+
+  .panel2 {
+    padding: 0px;
+    background-color: #1b809e;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    border: none;
+  }
+
+</style>
+
+<!------------------------ Navigation bar ------------------------>
 <% content_for :header do %>
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <p class="navbar-brand">CoMapEd</p>
-      </div>
-      <p class = "navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
-      <p class = "navbar-text"><%= t('.mail')%>:</p>
-      <form class="navbar-form navbar-left">
-        <div id="emailgroup" class="form-group">
-          <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
-        </div>
-        <button id="submit" type="submit" class="btn btn-default" onclick="sendMail();return false;"><%= t('.send')%></button>
-      </form>
+    <div id="navbar" class="container-fluid">
+
+      <!-- Left Side -->
+      <a id="menuSymbol" class="navbar-brand menu" href="#" title="Menu" onclick="openNav();return false;">&#9776;</a>
+      <div class="navbar-header"><p class="navbar-brand">CoMapEd</p></div>
+      <p class = "navbar-text"><%= t('.code')%>: <b ><%= @concept_map.code%></b></p>
+
+      <!-- Right Side -->
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown" style="margin-right: 10px">
-          <div id="currentButtonColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: #dff0d8;color: black">
-            Buttonfarbe
-            <span class="caret"></span>
-          </div>
-          <div class="dropdown-menu">
-            <table>
-              <tr>
-                <td style="padding-left: 5px;"><div id="buttoncolor1" class="btn" style="width: 30px;height:30px;background-color: #dff0d8;" onclick="multiButtonColor('buttoncolor1')"></div></td>
-                <td style="padding-left: 5px;"><div id="buttoncolor2" class="btn" style="width: 30px;height:30px;background-color: greenyellow;" onclick="multiButtonColor('buttoncolor2')"></div></td>
-                <td style="padding-left: 5px;"><div id="buttoncolor3" class="btn" style="width: 30px;height:30px;background-color: green;" onclick="multiButtonColor('buttoncolor3')"></div></td>
-                <td style="padding-left: 5px;"><div id="buttoncolor4" class="btn" style="width: 30px;height:30px;background-color: plum;" onclick="multiButtonColor('buttoncolor4')"></div></td>
-              </tr>
-              <tr>
-                <td style="padding-left:5px; padding-top: 2px"><div id="buttoncolor5" class="btn" style="width: 30px;height:30px;background-color: yellow;" onclick="multiButtonColor('buttoncolor5')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="buttoncolor6" class="btn" style="width: 30px;height:30px;background-color: orange;" onclick="multiButtonColor('buttoncolor6')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="buttoncolor7" class="btn" style="width: 30px;height:30px;background-color: dodgerblue;" onclick="multiButtonColor('buttoncolor7')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="buttoncolor8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue;" onclick="multiButtonColor('buttoncolor8')"></div></td>
-              </tr>
-            </table>
-          </div>
-        </li>
         <li class="dropdown">
-          <div id="currentBackgroundColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%=@concept_map.data['background_color']%>;color: black">
-            Hintergrundfarbe
-            <span class="caret"></span>
-          </div>
-          <div class="dropdown-menu">
-            <table>
-              <tr>
-                <td style="padding-left: 5px;"><div id="backgroundcolor1" class="btn" style="width: 30px;height:30px;background-color: #f8f8f8; border: solid" onclick="changeBackgroundColor('backgroundcolor1')"></div></td>
-                <td style="padding-left: 5px;"><div id="backgroundcolor2" class="btn" style="width: 30px;height:30px;background-color: lavender;border: solid" onclick="changeBackgroundColor('backgroundcolor2')"></div></td>
-                <td style="padding-left: 5px;"><div id="backgroundcolor3" class="btn" style="width: 30px;height:30px;background-color: navajowhite;border: solid" onclick="changeBackgroundColor('backgroundcolor3')"></div></td>
-                <td style="padding-left: 5px;"><div id="backgroundcolor4" class="btn" style="width: 30px;height:30px;background-color: darkred;border: solid" onclick="changeBackgroundColor('backgroundcolor4')"></div></td>
-              </tr>
-              <tr>
-                <td style="padding-left:5px; padding-top: 2px"><div id="backgroundcolor5" class="btn" style="width: 30px;height:30px;background-color: azure;border: solid" onclick="changeBackgroundColor('backgroundcolor5')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="backgroundcolor6" class="btn" style="width: 30px;height:30px;background-color: lightpink;border: solid" onclick="changeBackgroundColor('backgroundcolor6')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="backgroundcolor7" class="btn" style="width: 30px;height:30px;background-color: lightyellow;border: solid" onclick="changeBackgroundColor('backgroundcolor7')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="backgroundcolor8" class="btn" style="width: 30px;height:30px;background-color: olivedrab;border: solid" onclick="changeBackgroundColor('backgroundcolor8')"></div></td>
-              </tr>
-            </table>
-          </div>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.help') %><span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-question-sign" style="font-size: 20px;"></span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><%= link_to t('.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
             <li><%= link_to t('.help_info'), '', onclick: "$('#info').removeClass('hidden');return false;"%></li>
           </ul>
         </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('export') %><span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
-            <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
-          </ul>
-        </li>
-        <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
+        <li><a class="menu" title="Logout" href="<%= logout_path(target: 'frontend')%>"><span class="glyphicon glyphicon-off"></span></a></li>
       </ul>
     </div>
 <% end %>
 
+<!------------------------ Sidebar menu with accordion sections ------------------------>
+<div id="menu" class="sidenav">
+  <a href="#" class="closebtn" onclick="closeNav();return false;">&times;</a>
+
+  <!-- Auto layout -->
+  <button class="accordion"><%=t('autolayout')%></button>
+  <div class="panel2">
+    <p class="sidebar"><%=t('autolayout_text')%></p><br/>
+    <button id="apply" type="button" class="btn btn-default" style="width: 150px;display:inline-block;margin-left: 40px;box-shadow: 2px 2px #778899;" onclick=""><%= t('apply')%></button>
+    <br>&nbsp;
+    <br>&nbsp;
+  </div>
+
+  <!-- Color Scheme -->
+  <button class="accordion"><%=t('color_scheme') %></button>
+  <div class="panel2">
+    <p class="sidebar"><%=t('color_scheme_text')%></p>
+    <br/>
+    <ul style="list-style: none;">
+      <li class="dropdown">
+        <div id="currentButtonColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: #dff0d8;color: black;width: 150px;box-shadow: 2px 2px #778899;"> <%=t('color_concept')%> <span class="caret"></span></div>
+        <div class="dropdown-menu" style="background-color: #1e8dae;min-width:150px;">
+          <table>
+            <tr>
+              <td class="colorSelection"><div id="buttoncolor1" class="btn col" style="background-color: #dff0d8;" onclick="multiButtonColor('buttoncolor1');return false;"></div></td>
+              <td class="colorSelection"><div id="buttoncolor2" class="btn col" style="background-color: greenyellow;" onclick="multiButtonColor('buttoncolor2');return false;"></div></td>
+              <td class="colorSelection"><div id="buttoncolor3" class="btn col" style="background-color: green;" onclick="multiButtonColor('buttoncolor3');return false;"></div></td>
+              <td class="colorSelection"><div id="buttoncolor4" class="btn col" style="background-color: plum;" onclick="multiButtonColor('buttoncolor4');return false;"></div></td>
+            </tr>
+            <tr>
+              <td class="colorSelection2"><div id="buttoncolor5" class="btn col" style="background-color: yellow;" onclick="multiButtonColor('buttoncolor5');return false;"></div></td>
+              <td class="colorSelection2"><div id="buttoncolor6" class="btn col" style="background-color: orange;" onclick="multiButtonColor('buttoncolor6');return false;"></div></td>
+              <td class="colorSelection2"><div id="buttoncolor7" class="btn col" style="background-color: dodgerblue;" onclick="multiButtonColor('buttoncolor7');return false;"></div></td>
+              <td class="colorSelection2"><div id="buttoncolor8" class="btn col" style="background-color: deepskyblue;" onclick="multiButtonColor('buttoncolor8');return false;"></div></td>
+            </tr>
+          </table>
+        </div>
+      </li>
+      <br/>
+      <li class="dropdown">
+        <div id="currentBackgroundColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%=@concept_map.data['background_color']%>;color: black;width: 150px;box-shadow: 2px 2px #778899;"> <%=t('color_background')%> <span class="caret"></span></div>
+        <div class="dropdown-menu" style="background-color: #1e8dae;position:absolute;min-width:150px;">
+          <table>
+            <tr>
+              <td class="colorSelection"><div id="backgroundcolor1" class="btn col2" style="background-color: #f8f8f8;" onclick="changeBackgroundColor('backgroundcolor1');return false;"></div></td>
+              <td class="colorSelection"><div id="backgroundcolor2" class="btn col2" style="background-color: lavender;" onclick="changeBackgroundColor('backgroundcolor2');return false;"></div></td>
+              <td class="colorSelection"><div id="backgroundcolor3" class="btn col2" style="background-color: navajowhite;" onclick="changeBackgroundColor('backgroundcolor3');return false;"></div></td>
+              <td class="colorSelection"><div id="backgroundcolor4" class="btn col2" style="background-color: darkred;" onclick="changeBackgroundColor('backgroundcolor4');return false;"></div></td>
+            </tr>
+            <tr>
+              <td class="colorSelection2"><div id="backgroundcolor5" class="btn col2" style="background-color: azure;" onclick="changeBackgroundColor('backgroundcolor5');return false;"></div></td>
+              <td class="colorSelection2"><div id="backgroundcolor6" class="btn col2" style="background-color: lightpink;" onclick="changeBackgroundColor('backgroundcolor6');return false;"></div></td>
+              <td class="colorSelection2"><div id="backgroundcolor7" class="btn col2" style="background-color: lightyellow;" onclick="changeBackgroundColor('backgroundcolor7');return false;"></div></td>
+              <td class="colorSelection2"><div id="backgroundcolor8" class="btn col2" style="background-color: olivedrab;" onclick="changeBackgroundColor('backgroundcolor8');return false;"></div></td>
+            </tr>
+          </table>
+        </div>
+      </li>
+    </ul>
+    <br>&nbsp;
+    <br>&nbsp;
+  </div>
+
+  <!-- Color Legend -->
+  <button class="accordion"><%=t('color_legend')%></button>
+  <div class="panel2">
+    <p class="sidebar"><%=t('color_legend_text')%></p>
+    <br/>
+    <ul style="list-style: none;">
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:#dff0d8;"></button><input id="legend1" class="color" type="text" ></li>
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:greenyellow;"></button><input id="legend2" class="color" type="text" ></li>
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:green;"></button><input id="legend3" class="color" type="text" ></li>
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:plum;"></button><input id="legend4" class="color" type="text" ></li>
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:yellow;"></button><input id="legend5" class="color" type="text" ></li>
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:orange;"></button><input id="legend6" class="color" type="text" ></li>
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:dodgerblue;"></button><input id="legend7" class="color" type="text" ></li>
+      <li class="color"><button class="btn btn-default colorShades" style="background-color:deepskyblue;"></button><input id="legend8" class="color" type="text" ></li>
+    </ul>
+  </div>
+
+  <!-- Email -->
+  <button class="accordion"><%=t('email')%></button>
+  <div class="panel2">
+    <p class="sidebar"><%= t('email_text')%>:</p>
+    <br/>
+    <form style="padding-left: 32px;">
+      <div id="emailgroup" class="form-group">
+        <input id="email" type="email" class="form-control" placeholder="<%= t('email_example')%>" style="width: 200px">
+      </div>
+      <button id="submit" type="submit" class="btn btn-default" onclick="sendMail();return false;"><%= t('.send')%></button>
+    </form>
+    <br>
+  </div>
+
+  <!-- Export -->
+  <button class="accordion"><%=t('export')%></button>
+  <div class="panel2">
+    <p class="sidebar"><%= t('export_text')%>:</p>
+    <br>
+    <div style="padding-left:40px;">
+      <a id="png" class="btn btn-default export" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png').attr('href', $('canvas')[0].toDataURL());return false;"><%= t('exportPNG')%></a>
+    </div>
+    <br/>
+    <div style="padding-left:40px;">
+      <%= link_to t('exportTGF'), concept_map_path(@concept_map, format: 'text'), {class: "btn btn-default export"}%>
+    </div>
+    <br/>&nbsp;
+  </div>
+</div>
+
+<!------------------------ Alerts ------------------------>
+
+<!-- Survey Introduction -->
 <% if @concept_map.accesses <= 2 && !@concept_map.survey.introduction.blank? %>
   <div class="alert alert-warning alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -82,18 +272,23 @@
   </div>
 <% end %>
 
-
+<!-- Quick help -->
 <div id="info" class="alert alert-info <% if @concept_map.accesses > 2 %> hidden <% end %>">
   <button type="button" class="close" aria-label="Close" onclick="$('#info').addClass('hidden');return false;"><span aria-hidden="true">&times;</span></button>
   <%= render 'info'%>
 </div>
 
+<!-- More information -->
 <div id="context_help" class="alert alert-info <% if @concept_map.accesses > 2 %> hidden <% end %>">
   <button type="button" class="close" aria-label="Close" onclick="$('#context_help').addClass('hidden');return false;"><span aria-hidden="true">&times;</span></button>
   <p id="context_help_text">
   </p>
   <%= render 'context_help'%>
 </div>
+
+
+<!------------------------ Concept map ------------------------>
+
 <%if @user.nil?%>
 <div id="map" class="well" style="background-color: <%= @concept_map.data['background_color']%>; height: 100%">
 </div>
@@ -121,23 +316,20 @@
       </div>
       <div class="form-group" >
         <div class="dropdown" style="display: inline-block">
-          <div id="currentColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: #dff0d8;color: black">
-            Farbe
-            <span class="caret"></span>
-          </div>
+          <div id="currentColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: #dff0d8;color: black">Farbe <span class="caret"></span></div>
           <div class="dropdown-menu">
             <table>
               <tr>
-                <td style="padding-left: 5px;"><div id="color1" class="btn" style="width: 30px;height:30px;background-color: #dff0d8;" onclick="changeColor('color1')"></div></td>
-                <td style="padding-left: 5px;"><div id="color2" class="btn" style="width: 30px;height:30px;background-color: greenyellow" onclick="changeColor('color2')"></div></td>
-                <td style="padding-left: 5px;"><div id="color3" class="btn" style="width: 30px;height:30px;background-color: green" onclick="changeColor('color3')"></div></td>
-                <td style="padding-left: 5px;"><div id="color4" class="btn" style="width: 30px;height:30px;background-color: plum" onclick="changeColor('color4')"></div></td>
+                <td style="padding-left: 5px;"><div id="color1" class="btn" style="width: 30px;height:30px;background-color: #dff0d8;" onclick="changeColor('color1');"></div></td>
+                <td style="padding-left: 5px;"><div id="color2" class="btn" style="width: 30px;height:30px;background-color: greenyellow" onclick="changeColor('color2');"></div></td>
+                <td style="padding-left: 5px;"><div id="color3" class="btn" style="width: 30px;height:30px;background-color: green" onclick="changeColor('color3');"></div></td>
+                <td style="padding-left: 5px;"><div id="color4" class="btn" style="width: 30px;height:30px;background-color: plum" onclick="changeColor('color4');"></div></td>
               </tr>
               <tr>
-                <td style="padding-left:5px; padding-top: 2px"><div id="color5" class="btn" style="width: 30px;height:30px;background-color: yellow" onclick="changeColor('color5')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="color6" class="btn" style="width: 30px;height:30px;background-color: orange" onclick="changeColor('color6')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="color7" class="btn" style="width: 30px;height:30px;background-color: dodgerblue" onclick="changeColor('color7')"></div></td>
-                <td style="padding-left: 5px; padding-top: 2px"><div id="color8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue" onclick="changeColor('color8')"></div></td>
+                <td style="padding-left:5px; padding-top: 2px"><div id="color5" class="btn" style="width: 30px;height:30px;background-color: yellow" onclick="changeColor('color5');"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="color6" class="btn" style="width: 30px;height:30px;background-color: orange" onclick="changeColor('color6');"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="color7" class="btn" style="width: 30px;height:30px;background-color: dodgerblue" onclick="changeColor('color7');"></div></td>
+                <td style="padding-left: 5px; padding-top: 2px"><div id="color8" class="btn" style="width: 30px;height:30px;background-color: deepskyblue" onclick="changeColor('color8');"></div></td>
               </tr>
             </table>
           </div>
@@ -149,6 +341,8 @@
     </form>
   </div>
 </div>
+
+<!------------------------ Javascript ------------------------>
 
 <script type="text/javascript">
     const none = 0;
@@ -163,6 +357,9 @@
     var toggle = false;
     var nodesArray = [];
     var edge = [];
+
+   // var keks = "<%= @concept_map.data['legend'] %>";
+  //  alert(conceptMapLegend['rgb(223,240,216)']);
 
     var mode = none;
     var canvasX = 0, canvasY = 0, id = 0, color=$('#currentColor').css('background-color');
@@ -269,6 +466,7 @@
                 hideForm();
         }
     });
+
 
     //Klick: Aktuelle Aktion abbrechen, Edit Node, Edit Edge, Add Node, Add Edge
     network.on("click", function (params) {
@@ -540,7 +738,6 @@
         $("#color").attr("value", color);
         $("#entry_concept").focus();
         return false;
-
     }
 
     function changeBackgroundColor(colorID) {
@@ -552,7 +749,6 @@
             url: "<%= concept_map_path(@map) %>",
             data: {"concept_map": {'data':{'background_color': backgroundColor}}}
         });
-
     }
 
     function multiButtonColor(colorID) {
@@ -573,18 +769,50 @@
         mode = none;
         $('#context_help_text').html($('#ch_normal').html());
     }
-    $('#entry_concept').on('keydown', function (e) {
-        if(e.keyCode == 163){
-            e.preventDefault();
-        }
 
-    })
-    $('#entry_link').on('keydown', function (e) {
-        if(e.keyCode == 163){
-            e.preventDefault();
-        }
+    // Open and close the sidebar menu
+    function openNav() {
+       document.getElementById("menu").style.width = "260px";
+       document.getElementById("navbar").style.marginLeft = "260px";
+       document.getElementById("map").style.marginLeft = "260px";
+       document.getElementById("info").style.marginLeft = "260px";
+       document.getElementById("context_help").style.marginLeft = "260px";
+       $('#menuSymbol').addClass('hidden');
+    }
 
-    })
+    function closeNav() {
+        document.getElementById("menu").style.width = "0";
+        document.getElementById("navbar").style.marginLeft= "0";
+        document.getElementById("map").style.marginLeft= "0";
+        document.getElementById("info").style.marginLeft = "0px";
+        document.getElementById("context_help").style.marginLeft = "0px";
+        $('#menuSymbol').removeClass('hidden');
+    }
 
+    // Accordion action of the sidebar menu
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight){
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
+
+    // Save name of colors
+ //   function saveName(colorID) {
+    //    var name = document.getElementById(colorID).value;
+    // jQuery.ajax({
+    //        type: "PUT",
+    //        url: "<%= concept_map_path(@map) %>",
+    //        data: {"concept_map": {'data':{'background_color': backgroundColor, 'legend': name}}}
+    //    });
+    //}
 
 </script>
