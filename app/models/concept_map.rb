@@ -96,6 +96,7 @@ class ConceptMap < ApplicationRecord
   #Effect: The necessary concepts and associations are created, also the code is restored from the JSON data
   #Returns: true if the import succeeded, false if an error occurred
   def from_json(data, code_prefix)
+    data =  data.encode('ISO-8859-1','UTF-8')
     vals = ActiveSupport::JSON.decode(data)
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
@@ -103,7 +104,7 @@ class ConceptMap < ApplicationRecord
 
     vals["concepts"].each do |c|
       if(!c["color"].nil?)
-        t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+        t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
       else
         t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
       end
@@ -129,17 +130,18 @@ class ConceptMap < ApplicationRecord
       node_defs = data
       edge_defs = nil
     else
-      node_defs = parts[0]
+      node_defs = parts[0].encode('ISO-8859-1','UTF-8')
       edge_defs = parts[1]
     end
     dict = Hash.new
     unless node_defs.nil?
       step = 2*Math::PI/node_defs.lines.count
       count = 0
+      puts node_defs
       node_defs.each_line do |line|
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
-          c = concepts.build(label: l[1].strip, data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
+          c = concepts.build(label: l[1].strip.encode('ISO-8859-1','UTF-8'), data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
           c.save
           dict[l[0]] = c
           count = count + 1

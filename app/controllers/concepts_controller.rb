@@ -62,7 +62,7 @@ class ConceptsController < ApplicationController
   private
 
   def set_concepts
-    if(params[:concepts].has_key?(:concepts_data)&& (params[:id]=="-1"||params[:id].nil?))
+    if((params[:id]=="-1"||params[:id].nil?)&&params[:concepts].has_key?(:concepts_data))
       @concepts = Concept.find(params[:concepts][:concepts_data].keys)
     else
       @concepts = [Concept.find(params[:id])]

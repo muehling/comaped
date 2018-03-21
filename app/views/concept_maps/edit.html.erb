@@ -573,6 +573,18 @@
         mode = none;
         $('#context_help_text').html($('#ch_normal').html());
     }
+    $('#entry_concept').on('keydown', function (e) {
+        if(e.keyCode == 163){
+            e.preventDefault();
+        }
+
+    })
+    $('#entry_link').on('keydown', function (e) {
+        if(e.keyCode == 163){
+            e.preventDefault();
+        }
+
+    })
 
 
 </script>
