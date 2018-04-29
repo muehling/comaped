@@ -2,8 +2,8 @@ class ConceptMapsController < ApplicationController
 
   skip_before_action :check_login_frontend, except: [:edit]
   skip_before_action :check_login_backend, only: [:edit, :show, :update]
-  before_action :login_for_show, only: [:show]
-  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index]
+  before_action :login_for_show, only: [:show, :analyze]
+  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index, :analyze]
   before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
 
   # GET /concept_maps/:page.js
@@ -11,6 +11,7 @@ class ConceptMapsController < ApplicationController
   def index
     @page = params[:page].to_i || 0
     @maps = @survey.concept_maps.offset(@page*10).limit(10).order(updated_at: :desc)
+
     respond_to do |format|
       format.js {
         if @maps.size == 0
@@ -25,12 +26,16 @@ class ConceptMapsController < ApplicationController
     end
   end
 
+
+
   # GET /concept_maps/1
   # GET /concept_maps/1.text
   # GET /concept_maps/1.json
   def show
     respond_to do |format|
-      format.html {}
+      format.html {
+        @showColor=false
+      }
       format.json {
         if params.has_key?(:versions)
           send_file @concept_map.to_zip(false), filename:@concept_map.code+".zip", type: "application/zip"
@@ -147,10 +152,28 @@ class ConceptMapsController < ApplicationController
     redirect_to user_project_survey_path(@user, @project, @survey)
   end
 
+  def analyze
+    respond_to do |format|
+      format.js{
+        analyseData = ConceptMap.analyze_maps(@survey)
+        @showColor=true
+        @aggregated_map = analyseData[0]
+        @analyse_data = analyseData[1]
+        render 'analysis.js.erb'
+      }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
-      @concept_map = ConceptMap.find(params[:id])
+      if params[:id]=="0"&&params.has_key?(:aggregated_map_as_json)
+        @concept_map = ConceptMap.build_temporary_map_from_json(params[:aggregated_map_as_json], @survey.id, "AggMap:" + @survey.name, false)
+        puts(@concept_map)
+
+      else
+        @concept_map = ConceptMap.find(params[:id])
+      end
       if concept_map_params.has_key?(:data)&&concept_map_params[:data].has_key?(:background_color) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
       elsif @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'

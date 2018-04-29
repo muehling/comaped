@@ -1,4 +1,4 @@
-<div id="map_<%= concept_map.id%>" >
+<div id="map_<%= concept_map.id%>" class="myClass" >
   <div class="panel panel-default">
     <div class="panel-heading">
       <%= link_to concept_map.code, user_project_survey_concept_map_path(@user, @project, @survey, concept_map) %>
@@ -8,7 +8,7 @@
     </div>
     <div class="panel-body">
       <div class="row">
-        <div class = "col-md-6">
+        <div id ="extraInformation" class = "col-md-6">
           <%= render partial: 'concept_maps/table', locals: {concept_map: concept_map}%>
           <%= link_to t('show'), user_project_survey_concept_map_path(@user, @project, @survey, concept_map), class: "btn btn-default" %>
           <div class="dropdown pull-right">
@@ -27,7 +27,7 @@
           </div>
         </div>
 
-        <div class = "col-md-6">
+        <div id="map" class = "col-md-6">
           <%= render partial: 'concept_maps/preview', locals: {concept_map: concept_map}%>
         </div>
       </div>

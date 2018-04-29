@@ -261,6 +261,12 @@ de:
     import: "Begriffsnetze importieren"
     imported: "Begriffsnetze importiert"
     new: "Begriffsnetze erzeugen"
+    analysis: "Analyse"
+    wait: "Bitte warten Sie einen Moment..."
+    countConcepts: "Anzahl der Konzepte:"
+    countEdges: "Anzahl der Kanten:"
+    countCommunities: "Anzahl der Communities:"
+    centralitiy: "Zentralität:"
     edit:
       action_edit_link: "Verbindung bearbeiten/löschen"
       action_edit_node: "Konzept bearbeiten/löschen"
@@ -283,6 +289,7 @@ de:
     mails:
       created: 'Ein Begriffsnetz wurde für Sie in CoMapEd angelegt'
       edited: 'CoMapEd: Code für Begriffsnetz per E-Mail senden'
+
   projects:
     created: "Projekt angelegt"
     delete: "Projekt löschen"
@@ -360,3 +367,4 @@ de:
   no_description: "Keine Beschreibung"
   projects_text: "Projekte"
   show: "Anzeigen"
+

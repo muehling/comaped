@@ -20,6 +20,7 @@
                 <ul class="nav nav-pills" role="tablist">
                   <li role="presentation" <% if @survey.concept_maps.size == 0 %> class='active' <% end %> ><a href="#details" aria-controls="details" role="tab" data-toggle="tab"><%= t('details') %></a></li>
                   <li role="presentation" <% if @survey.concept_maps.size > 0 %> class='active' <% end %>><a href="#maps" aria-controls="maps" role="tab" data-toggle="tab"><%= t('maps') %></a></li>
+                  <li id="analysisTab" role="presentation"><a href="#analysis" aria-controls="analysis" role="tab" data-toggle="tab"><%= t('concept_maps.analysis') %></a></li>
                 </ul>
               </div>
             </div>
@@ -56,6 +57,9 @@
               <div role="tabpanel" class="tab-pane  <% if @survey.concept_maps.size > 0 %> active <% end %>" id="maps">
                 <%= render 'concept_maps/index' %>
               </div>
+              <div role="tabpanel" class="tab-pane" id="analysis">
+                <div id="analysisConetent"><h3 ><%=t('concept_maps.wait')%></h3></div>
+              </div>
             </div>
           </div>
         </div>
@@ -65,3 +69,18 @@
   </div>
 
 </div>
+
+<script>
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target).attr("href") // activated tab
+        if(target=="#analysis"){
+            jQuery.ajax({
+                type: "GET",
+                url: "<%= analyze_user_project_survey_concept_maps_path(@user, @project, @survey) %>" + ".js",
+            });
+        }
+        else{
+            $('#analysisConetent').html("<h3 ><%=t('concept_maps.wait')%></h3>")
+        }
+    });
+</script>

@@ -18,3 +18,19 @@ cm.save
 cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
 cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
 cm.links.build(start: Concept.find(1), end: Concept.find(2), label: "hat").save
+
+cm = s.concept_maps.build(code: "test1")
+cm.save
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(3), end: Concept.find(4), label: "hat").save
+cm = s.concept_maps.build(code: "tes2")
+cm.save
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(1), end: Concept.find(2), label: "hat").save
+cm = s.concept_maps.build(code: "tes3")
+cm.save
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(5), end: Concept.find(6), label: "hat").save

@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="panel-body">
+    <div class="row">
+      <div id ="extraInformation" class = "col-md-3">
+        <table id="analye_infos" class="table">
+          <tr><td><%=t('concept_maps.countConcepts') %></td><td><%=@analyse_data[0] %></td></tr>
+          <tr><td><%=t('concept_maps.countEdges') %></td><td><%=@analyse_data[1] %></td></tr>
+          <tr><td><%=t('concept_maps.countCommunities') %></td><td><%=@analyse_data[2] %></td></tr>
+          <tr><td><%=t('concept_maps.centralitiy') %></td><td align="left"><%=@analyse_data[3] %><br/>Rekursionsaufrufanaly seanalyseanalyse</td></tr>
+        </table>
+        <br/>
+        <row>
+          <div class="dropdown pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <%= t('export') %>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+              <li class="dropdown-header"><%= t('export.current')%></li>
+              <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, @aggregated_map, format: 'json', aggregated_map_as_json: @aggregated_map.to_json)%></li>
+              <li><%= link_to 'TGF', user_project_survey_concept_map_path(@user, @project, @survey, @aggregated_map, format: 'text',aggregated_map_as_json: @aggregated_map.to_json)%></li>
+            </ul>
+          </div>
+        </row>
+      </div>
+
+
+      <div id="map" class = "col-md-9">
+        <%= render partial: 'concept_maps/preview', locals: {concept_map: @aggregated_map}%>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var page = 0;
+  var ready = true;
+
+  var options = {
+      autoResize: true,
+      height: '100%',
+      width: '100%',
+      edges: {
+          arrows : {
+              to: {
+                  enabled: false,
+                  scaleFactor: 0.75
+              },
+          },
+          smooth: false
+      },
+      physics: {
+          enabled: false
+      },
+      interaction: {
+          hover: false,
+          dragNodes: false,
+          navigationButtons: false,
+          selectConnectedEdges: false,
+          hoverConnectedEdges: false
+      }
+  };
+
+  network_<%= @aggregated_map.id%> = new vis.Network(container_<%= @aggregated_map.id%>, data_<%= @aggregated_map.id%>, options);
+  network_<%= @aggregated_map.id%>.once('afterDrawing', function(params) {network_<%= @aggregated_map.id%>.fit();});
+  network_<%= @aggregated_map.id%>.redraw();
+
+  $(window).on('scroll', function() {
+    if (ready && ($(window).scrollTop() > $(document).height() - $(window).height() - 60)) {
+      ready = false;
+      $.getScript("<%= user_project_survey_concept_maps_path(@user, @project, @survey)%>" + "?page=" + (page+1))
+    }
+  });
+
+  $(document).ready(function () {
+      $('#extraInformation').removeClass("col-md-6").addClass("col-md-4")
+      $('#map2').removeClass("col-md-6").addClass("col-md-8")
+  });
+</script>

@@ -227,7 +227,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: TGF data of the concept map
   def to_tgf
-    reload(:include => [:concepts, :links])
+    #reload(:include => [:concepts, :links])
     res = ""
     self.concepts.each do |concept|
       res = res + concept.id.to_s + " " + concept.label + "\n"
@@ -272,4 +272,71 @@ class ConceptMap < ApplicationRecord
     end
   end
 
+  def self.analyze_maps(survey)
+    analyzed_map=""
+    Dir.mktmpdir(survey.name) do |dir|
+      puts "My new temp dir: #{dir}"
+      survey.concept_maps.each do |map|
+        file = Tempfile.new([map.code,'.tgf'], "#{dir}")
+        file.write(map.to_tgf)
+        file.rewind
+
+      end
+
+      require "myclass"
+      analyzed_map = Myclass.analyze_maps("#{dir}")
+    end
+    return  build_temporary_map_from_json(analyzed_map, survey.id, "AggMap:" + survey.name, true)
+  end
+
+  def self.build_temporary_map_from_json(data, survey_id, code, methodFlag)
+    tempMap = ConceptMap.new
+    vals = ActiveSupport::JSON.decode(data)
+    dict = Hash.new
+    tempMap.id = 0
+    tempMap.survey_id= survey_id
+    tempMap.code = code
+    if(methodFlag)
+      vals["aggregated_map"]["concepts"].each do |c|
+        if(!c["color"].nil?)
+          t =tempMap.concepts.build(id:c["id"], label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
+        else
+          t= tempMap.concepts.build(id:id, label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+        end
+        dict[c["id"]] = t
+      end
+      vals["aggregated_map"]["links"].each do |l|
+        puts(l["id"])
+        tempMap.links.build(id: l["id"], label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
+      end
+    else
+      vals["concepts"].each do |c|
+        if(!c["color"].nil?)
+          t =tempMap.concepts.build(id:c["id"], label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
+        else
+          t= tempMap.concepts.build(id:id, label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+        end
+        dict[c["id"]] = t
+      end
+      vals["links"].each do |l|
+        tempMap.links.build(id: l["id"], label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
+      end
+    end
+    if methodFlag
+      analyse_data = []
+      analyseKeyWords = vals["analysis"].keys
+      count = 0
+      while count<analyseKeyWords.size do
+        analyse_data[count] = vals["analysis"][analyseKeyWords[count]]
+        count = count +1
+      end
+      return [tempMap, analyse_data]
+    else
+      return tempMap
+    end
+
+
+  end
+
 end
+
