@@ -4,7 +4,7 @@ require(igraph) #nutzung von layout
 
 # Welches davon?
 #args <- commandArgs(TRUE)
-#args <- commandArgs(trailingOnly=TRUE)
+args <- commandArgs(trailingOnly=TRUE)
 
 concept.scope <- eval(parse(text=args[2]))
 
