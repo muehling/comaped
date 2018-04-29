@@ -284,6 +284,9 @@ class ConceptMap < ApplicationRecord
         file = Tempfile.new([map.code,'.tgf'], "#{dir}")
         file.write(map.to_tgf)
         file.rewind
+        puts(file.read)
+        file.close
+
 
       end
       require "myclass"

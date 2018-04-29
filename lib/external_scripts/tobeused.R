@@ -1,11 +1,8 @@
-require(comato) #basispaket
 require(igraph) #nutzung von layout
-#require(jsonlite) #eigentlich nur zum Lesen von json, vermutlich eher ungenutzt
+require(comato) #basispaket
 
-# Welches davon?
-#args <- commandArgs(TRUE)
+
 args <- commandArgs(trailingOnly=TRUE)
-
 concept.scope <- eval(parse(text=args[2]))
 
 
@@ -15,12 +12,25 @@ concept.scope <- eval(parse(text=args[2]))
 #======
 #1.1: Einlesen der Rohdaten
 #data = read.folder.tgf("./Daten Concept Maps/")
-data = read.folder.tgf(toString(args[1]))
+#data = read.folder.tgf(toString(args[1]))
+toDo <- list.files(path=toString(args[1]), pattern="*.tgf", full.names=T)
+order = c()
+res <- list()
+for (f in toDo) {
+    #cat(basename(f))
+    #cat("\n")
+    m <- read.tgf(f, TRUE)
+    res <- c(res, list(m))
+    order = c(order, strsplit(basename(f), "\\.")[[1]][1])
+}
+data = list(conceptmaps(res, filter=F), order)
+
+
 
 #1.2: Nur einige Konzepte beruecksichtigen um die Graphen zu vereinheitlichen. maps ist ein conceptmaps-Objekt
 #maps = modify.concepts(data[[1]], c("Programm", "Daten", "Algorithmus", "Methode", "Objekt", "Klasse", "Attribut", "Wert"), filter=T)
 maps = modify.concepts(data[[1]], concept.scope, filter=T)
-
+#maps = modify.concepts(data[[1]], c("Auto", "Motor"), filter=T)
 #Alternativ die ganzen igraph Objekte in einer Liste speichern
 #graphs = lapply(maps$maps, FUN=function(x) {x$map})
 
@@ -36,13 +46,13 @@ g = landscape(maps, mode = "undirected")
 cg = cluster_fast_greedy(g)
 #community colors match those usable in CoMapEd frontend
 community.colors = c("rgb(223,240,216)", #brightgreen
-                     "rgb(173,255,47)",  #greenyellow
-                     "rgb(0,128,0)",     #green
-                     "rgb(221,160,221)", #plum
-                     "rgb(225,225,0)",   #yellow
-                     "rgb(225,165,0)",   #orange
-                     "rgb(30,144,255)",  #dodgerblue
-                     "rgb(0,191,255)")   #deepskyblue
+"rgb(173,255,47)",  #greenyellow
+"rgb(0,128,0)",     #green
+"rgb(221,160,221)", #plum
+"rgb(225,225,0)",   #yellow
+"rgb(225,165,0)",   #orange
+"rgb(30,144,255)",  #dodgerblue
+"rgb(0,191,255)")   #deepskyblue
 
 #2.2: Generate the Pathfinder Network of an aggregated concept map graph g with parameters q r
 #only the pngraph links are exported
@@ -77,17 +87,17 @@ dm = 750
 conex.prefix = '"concepts":['
 conex.body = ""
 for(i in 1:length(V(g))){
-  single.concept = paste('{"id":',toString(i),
-                       ',"label":"', toString(V(g)[i]$name),
-                       '","x":"', as.integer((l[i,1])*dm*-1),
-                       '","y":"', as.integer((l[i,2])*dm),
-                       '","color":"', community.colors[(cg$membership[i]%%length(community.colors))] ,
-                       '"}',
-                       sep=""
-                       )
-  if(i==1){conex.body = paste(conex.body, single.concept)}
-  else {conex.body = paste(conex.body, single.concept, sep=",")}
-  }
+    single.concept = paste('{"id":',toString(i),
+    ',"label":"', toString(V(g)[i]$name),
+    '","x":"', as.integer((l[i,1])*dm*-1),
+    '","y":"', as.integer((l[i,2])*dm),
+    '","color":"', community.colors[(cg$membership[i]%%length(community.colors))] ,
+    '"}',
+    sep=""
+    )
+    if(i==1){conex.body = paste(conex.body, single.concept)}
+    else {conex.body = paste(conex.body, single.concept, sep=",")}
+}
 conex.suffix = "]"
 conex = ""
 conex = paste(conex.prefix, conex.body, conex.suffix, sep="")
@@ -102,14 +112,14 @@ conex = paste(conex.prefix, conex.body, conex.suffix, sep="")
 linex.prefix = ',"links":['
 linex.body = ""
 for(i in 1:length(E(png))){
-  single.link = paste('{"id":',toString(i),
-                         ',"start_id":', toString(as.numeric(V(g)[get.edgelist(png)[i,1]])),
-                         ',"end_id":', toString(as.numeric(V(g)[get.edgelist(png)[i,2]])),
-                         ',"label":', '""',
-                         "}"
-  )
-  if(i==1){linex.body = paste(linex.body, single.link)}
-  else {linex.body = paste(linex.body, single.link, sep=",")}
+    single.link = paste('{"id":',toString(i),
+    ',"start_id":', toString(as.numeric(V(g)[get.edgelist(png)[i,1]])),
+    ',"end_id":', toString(as.numeric(V(g)[get.edgelist(png)[i,2]])),
+    ',"label":', '""',
+    "}"
+    )
+    if(i==1){linex.body = paste(linex.body, single.link)}
+    else {linex.body = paste(linex.body, single.link, sep=",")}
 }
 linex.suffix = "]"
 linex = ""
@@ -119,11 +129,11 @@ linex = paste(linex.prefix, linex.body, linex.suffix)
 anex.prefix = ',"analysis":{'
 anex.body = ""
 anex.body = paste('"Anzahl der Knoten" : "',toString(length(V(g))),
-                  '","Anzahl der Kanten" : "', toString(length(E(g))),
-                  '","Communities" : "', toString(length(communities(cg))),
-                  '","Centrality" : "', ocg, '"',
-                  sep=""
-                  )
+'","Anzahl der Kanten" : "', toString(length(E(g))),
+'","Communities" : "', toString(length(communities(cg))),
+'","Centrality" : "', ocg, '"',
+sep=""
+)
 
 
 
@@ -146,6 +156,5 @@ p2 = paste(anex, p2.suffix)
 
 #Generate full JSON String
 json.string = ""
-json.string = paste("'", p1, p2, "'")
-
+json.string = paste(p1, p2)
 cat(json.string)
