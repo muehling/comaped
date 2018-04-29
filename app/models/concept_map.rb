@@ -284,7 +284,6 @@ class ConceptMap < ApplicationRecord
         file = Tempfile.new([map.code,'.tgf'], "#{dir}")
         file.write(map.to_tgf)
         file.rewind
-        puts(file.read)
         file.close
 
 
@@ -293,6 +292,13 @@ class ConceptMap < ApplicationRecord
       #Parse relevant Concept to an R Array-String, needed for Input
       relevantConcepts = relevantConcepts.gsub(" ", "")
       tempArray = relevantConcepts.split(",")
+      if tempArray.size == 0
+        temp =ConceptMap.find_by_survey_id(survey.id)
+        temp.concepts.each do |c|
+          tempArray = tempArray + [c.label]
+        end
+        tempArray=tempArray.uniq
+      end
       relevantConceptsArrayR = '"c('
       tempArray.each_with_index do |label, i|
         nextLabel = tempArray[i+1]

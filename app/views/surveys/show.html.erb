@@ -79,7 +79,7 @@
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var target = $(e.target).attr("href") // activated tab
         if(target=="#analysis"){
-            $('#analysisContent').html("<h4>Please insert relevant concepts in the next line:</h4><br/><input style='width: 80%;font-size: 20px' id='paramsField'><br/><h5>Example: Algorithmus, Code, Class, ...</h5><br/><button class='btn btn-primary' style='font-size: 18px' onclick='startAnalysis()'>Analyze</button>")
+            $('#analysisContent').html("<h4>Please insert concepts of interest in the next line:</h4><br/><input style='width: 80%;font-size: 20px' id='paramsField'><br/><h4>Example: Algorithmus, Code, Class, ...<br/><br/>If field is empty, all concepts are selected.</h4><br/><button class='btn btn-primary' style='font-size: 18px' onclick='startAnalysis()'>Analyze</button>")
         }
         else{
             $('#paramsField').html("")
