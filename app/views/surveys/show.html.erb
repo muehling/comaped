@@ -58,7 +58,12 @@
                 <%= render 'concept_maps/index' %>
               </div>
               <div role="tabpanel" class="tab-pane" id="analysis">
-                <div id="analysisConetent"><h3 ><%=t('concept_maps.wait')%></h3></div>
+                <div id="analysisContent">
+                  <h4>Please insert relevant concepts in the next line:</h4><br/>
+                  <input style="width: 80%;font-size: 20px" id="paramsField"><br/>
+                  <h5>Example: Algorithmus, Code, Class, ...</h5><br/>
+                  <button class="btn btn-primary" style="font-size: 18px" onclick="startAnalysis()">Analyze</button>
+                </div>
               </div>
             </div>
           </div>
@@ -74,13 +79,22 @@
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var target = $(e.target).attr("href") // activated tab
         if(target=="#analysis"){
-            jQuery.ajax({
-                type: "GET",
-                url: "<%= analyze_user_project_survey_concept_maps_path(@user, @project, @survey) %>" + ".js",
-            });
+            $('#analysisContent').html("<h4>Please insert relevant concepts in the next line:</h4><br/><input style='width: 80%;font-size: 20px' id='paramsField'><br/><h5>Example: Algorithmus, Code, Class, ...</h5><br/><button class='btn btn-primary' style='font-size: 18px' onclick='startAnalysis()'>Analyze</button>")
         }
         else{
-            $('#analysisConetent').html("<h3 ><%=t('concept_maps.wait')%></h3>")
+            $('#paramsField').html("")
         }
     });
+
+    function startAnalysis() {
+
+        relevantConcepts = $('#paramsField').val();
+        $('#analysisContent').html("<h3 ><%=t('concept_maps.wait')%></h3>")
+        jQuery.ajax({
+            type: "GET",
+            url: "<%= analyze_user_project_survey_concept_maps_path(@user, @project, @survey) %>" + ".js",
+            data: {"relevantConcepts": relevantConcepts}
+    });
+
+    }
 </script>

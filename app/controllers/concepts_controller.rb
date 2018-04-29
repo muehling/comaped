@@ -22,8 +22,6 @@ class ConceptsController < ApplicationController
     respond_to do |format|
       @concepts.each do |c|
         old = c.label
-        puts(concept_params.has_key?(:id))
-        puts(concept_params[:id]!="-1")
         if(params.has_key?(:id)&&params[:id]!="-1")
           if c.update(concept_params[:concepts_data])
             @concept = c

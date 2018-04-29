@@ -155,8 +155,8 @@ class ConceptMapsController < ApplicationController
   def analyze
     respond_to do |format|
       format.js{
-        analyseData = ConceptMap.analyze_maps(@survey)
-        @showColor=true
+        analyseData = ConceptMap.analyze_maps(@survey,params[:relevantConcepts])
+        @showColor=false
         @aggregated_map = analyseData[0]
         @analyse_data = analyseData[1]
         render 'analysis.js.erb'
@@ -168,9 +168,8 @@ class ConceptMapsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
       if params[:id]=="0"&&params.has_key?(:aggregated_map_as_json)
-        @concept_map = ConceptMap.build_temporary_map_from_json(params[:aggregated_map_as_json], @survey.id, "AggMap:" + @survey.name, false)
-        puts(@concept_map)
-
+        vals = ActiveSupport::JSON.decode(params[:aggregated_map_as_json])
+        @concept_map = ConceptMap.build_temporary_map_from_json(vals, @survey.id, "AggMap:" + @survey.name)
       else
         @concept_map = ConceptMap.find(params[:id])
       end
@@ -206,6 +205,6 @@ class ConceptMapsController < ApplicationController
   end
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_map_params
-    params.fetch(:concept_map, {}).permit(:data=>[:background_color])
+    params.fetch(:concept_map, {}).permit(:data=>[:background_color], relevantConcepts:[])
   end
 end

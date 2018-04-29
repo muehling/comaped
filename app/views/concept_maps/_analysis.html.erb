@@ -6,7 +6,7 @@
           <tr><td><%=t('concept_maps.countConcepts') %></td><td><%=@analyse_data[0] %></td></tr>
           <tr><td><%=t('concept_maps.countEdges') %></td><td><%=@analyse_data[1] %></td></tr>
           <tr><td><%=t('concept_maps.countCommunities') %></td><td><%=@analyse_data[2] %></td></tr>
-          <tr><td><%=t('concept_maps.centralitiy') %></td><td align="left"><%=@analyse_data[3] %><br/>Rekursionsaufrufanaly seanalyseanalyse</td></tr>
+          <tr><td><%=t('concept_maps.centralitiy') %></td><td align="left"><%=raw @analyse_data[3] %></td></tr>
         </table>
         <br/>
         <row>

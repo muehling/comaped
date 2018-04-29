@@ -272,70 +272,78 @@ class ConceptMap < ApplicationRecord
     end
   end
 
-  def self.analyze_maps(survey)
+  #Analyze the concept maps of a survey
+  #Params:
+  # survey: survey of the Concept Maps, which should be analyzed
+  #Returns: Array of a temporary concept map and the analysisdata
+  def self.analyze_maps(survey, relevantConcepts)
     analyzed_map=""
-    Dir.mktmpdir(survey.name) do |dir|
-      puts "My new temp dir: #{dir}"
+    #create temporary directory and create temporary tgf-files of the maps
+    Dir.mktmpdir(survey.name.gsub(" ", "")) do |dir|
       survey.concept_maps.each do |map|
         file = Tempfile.new([map.code,'.tgf'], "#{dir}")
         file.write(map.to_tgf)
         file.rewind
 
       end
-
       require "myclass"
-      analyzed_map = Myclass.analyze_maps("#{dir}")
-    end
-    return  build_temporary_map_from_json(analyzed_map, survey.id, "AggMap:" + survey.name, true)
-  end
+      #Parse relevant Concept to an R Array-String, needed for Input
+      relevantConcepts = relevantConcepts.gsub(" ", "")
+      tempArray = relevantConcepts.split(",")
+      relevantConceptsArrayR = '"c('
+      tempArray.each_with_index do |label, i|
+        nextLabel = tempArray[i+1]
+        if(nextLabel.nil?)
+          relevantConceptsArrayR = relevantConceptsArrayR + '\"' +label + '\"'
+        else
+          relevantConceptsArrayR = relevantConceptsArrayR + '\"' + label+ '\"' + ','
+        end
+      end
+      relevantConceptsArrayR = relevantConceptsArrayR + ')"'
 
-  def self.build_temporary_map_from_json(data, survey_id, code, methodFlag)
+      #Start Analysis
+      analyzed_map = Myclass.analyze_maps("#{dir}", relevantConceptsArrayR)
+    end
+    vals = ActiveSupport::JSON.decode(analyzed_map)
+    #build temporary map
+    tempMap = build_temporary_map_from_json(vals["aggregated_map"], survey.id, "AggMap:"+survey.name)
+    #save analysis data
+    analysis_data = []
+    analyseKeyWords = vals["analysis"].keys
+    count = 0
+    while count<analyseKeyWords.size do
+      analysis_data[count] = vals["analysis"][analyseKeyWords[count]]
+      count = count +1
+    end
+
+    return  [tempMap, analysis_data]
+  end
+  #Create a temporary concept map
+  #Params:
+  # data: about a concept map in JSON-Format
+  # survey_id: associated survey for the temporary map
+  # code: Name of the temporary concept map
+  #Returns: a temporary concept map, which is not saved in the database
+  def self.build_temporary_map_from_json(data, survey_id, code)
+
     tempMap = ConceptMap.new
-    vals = ActiveSupport::JSON.decode(data)
     dict = Hash.new
     tempMap.id = 0
     tempMap.survey_id= survey_id
     tempMap.code = code
-    if(methodFlag)
-      vals["aggregated_map"]["concepts"].each do |c|
-        if(!c["color"].nil?)
-          t =tempMap.concepts.build(id:c["id"], label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
-        else
-          t= tempMap.concepts.build(id:id, label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
-        end
-        dict[c["id"]] = t
-      end
-      vals["aggregated_map"]["links"].each do |l|
-        puts(l["id"])
-        tempMap.links.build(id: l["id"], label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
-      end
-    else
-      vals["concepts"].each do |c|
-        if(!c["color"].nil?)
-          t =tempMap.concepts.build(id:c["id"], label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
-        else
-          t= tempMap.concepts.build(id:id, label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
-        end
-        dict[c["id"]] = t
-      end
-      vals["links"].each do |l|
-        tempMap.links.build(id: l["id"], label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
-      end
-    end
-    if methodFlag
-      analyse_data = []
-      analyseKeyWords = vals["analysis"].keys
-      count = 0
-      while count<analyseKeyWords.size do
-        analyse_data[count] = vals["analysis"][analyseKeyWords[count]]
-        count = count +1
-      end
-      return [tempMap, analyse_data]
-    else
-      return tempMap
-    end
 
-
+    data["concepts"].each do |c|
+      if(!c["color"].nil?)
+        t =tempMap.concepts.build(id:c["id"], label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
+      else
+        t= tempMap.concepts.build(id:id, label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+      end
+      dict[c["id"]] = t
+    end
+    data["links"].each do |l|
+      tempMap.links.build(id: l["id"], label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
+    end
+    return tempMap
   end
 
 end

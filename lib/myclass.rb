@@ -19,12 +19,13 @@ class Myclass
     puts "Here's the output:\n #{output}"
   end
 
-  def self.analyze_maps(directory)
+  def self.analyze_maps(directory, relevantConcepts)
     puts 'running R!'
 
-    filepath = Rails.root.join('lib', 'external_scripts', 'analyze_maps.R')
+    filepath = Rails.root.join('lib', 'external_scripts', 'tobeused.R')
+    output = `Rscript --vanilla #{filepath} #{directory} #{relevantConcepts}`
     puts 'end R'
-    output = `Rscript --vanilla #{filepath} #{directory}`
+    puts "Here's the output:\n #{output}"
     return output
   end
 
