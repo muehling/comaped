@@ -227,7 +227,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: TGF data of the concept map
   def to_tgf
-    #reload(:include => [:concepts, :links])
+    reload(:include => [:concepts, :links])
     res = ""
     self.concepts.each do |concept|
       res = res + concept.id.to_s + " " + concept.label + "\n"
