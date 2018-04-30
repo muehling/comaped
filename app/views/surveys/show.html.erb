@@ -20,7 +20,7 @@
                 <ul class="nav nav-pills" role="tablist">
                   <li role="presentation" <% if @survey.concept_maps.size == 0 %> class='active' <% end %> ><a href="#details" aria-controls="details" role="tab" data-toggle="tab"><%= t('details') %></a></li>
                   <li role="presentation" <% if @survey.concept_maps.size > 0 %> class='active' <% end %>><a href="#maps" aria-controls="maps" role="tab" data-toggle="tab"><%= t('maps') %></a></li>
-                  <li id="analysisTab" role="presentation"><a href="#analysis" aria-controls="analysis" role="tab" data-toggle="tab"><%= t('concept_maps.analysis') %></a></li>
+                  <li id="analysisTab" role="presentation"><a href="#analysis" aria-controls="analysis" role="tab" data-toggle="tab"><%= t('concept_maps.analysis.task') %></a></li>
                 </ul>
               </div>
             </div>
@@ -59,10 +59,7 @@
               </div>
               <div role="tabpanel" class="tab-pane" id="analysis">
                 <div id="analysisContent">
-                  <h4>Please insert relevant concepts in the next line:</h4><br/>
-                  <input style="width: 80%;font-size: 20px" id="paramsField"><br/>
-                  <h5>Example: Algorithmus, Code, Class, ...</h5><br/>
-                  <button class="btn btn-primary" style="font-size: 18px" onclick="startAnalysis()">Analyze</button>
+                  <%=raw t('concept_maps.analysis.textToShow')%>
                 </div>
               </div>
             </div>
@@ -76,20 +73,47 @@
 </div>
 
 <script>
+
+  var concepts = [
+      <%@survey.concept_maps.each do |cm|%>
+          <%cm.concepts.each do |c|%>
+            "<%=c.label%>",
+          <%end%>
+
+      <%end%>
+  ]
+  function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
+  }
+
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target).attr("href") // activated tab
+        var target = $(e.target).attr("href"); // activated tab
         if(target=="#analysis"){
-            $('#analysisContent').html("<h4>Please insert concepts of interest in the next line:</h4><br/><input style='width: 80%;font-size: 20px' id='paramsField'><br/><h4>Example: Algorithmus, Code, Class, ...<br/><br/>If field is empty, all concepts are selected.</h4><br/><button class='btn btn-primary' style='font-size: 18px' onclick='startAnalysis()'>Analyze</button>")
+            $('#analysisContent').html("<%=raw t('concept_maps.analysis.textToShow')%>")
         }
         else{
             $('#paramsField').html("")
         }
     });
 
-    function startAnalysis() {
 
+    function startAnalysis() {
+        i = 0;
+        count = 0;
+        labelArray = concepts.filter(onlyUnique)
         relevantConcepts = $('#paramsField').val();
-        $('#analysisContent').html("<h3 ><%=t('concept_maps.wait')%></h3>")
+        while (i<labelArray.length){
+            if(relevantConcepts.includes(labelArray[i])){
+                count = count +1
+            }
+            i = i+1
+        }
+        if(count<2&&relevantConcepts!=""){
+            alert("<%= t('concept_maps.analysis.error')%>");
+            return;
+        }
+
+        $('#analysisContent').html("<h3 ><%=t('concept_maps.analysis.wait')%></h3>")
         jQuery.ajax({
             type: "GET",
             url: "<%= analyze_user_project_survey_concept_maps_path(@user, @project, @survey) %>" + ".js",

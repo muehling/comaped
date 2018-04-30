@@ -226,8 +226,10 @@ class ConceptMap < ApplicationRecord
   #Params: -
   #Effect: -
   #Returns: TGF data of the concept map
-  def to_tgf
-    reload(:include => [:concepts, :links])
+  def to_tgf(reload)
+    if reload
+      reload(:include => [:concepts, :links])
+    end
     res = ""
     self.concepts.each do |concept|
       res = res + concept.id.to_s + " " + concept.label + "\n"
@@ -282,7 +284,7 @@ class ConceptMap < ApplicationRecord
     Dir.mktmpdir(survey.name.gsub(" ", "")) do |dir|
       survey.concept_maps.each do |map|
         file = Tempfile.new([map.code,'.tgf'], "#{dir}")
-        file.write(map.to_tgf)
+        file.write(map.to_tgf(false))
         file.rewind
         file.close
 

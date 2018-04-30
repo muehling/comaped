@@ -261,12 +261,17 @@ de:
     import: "Begriffsnetze importieren"
     imported: "Begriffsnetze importiert"
     new: "Begriffsnetze erzeugen"
-    analysis: "Analyse"
-    wait: "Bitte warten Sie einen Moment..."
-    countConcepts: "Anzahl der Konzepte:"
-    countEdges: "Anzahl der Kanten:"
-    countCommunities: "Anzahl der Communities:"
-    centralitiy: "Zentralität:"
+    analysis:
+      task: "Analyse"
+      textToShow: "<h4>Bitte tragen Sie in der nächsten Zeile die interessanten Konzepte ein:</h4><br/><input style='width: 80%;font-size: 20px' id='paramsField'>
+                   <br/><h4>Beispiel: Algorithmus, Code, Klasse, ...<br/><br/>Wenn das Feld leer ist, werden alle Konzepte ausgewählt.</h4><br/>
+                   <button class='btn btn-primary' style='font-size: 18px' onclick='startAnalysis()'>Analyse starten</button>"
+      wait: "Bitte warten Sie einen Moment..."
+      error: "Bitte geben Sie keine oder mindestens zwei vorkommende Konzepte an."
+      countConcepts: "Anzahl der Konzepte:"
+      countEdges: "Anzahl der Kanten:"
+      countCommunities: "Anzahl der Communities:"
+      centralitiy: "Zentralität:"
     edit:
       action_edit_link: "Verbindung bearbeiten/löschen"
       action_edit_node: "Konzept bearbeiten/löschen"

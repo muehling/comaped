@@ -51,7 +51,12 @@ class ConceptMapsController < ApplicationController
             if params.has_key?(:versions)
               send_file @concept_map.to_zip(true), filename:@concept_map.code+".zip", type: "application/zip"
             else
-              send_data @concept_map.to_tgf, filename: @concept_map.code+".tgf", type: :text
+              if(params.has_key?(:aggregated_map_as_json))
+                send_data @concept_map.to_tgf(false), filename: @concept_map.code+".tgf", type: :text
+              else
+                send_data @concept_map.to_tgf(true), filename: @concept_map.code+".tgf", type: :text
+              end
+
             end
         end
       }
