@@ -20,8 +20,11 @@ class ConceptsController < ApplicationController
   # PATCH/PUT /concept_maps/1/concepts/1.js
   def update
     respond_to do |format|
+      #new Structur of sending Concepts: hash of hash(multiupdate)
       @concepts.each do |c|
         old = c.label
+        #update was sent by drag&drop, colorchange
+        #-1 Fakeid: used for change background-color, drag&drop
         if(params.has_key?(:id)&&params[:id]!="-1")
           if c.update(concept_params[:concepts_data])
             @concept = c
@@ -33,6 +36,7 @@ class ConceptsController < ApplicationController
             format.js { head :ok }
           end
         else
+          #update/Put was sent by Form
           if c.update(concept_params[:concepts_data][c.id.to_s])
             @concept = c
             unless concept_params[:concepts_data][c.id.to_s][:label] == old
@@ -49,6 +53,7 @@ class ConceptsController < ApplicationController
 
   # DELETE /concept_maps/1/concepts/1.js
   def destroy
+    #list has only one Object (see set_concepts)
     @concept = @concepts.first
     @concept.destroy
     @map.versionize(DateTime.now)
@@ -60,11 +65,14 @@ class ConceptsController < ApplicationController
   private
 
   def set_concepts
+    #Consider data structure and special case of sending hash of concepts for multiupdate
     if((params[:id]=="-1"||params[:id].nil?)&&params[:concepts].has_key?(:concepts_data))
       @concepts = Concept.find(params[:concepts][:concepts_data].keys)
     else
+      #single Concept is send (destroy and create)
       @concepts = [Concept.find(params[:id])]
     end
+    #consider data structure (sending hash of concepts)
     unless !@concepts.nil?&&@concepts.pluck(:concept_map_id).uniq.first == @concept_map.id&&@concepts.pluck(:concept_map_id).uniq.size==1
       redirect_to '/'
     end

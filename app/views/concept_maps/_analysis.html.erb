@@ -1,7 +1,9 @@
+<!--Template for showing the aggregated map of a survey and associated analysis data-->
 <div class="row">
   <div class="panel-body">
     <div class="row">
       <div id ="extraInformation" class = "col-md-3">
+        <!--table for the analysis data-->
         <table id="analye_infos" class="table">
           <tr><td><%=t('concept_maps.analysis.countConcepts') %></td><td><%=@analyse_data[0] %></td></tr>
           <tr><td><%=t('concept_maps.analysis.countEdges') %></td><td><%=@analyse_data[1] %></td></tr>
@@ -15,6 +17,7 @@
               <%= t('export') %>
               <span class="caret"></span>
             </button>
+            <!-- Download options-->
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
               <li class="dropdown-header"><%= t('export.current')%></li>
               <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, @aggregated_map, format: 'json', aggregated_map_as_json: @aggregated_map.to_json)%></li>
@@ -24,7 +27,7 @@
         </row>
       </div>
 
-
+      <!-- Div where the map is rendered-->
       <div id="map" class = "col-md-9">
         <%= render partial: 'concept_maps/preview', locals: {concept_map: @aggregated_map}%>
       </div>
@@ -35,7 +38,8 @@
 <script>
   var page = 0;
   var ready = true;
-
+  //need new options for the map/overide oprions of _partial
+  //aggregated map is undirected
   var options = {
       autoResize: true,
       height: '100%',
@@ -60,7 +64,7 @@
           hoverConnectedEdges: false
       }
   };
-
+  //redraw the map with new options
   network_<%= @aggregated_map.id%> = new vis.Network(container_<%= @aggregated_map.id%>, data_<%= @aggregated_map.id%>, options);
   network_<%= @aggregated_map.id%>.once('afterDrawing', function(params) {network_<%= @aggregated_map.id%>.fit();});
   network_<%= @aggregated_map.id%>.redraw();
@@ -72,8 +76,4 @@
     }
   });
 
-  $(document).ready(function () {
-      $('#extraInformation').removeClass("col-md-6").addClass("col-md-4")
-      $('#map2').removeClass("col-md-6").addClass("col-md-8")
-  });
 </script>

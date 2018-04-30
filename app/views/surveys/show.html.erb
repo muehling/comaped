@@ -57,7 +57,10 @@
               <div role="tabpanel" class="tab-pane  <% if @survey.concept_maps.size > 0 %> active <% end %>" id="maps">
                 <%= render 'concept_maps/index' %>
               </div>
+
               <div role="tabpanel" class="tab-pane" id="analysis">
+                <!--Place holder for the analysis-->
+                <!--.textToShow hold infos about Objects to show(in de.yml, en.yml)-->
                 <div id="analysisContent">
                   <%=raw t('concept_maps.analysis.textToShow')%>
                 </div>
@@ -73,7 +76,8 @@
 </div>
 
 <script>
-
+    var toggle = true;
+  //Array of all conceptlabels for aktiv survey
   var concepts = [
       <%@survey.concept_maps.each do |cm|%>
           <%cm.concepts.each do |c|%>
@@ -81,51 +85,59 @@
           <%end%>
 
       <%end%>
-  ]
+  ];
+  var labelArray = concepts.filter(onlyUnique);
+  //checks for uniqness in arrrays
   function onlyUnique(value, index, self) {
       return self.indexOf(value) === index;
   }
+  //Load content for analysistab new, when tab is pressed
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href"); // activated tab
+      if(target=="#analysis"){
+          $('#analysisContent').html("<%=raw t('concept_maps.analysis.textToShow')%>");
+      }
+      //othewise delete complete div-element
+      else{
+          $('#paramsField').html("");
+          toggle = true;
+      }
+  });
+  //start analysis
+  function startAnalysis() {
+      i = 0;
+      count = 0;
+      //check if no or at min. two appearing concepts are selected
+      relevantConcepts = $('#paramsField').val();
+      while (i<labelArray.length){
+          if(relevantConcepts.includes(labelArray[i])){
+              count = count +1;
+          }
+          i = i+1;
+      }
+      if(count<2&&relevantConcepts!=""){
+          alert("<%= t('concept_maps.analysis.error')%>");
+          return;
+      }
+      //change content of div (Please wait)
+      $('#analysisContent').html("<h3 ><%=t('concept_maps.analysis.wait')%></h3>");
+      //start the analysis/call analyze function in controller
+      jQuery.ajax({
+          type: "GET",
+          url: "<%= analyze_user_project_survey_concept_maps_path(@user, @project, @survey) %>" + ".js",
+          data: {"relevantConcepts": relevantConcepts}
+      });
 
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var target = $(e.target).attr("href"); // activated tab
-        if(target=="#analysis"){
-            $('#analysisContent').html("<%=raw t('concept_maps.analysis.textToShow')%>")
-        }
-        else{
-            $('#paramsField').html("")
-        }
-    });
+  }
 
+  //press Enter to start analysis
+  $(window).on('keydown', function (e) {
+      if(e.keyCode==13){
+          if($("#analysisTab").hasClass("active")&&toggle){
+              toggle = false;
+              $('#sAnalysisBtn').click();
+          }
+      }
 
-    function startAnalysis() {
-        i = 0;
-        count = 0;
-        labelArray = concepts.filter(onlyUnique)
-        relevantConcepts = $('#paramsField').val();
-        while (i<labelArray.length){
-            if(relevantConcepts.includes(labelArray[i])){
-                count = count +1
-            }
-            i = i+1
-        }
-        if(count<2&&relevantConcepts!=""){
-            alert("<%= t('concept_maps.analysis.error')%>");
-            return;
-        }
-
-        $('#analysisContent').html("<h3 ><%=t('concept_maps.analysis.wait')%></h3>")
-        jQuery.ajax({
-            type: "GET",
-            url: "<%= analyze_user_project_survey_concept_maps_path(@user, @project, @survey) %>" + ".js",
-            data: {"relevantConcepts": relevantConcepts}
-    });
-
-    }
-
-    $(window).on('keydown', function (e) {
-        if(e.keyCode==13){
-
-        }
-
-    });
+  });
 </script>

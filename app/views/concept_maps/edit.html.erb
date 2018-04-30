@@ -381,7 +381,7 @@
         nodes: nodes,
         edges: edges
     };
-
+    //options for vis.js map
     var options = {
         autoResize: true,
         height: '100%',
@@ -432,7 +432,7 @@
       network.canvas.body.container.style.cursor = 'default'
     });
 
-    //Drag: Knoten verschieben - Anfang
+    //Drag: Dragging concepts - Beginn
     network.on("dragStart", function (params) {
       if(params.nodes.length > 0) {
         id = params.nodes[0];
@@ -442,7 +442,7 @@
       }
     });
 
-    //Drag: Knoten verschieben - Ende
+    //Drag: Dragging concepts - End
     network.on("dragEnd", function (params) {
         nodesArray=params.nodes;
 
@@ -452,12 +452,15 @@
                 concepts_data = {};
                 newX = params.pointer.canvas.x;
                 newY = params.pointer.canvas.y;
-
+                //create hash of concepts (multiupdate)
+                //    updated all selected and compute new x- and y-coordinates for all (oldX and oldY position of mouse at dragstart)
                 nodesArray.forEach(function (element) {
                     concepts_data[element] = {'label': nodes.get(element).label, 'data':{'x': (nodes.get(element).x -(oldX-newX)), 'y': (nodes.get(element).y -(oldY-newY)), 'color':nodes.get(element).color.background}};
                     nodes.update({id: element, 'x': (nodes.get(element).x -(oldX-newX)), 'y': (nodes.get(element).y -(oldY-newY))});
 
                 });
+                //update concepts
+                //fakeId= -1 needed
                 jQuery.ajax({
                     type: "PUT",
                     url: "<%= concept_map_concepts_path(@map) %>/" + "-1" + "/",
@@ -466,7 +469,6 @@
                 hideForm();
         }
     });
-
 
     //Klick: Aktuelle Aktion abbrechen, Edit Node, Edit Edge, Add Node, Add Edge
     network.on("click", function (params) {
@@ -477,12 +479,14 @@
           hideForm();
           break;
         case addEdge:
+            //Deactivate all options if STRG or CMD are pressed
             if(toggle){
                 nodesArray = params.nodes;
             }
             else{
                 if (params.nodes.length > 0) {
                     $('#start').val(id);
+                    //draw an edge
                     if(id == params.nodes[0]){
                         $('#end').val(params.nodes[1]);
                     }
@@ -510,6 +514,7 @@
             }
             break;
         case none:
+            //Deactivate all options if STRG or CMD are pressed
             if(toggle){
                 nodesArray = params.nodes;
             }
@@ -522,6 +527,7 @@
                                 canvasX = nodes.get(id).x;
                                 canvasY = nodes.get(id).y;
                                 mode = editNode;
+                                //getting Color of changed concept
                                 $('#currentColor').css('background-color', nodes.get(id).color.background);
                                 oldColor = $('#currentColor').css('background-color');
                                 color = $('#currentColor').css('background-color');
@@ -534,7 +540,6 @@
                 else
                 if (params.edges.length > 0) {
                     id = params.edges[0];
-
                     setTimeout(function() {
                             if (mode == none) {
                                 canvasX = params.pointer.canvas.x;
@@ -554,6 +559,7 @@
       if (mode == none) {
         if (params.nodes.length > 0) {
           id = params.nodes[0];
+          //select nodes and get an array of all selected
           nodesArray = params.nodes;
           mode = addEdge;
           $('#context_help_text').html($('#ch_addedge').html());
@@ -563,11 +569,13 @@
             canvasX = params.pointer.canvas.x;
             canvasY = params.pointer.canvas.y;
             mode = addNode;
-
             showForm();
           <% end %>
         }
       }
+      //force closing of panels
+          //cant directily differ between short and long click at second click
+          //fast enough for a human not to recognize
       else if(mode==addEdge){
           $("#panel").addClass("hidden");
           $("#panel").focusout();
@@ -665,7 +673,6 @@
         $('#context_help_text').html($('#ch_normal').html());
     }
 
-
     //Form bei ESC oder Enter schließen
     $("#entry_concept").on('keyup', function (e) {
       if (e.keyCode == 27)
@@ -676,7 +683,7 @@
         hideForm();
     });
 
-
+    //check if STRG or CMD are pressend and toggle status/modus
     $(window).on('keydown', function (e) {
         if(e.keyCode==17){
             toggle = true;
@@ -731,7 +738,8 @@
         $('#emailgroup').addClass('has-error');
       }
     }
-
+    //change the color of one concept
+    //is send with Form for concepts
     function changeColor(colorID) {
         $('#currentColor').css('background-color', $('#'+colorID).css('background-color'));
         color = $('#currentColor').css('background-color');
@@ -739,7 +747,7 @@
         $("#entry_concept").focus();
         return false;
     }
-
+    //change the backgroundcolor of the map and save it in DB
     function changeBackgroundColor(colorID) {
         backgroundColor = $('#'+ colorID).css('background-color');
         $('#map').css('background-color',backgroundColor);
@@ -750,7 +758,8 @@
             data: {"concept_map": {'data':{'background_color': backgroundColor}}}
         });
     }
-
+    //Multichange color of concepts
+    //send with ajax
     function multiButtonColor(colorID) {
         $('#currentButtonColor').css('background-color', $('#'+colorID).css('background-color'));
         color = $('#currentButtonColor').css('background-color');
@@ -770,6 +779,8 @@
         $('#context_help_text').html($('#ch_normal').html());
     }
 
+    //disallow #-Key/hash in inputfield
+    //in term of creating/updating concepts/links
     $('#entry_concept').on('keydown', function (e) {
         if(e.keyCode == 163){
             e.preventDefault();

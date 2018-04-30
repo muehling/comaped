@@ -7,18 +7,6 @@ shape: 'ellipse',
 borderWidth: 2,
 color: {
 <%if @showColor%>
-    background: '#dff0d8',
-    border: '#dff0d8',
-    hover: {
-    background: '#cfe0c8',
-    border: '#cfe0c8'
-    },
-    highlight:{
-    background: '#dff0d8',
-    border: '#449d44'
-    }
-    }
-<%else%>
     background: '<%= concept.data["color"]%>',
     border: '<%= concept.data["color"]%>',
     hover: {
@@ -29,6 +17,18 @@ color: {
     background: '<%= concept.data["color"]%>',
     border: '#449d44',
     borderWidth: 20
+    }
+    }
+<%else%>
+    background: '#dff0d8',
+    border: '#dff0d8',
+    hover: {
+    background: '#cfe0c8',
+    border: '#cfe0c8'
+    },
+    highlight:{
+    background: '#dff0d8',
+    border: '#449d44'
     }
     }
 <%end%>

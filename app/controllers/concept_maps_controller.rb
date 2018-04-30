@@ -11,7 +11,6 @@ class ConceptMapsController < ApplicationController
   def index
     @page = params[:page].to_i || 0
     @maps = @survey.concept_maps.offset(@page*10).limit(10).order(updated_at: :desc)
-
     respond_to do |format|
       format.js {
         if @maps.size == 0
@@ -21,6 +20,7 @@ class ConceptMapsController < ApplicationController
     end
   end
 
+  # simple update for legend and backgroundcolor
   def update
       if @concept_map.update(concept_map_params)
     end
@@ -34,7 +34,7 @@ class ConceptMapsController < ApplicationController
   def show
     respond_to do |format|
       format.html {
-        @showColor=false
+        @showColor=true
       }
       format.json {
         if params.has_key?(:versions)
@@ -51,6 +51,7 @@ class ConceptMapsController < ApplicationController
             if params.has_key?(:versions)
               send_file @concept_map.to_zip(true), filename:@concept_map.code+".zip", type: "application/zip"
             else
+              #catch special case of export (export with temporary Map => true)
               if(params.has_key?(:aggregated_map_as_json))
                 send_data @concept_map.to_tgf(false), filename: @concept_map.code+".tgf", type: :text
               else
@@ -77,6 +78,7 @@ class ConceptMapsController < ApplicationController
 
   # GET /concept_maps/1/edit
   def edit
+    @showColor=true
     if @concept_map.accesses.nil?
       @concept_map.accesses = 0
     end
@@ -157,11 +159,14 @@ class ConceptMapsController < ApplicationController
     redirect_to user_project_survey_path(@user, @project, @survey)
   end
 
+  # Analyze /concept_maps/
+  #Controller method for analysis
   def analyze
     respond_to do |format|
       format.js{
+        #call Modellmethod
         analyseData = ConceptMap.analyze_maps(@survey,params[:relevantConcepts])
-        @showColor=false
+        @showColor=true
         @aggregated_map = analyseData[0]
         @analyse_data = analyseData[1]
         render 'analysis.js.erb'
@@ -172,12 +177,14 @@ class ConceptMapsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
+      #catch special case for tgf/json-export of a temporary Map
       if params[:id]=="0"&&params.has_key?(:aggregated_map_as_json)
         vals = ActiveSupport::JSON.decode(params[:aggregated_map_as_json])
         @concept_map = ConceptMap.build_temporary_map_from_json(vals, @survey.id, "AggMap:" + @survey.name)
       else
         @concept_map = ConceptMap.find(params[:id])
       end
+      #weaken the security-borders
       if concept_map_params.has_key?(:data)&&concept_map_params[:data].has_key?(:background_color) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
       elsif @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
