@@ -151,7 +151,8 @@ class ConceptMapsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
       @concept_map = ConceptMap.find(params[:id])
-      if concept_map_params.has_key?(:data)&&concept_map_params[:data].has_key?(:background_color) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
+      if concept_map_params.has_key?(:data)&&(concept_map_params[:data].has_key?(:background_color)||concept_map_params[:data].has_key?(:legend)) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
+        puts("haloo")
       elsif @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
       end
@@ -183,6 +184,6 @@ class ConceptMapsController < ApplicationController
   end
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_map_params
-    params.fetch(:concept_map, {}).permit(:data=>[:background_color])
+    params.fetch(:concept_map, {}).permit(:data=>[:background_color, :legend=>[:a, :b, :c, :d, :e, :f, :g,:h]])
   end
 end

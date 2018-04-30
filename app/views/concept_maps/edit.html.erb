@@ -1,14 +1,16 @@
 <style>
+  /* ------------ Navigation menu ------------ */
+  a.menu {
+    font-size: 18px;
+    text-decoration: none;
+  }
+
+  /* ------------ Sidebar menu ------------ */
   p.sidebar {
     color: #fff;
     font-size: 14px;
     margin-left: 32px;
     margin-right: 15px;
-  }
-
-  a.menu {
-    font-size: 18px;
-    text-decoration: none;
   }
 
   .sidenav {
@@ -38,54 +40,6 @@
     font-weight: bold;
     color: #fff;
     display: block;
-  }
-
-  button.colorShades {
-    width: 25px;
-    height: 25px;
-    border-color: #fff;
-    pointer-events: none;
-  }
-
-  .export {
-    width: 150px;
-    box-shadow: 2px 2px #778899;
-  }
-
-  li.color {
-    padding-bottom:5px;
-  }
-
-  input.color {
-    width: 115px;
-    height: 22px;
-    border-color: #fff;
-    border-radius:5px;
-    margin-left: 10px;
-    text-align: center;
-    box-shadow: 1px 1px #778899;
-  }
-
-  td.colorSelection {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
-  td.colorSelection2 {
-    padding-left: 5px;
-    padding-top: 2px;
-  }
-
-  div.col {
-    width: 25px;
-    height:25px;
-    border: 1px solid white;
-  }
-
-  div.col2 {
-    width: 25px;
-    height:25px;
-    border: 1px solid white;
   }
 
   .accordion {
@@ -127,43 +81,121 @@
     border: none;
   }
 
+
+  /* ------------ Tutorial ------------ */
+  b.tutorial {
+    color: #FFFFFF;
+  }
+
+  button.tutorial {
+    background-color: #1b809e;
+    width: 60px;
+    text-align: center;
+  }
+
+  button.tutorial:hover {
+    background-color: #1e8dae;
+  }
+
+  .popover-title {
+    background-color: #1b809e;
+    color: #FFFFFF;
+    text-align:center;
+  }
+
+  .popover.bottom {
+    max-width: 15%;
+  }
+
+  .popover.left {
+    max-width: 20%;
+  }
+
+  .popover.right {
+    max-width: 20%;
+  }
+
+  /* ------------ Export ------------ */
+  .export {
+    width: 150px;
+    box-shadow: 2px 2px #778899;
+  }
+
+  /* ------------ Color Management ------------ */
+  button.colorShades {
+    width: 25px;
+    height: 25px;
+    border-color: #fff;
+    pointer-events: none;
+  }
+
+  li.color {
+    padding-bottom:5px;
+  }
+
+  input.color {
+    width: 115px;
+    height: 22px;
+    border-color: #fff;
+    border-radius:5px;
+    margin-left: 10px;
+    text-align: center;
+    box-shadow: 1px 1px #778899;
+  }
+
+  td.colorSelection {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  td.colorSelection2 {
+    padding-left: 5px;
+    padding-top: 2px;
+  }
+
+  div.col {
+    width: 25px;
+    height:25px;
+    border: 1px solid white;
+  }
+
+  div.col2 {
+    width: 25px;
+    height:25px;
+    border: 1px solid white;
+  }
+
 </style>
+
 
 <!------------------------ Navigation bar ------------------------>
 <% content_for :header do %>
     <div id="navbar" class="container-fluid">
 
       <!-- Left Side -->
-      <a id="menuSymbol" class="navbar-brand menu" href="#" title="Menu" onclick="openNav();return false;">&#9776;</a>
+      <a id="menuSymbol" class="navbar-brand menu" href="#" onclick="openNav();hidePopover('menuSymbol');return false;" data-container="body" title="<%= t('popover.menu')%>" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-content="<%= t('popover.menu_text')%>">&#9776;</a>
       <div class="navbar-header"><p class="navbar-brand">CoMapEd</p></div>
-      <p class = "navbar-text"><%= t('.code')%>: <b ><%= @concept_map.code%></b></p>
+      <p class = "navbar-text"><%= t('.code')%>: <b id="conceptCode" data-container="body" title="<%= t('popover.code')%>" data-toggle="popover" data-trigger="manual" data-placement="right" data-content="<%= t('popover.code_text')%>"><%= @concept_map.code%></b></p>
 
       <!-- Right Side -->
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="padding-top: 14px"><span class="glyphicon glyphicon-question-sign" style="font-size: 20px;"></span><span class="caret"></span></a>
+      <ul  class="nav navbar-nav navbar-right">
+        <li id="questionmark" class="dropdown" onclick="hidePopover('questionmark');hidePopover('logout');return false;" data-container="body" title="<%= t('popover.question')%>" data-toggle="popover" data-trigger="manual" data-placement="left" data-content="<%= t('popover.question_text')%>">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="padding-top: 14px"><span class="glyphicon glyphicon-question-sign" style="font-size: 19px;" ></span><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><%= link_to t('.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
             <li><%= link_to t('.help_info'), '', onclick: "$('#info').removeClass('hidden');return false;"%></li>
+            <li><a onclick="tutorialActive = true;step('0');return false;"><%=t('popover.tutorial')%></a></li>
           </ul>
         </li>
-        <li><a class="menu" title="Logout" href="<%= logout_path(target: 'frontend')%>"><span class="glyphicon glyphicon-off"></span></a></li>
+        <li><a  id="logout" class="menu" href="<%= logout_path(target: 'frontend')%>" data-container="body" title="<%= t('popover.logout')%>" data-toggle="popover" data-trigger="manual" data-placement="bottom" data-content="<%= t('popover.logout_text')%>"><span class="glyphicon glyphicon-off"></span></a></li>
       </ul>
     </div>
 <% end %>
 
+
 <!------------------------ Sidebar menu with accordion sections ------------------------>
 <div id="menu" class="sidenav">
   <a href="#" class="closebtn" onclick="closeNav();return false;">&times;</a>
-
-  <!-- Auto layout -->
-  <button class="accordion"><%=t('autolayout')%></button>
-  <div class="panel2">
-    <p class="sidebar"><%=t('autolayout_text')%></p><br/>
-    <button id="apply" type="button" class="btn btn-default" style="width: 150px;display:inline-block;margin-left: 40px;box-shadow: 2px 2px #778899;" onclick=""><%= t('apply')%></button>
-    <br>&nbsp;
-    <br>&nbsp;
-  </div>
 
   <!-- Color Scheme -->
   <button class="accordion"><%=t('color_scheme') %></button>
@@ -217,18 +249,18 @@
 
   <!-- Color Legend -->
   <button class="accordion"><%=t('color_legend')%></button>
-  <div class="panel2">
+  <div id="colorlegend" class="panel2">
     <p class="sidebar"><%=t('color_legend_text')%></p>
     <br/>
     <ul style="list-style: none;">
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:#dff0d8;"></button><input id="legend1" class="color" type="text" ></li>
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:greenyellow;"></button><input id="legend2" class="color" type="text" ></li>
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:green;"></button><input id="legend3" class="color" type="text" ></li>
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:plum;"></button><input id="legend4" class="color" type="text" ></li>
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:yellow;"></button><input id="legend5" class="color" type="text" ></li>
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:orange;"></button><input id="legend6" class="color" type="text" ></li>
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:dodgerblue;"></button><input id="legend7" class="color" type="text" ></li>
-      <li class="color"><button class="btn btn-default colorShades" style="background-color:deepskyblue;"></button><input id="legend8" class="color" type="text" ></li>
+      <li id="brightgreen" class="color hidden"><button class="btn btn-default colorShades" style="background-color:#dff0d8;"></button><input id="brightgreenlegend" class="color" type="text" onblur="saveColorName();"></li>
+      <li id="greenyellow" class="color hidden"><button class="btn btn-default colorShades" style="background-color:greenyellow;"></button><input id="greenyellowlegend" class="color" type="text" onblur="saveColorName();"></li>
+      <li id="green"       class="color hidden"><button class="btn btn-default colorShades" style="background-color:green;"></button><input id="greenlegend" class="color" type="text"> onblur="saveColorName();"></li>
+      <li id="plum"        class="color hidden"><button class="btn btn-default colorShades" style="background-color:plum;"></button><input id="plumlegend" class="color" type="text" onblur="saveColorName();"></li>
+      <li id="yellow"      class="color hidden"><button class="btn btn-default colorShades" style="background-color:yellow;"></button><input id="yellowlegend" class="color" type="text" onblur="saveColorName();"></li>
+      <li id="orange"      class="color hidden"><button class="btn btn-default colorShades" style="background-color:orange;"></button><input id="orangelegend" class="color" type="text" onblur="saveColorName();"></li>
+      <li id="dodgerblue"  class="color hidden"><button class="btn btn-default colorShades" style="background-color:dodgerblue;"></button><input id="dodgerbluelegend" class="color" type="text" onblur="saveColorName();"></li>
+      <li id="deepskyblue" class="color hidden"><button class="btn btn-default colorShades" style="background-color:deepskyblue;"></button><input id="deepskybluelegend" class="color" type="text" onblur="saveColorName();"></li>
     </ul>
   </div>
 
@@ -262,24 +294,17 @@
   </div>
 </div>
 
+
 <!------------------------ Alerts ------------------------>
 
-<!-- Survey Introduction -->
-<% if @concept_map.accesses <= 2 && !@concept_map.survey.introduction.blank? %>
-  <div class="alert alert-warning alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <%= @concept_map.survey.introduction %>
-  </div>
-<% end %>
-
-<!-- Quick help -->
-<div id="info" class="alert alert-info <% if @concept_map.accesses > 2 %> hidden <% end %>">
+<!-- More information -->
+<div id="info" class="alert alert-info hidden" style="background-color: #1b809e; color: white">
   <button type="button" class="close" aria-label="Close" onclick="$('#info').addClass('hidden');return false;"><span aria-hidden="true">&times;</span></button>
   <%= render 'info'%>
 </div>
 
-<!-- More information -->
-<div id="context_help" class="alert alert-info <% if @concept_map.accesses > 2 %> hidden <% end %>">
+<!-- Quick help -->
+<div id="context_help" class="alert alert-info hidden" style="background-color: #1b809e; color: white">
   <button type="button" class="close" aria-label="Close" onclick="$('#context_help').addClass('hidden');return false;"><span aria-hidden="true">&times;</span></button>
   <p id="context_help_text">
   </p>
@@ -293,7 +318,7 @@
 <div id="map" class="well" style="background-color: <%= @concept_map.data['background_color']%>; height: 100%">
 </div>
 <%else%>
-    <div id="map" class="well" style="background-color: #f8f8f8; height: 100%">
+    <div id="map" class="well" data-container="body" title="<%= t('popover.code')%>" data-toggle="popover" data-trigger="manual" data-placement="right" data-content="<%= t('popover.code_text')%>" style="background-color: #f8f8f8; height: 100%">
     </div>
 <%end%>
 
@@ -342,6 +367,55 @@
   </div>
 </div>
 
+
+<!------------------------ Tutorial ------------------------>
+
+<!-- Introduction -->
+<div id="tutorial_step0" class="hidden panel panel-default" style="position:absolute;left:20%;top:20%;width:60%;box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);">
+  <div class="panel-body">
+    <%= render 'intro' %>
+    <button class="btn btn-sm btn-default tutorial" onclick="step('1');return false;"><b class="tutorial"><%= t('popover.start')%></b></button>
+  </div>
+</div>
+
+<!-- Step 1 -->
+<div id="tutorial_step1" class="hidden panel panel-default" style="position:absolute;left:35%;top:75%;box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);">
+  <div class="panel-body">
+    <b style="font-size: 18px; "><%= t('popover.step1')%></b>
+    <p> <%= t('popover.tutorial_experience')%> <%= t('popover.tutorial_end') %><br/> <i style="font-size:12px;margin:auto; display:block;"><%= t('popover.tutorial_resume')%></i></p>
+    <div>
+      <button class="btn btn-sm btn-default tutorial" onclick="endTutorial();$('#tutorial_step1').addClass('hidden');return false;"><b class="tutorial"><%= t('popover.skip')%></b></button>
+      <button class="btn btn-sm btn-default tutorial" onclick="step('2');return false;"><b class="tutorial"><%= t('popover.next')%></b></button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 2 -->
+<div id="tutorial_step2" class="hidden panel panel-default" style="position:absolute;left:32%;top:15%;box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);">
+  <div class="panel-body">
+    <b style="font-size: 18px; "><%= t('popover.step2')%></b>
+    <p> <%= t('popover.tutorial_experience')%> <%= t('popover.tutorial_end') %><br/> <i style="font-size:12px;margin:auto; display:block;"><%= t('popover.tutorial_resume')%></i></p>
+    <div>
+      <button class="btn btn-sm btn-default tutorial" onclick="endTutorial();$('#tutorial_step2').addClass('hidden');return false;"><b class="tutorial"><%= t('popover.skip')%></b></button>
+      <button class="btn btn-sm btn-default tutorial" onclick="step('1');$('#tutorial_step2').addClass('hidden');return false;"><b class="tutorial"><%= t('popover.back')%></b></button>
+      <button class="btn btn-sm btn-default tutorial" onclick="step('3');return false;"><b class="tutorial"><%= t('popover.next')%></b></button>
+    </div>
+  </div>
+</div>
+
+<!-- Step 3 -->
+<div id="tutorial_step3" class="hidden panel panel-default" style="position:absolute;left:10%;top:20%;box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);">
+  <div class="panel-body">
+    <b style="font-size: 18px; "><%= t('popover.step3')%></b>
+    <p> <%= t('popover.tutorial_experience')%> <%= t('popover.tutorial_end') %><br/> <i style="font-size:12px;margin:auto; display:block;"><%= t('popover.tutorial_resume')%></i></p>
+    <div>
+      <button class="btn btn-sm btn-default tutorial" onclick="step('2');$('#tutorial_step3').addClass('hidden');return false;"><b class="tutorial"><%= t('popover.back')%></b></button>
+      <button class="btn btn-sm btn-default tutorial" onclick="endTutorial();$('#tutorial_step3').addClass('hidden');return false;"><b class="tutorial"><%= t('popover.finish')%></b></button>
+    </div>
+  </div>
+</div>
+
+
 <!------------------------ Javascript ------------------------>
 
 <script type="text/javascript">
@@ -357,9 +431,64 @@
     var toggle = false;
     var nodesArray = [];
     var edge = [];
+    var step0 = false;
+    var step1 = false;
+    var step2 = false;
+    var step3 = false;
+    var tutorialActive = false;
+    var brightgreen = "rgb(223, 240, 216)";
+    var greenyellow = "rgb(173, 255, 47)";
+    var green = "rgb(0, 128, 0)";
+    var plum = "rgb(221, 160, 221)";
+    var yellow = "rgb(255, 255, 0)";
+    var orange = "rgb(255, 165, 0)";
+    var dodgerblue = "rgb(30, 144, 255)";
+    var deepskyblue = "rgb(0, 191, 255)";
 
-   // var keks = "<%= @concept_map.data['legend'] %>";
-  //  alert(conceptMapLegend['rgb(223,240,216)']);
+    // Activate popovers in general
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    });
+
+    // Only show tutorial popovers on "first" access
+    if (<%= @concept_map.accesses <= 2%>){
+      step('0');
+    }
+
+    // Accordion action of the sidebar menu
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight){
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
+
+    // Resize all tutorial elements
+     $(window).bind('resize', function () {
+         if(step0) {
+             $('#tutorial_step0').css({"left": "20%", "top": "20%", "width": "60%"});
+         }else if(step1){
+             $('#logout').popover('show');
+             $('#conceptCode').popover('show');
+             $('#menuSymbol').popover('show');
+             $('#questionmark').popover('show');
+             $('#tutorial_step1').css({"left": "35%", "top": "75%"});
+         } else if(step2){
+             $('#arrows').popover('show');
+             $('#zoom').popover('show');
+             $('#tutorial_step2').css({"left": "32%", "top": "25%"});
+         } else if(step3) {
+             $('#tutorial_step3').css({"left": "10%", "top": "30%"});
+         }
+    });
 
     var mode = none;
     var canvasX = 0, canvasY = 0, id = 0, color=$('#currentColor').css('background-color');
@@ -406,6 +535,14 @@
             multiselect: true
         }
     };
+
+    // Add all used colors and their captions to legend
+    nodes.forEach(function(elem){
+        addColorToLegend(elem.color.background);
+    });
+
+
+    //------------------------ Concept Map Interaction ------------------------\\
 
     var network = new vis.Network(container, data, options);
     $('#context_help_text').html($('#ch_normal').html());
@@ -475,6 +612,7 @@
         case editNode:
         case addNode:
           hideForm();
+          //addColorToLegend(color);
           break;
         case addEdge:
             if(toggle){
@@ -583,6 +721,7 @@
     });
 
     function destroy() {
+        deleteColorFromLegend(color, id);
       switch (mode) {
         case editNode:
           jQuery.ajax({type: "DELETE", url: "<%= concept_map_concepts_path(@map) %>/" + id });
@@ -692,16 +831,20 @@
     });
 
     function validateForm() {
-      if (mode == addNode || mode == editNode) {
+      if (mode === addNode || mode === editNode) {
         t = $('#entry_concept').val();
         hideForm();
-        node = nodes.get({
+        var node = nodes.get({
           filter: function (item) {
             return (item.label.toLocaleLowerCase() === t.toLocaleLowerCase());
           }
         });
 
-        if (node == null||oldColor!=color){
+        if (node == null||oldColor!==color){
+            addColorToLegend(color);
+            if(oldColor !== null){
+                deleteColorFromLegend(oldColor,id);
+            }
             return true;
         }
         else {
@@ -715,6 +858,9 @@
       }
 
     }
+
+
+    //------------------------ Send Email  ------------------------\\
 
     function sendMail() {
       $('#emailgroup').removeClass('has-error');
@@ -731,6 +877,9 @@
         $('#emailgroup').addClass('has-error');
       }
     }
+
+
+    //------------------------ Color management ------------------------\\
 
     function changeColor(colorID) {
         $('#currentColor').css('background-color', $('#'+colorID).css('background-color'));
@@ -757,17 +906,19 @@
         concepts_data = {};
         nodesArray.forEach(function (element) {
             concepts_data[element] = {'label': nodes.get(element).label, 'data':{'x': nodes.get(element).x, 'y': nodes.get(element).y, 'color':color}};
-
+            deleteColorGroupFromLegend(nodes.get(element).color.background, nodes.get(element).id, nodesArray);
         });
         jQuery.ajax({
             type: "PUT",
             url: "<%= concept_map_concepts_path(@map) %>/" + "-1" + "/",
             data: {"concepts": {"concepts_data":concepts_data}}
         });
+
         nodesArray =[];
         network.unselectAll();
         mode = none;
         $('#context_help_text').html($('#ch_normal').html());
+        addColorToLegend(color);
     }
 
     $('#entry_concept').on('keydown', function (e) {
@@ -783,49 +934,263 @@
     });
 
 
-        // Open and close the sidebar menu
+    //------------------------ Color legend ------------------------\\
+
+    // Legend only shows colors used in the concept map
+    // Add color to legend
+    function addColorToLegend(newColor) {
+        if(newColor.localeCompare(brightgreen) === 0){
+            $('#brightgreen').removeClass('hidden');
+            //getColorName(brightgreenlegend, brightgreen);
+        } else if(newColor.localeCompare(greenyellow) === 0) {
+            $('#greenyellow').removeClass('hidden');
+           // getColorName(greenyellowlegend, greenyellow);
+        } else if(newColor.localeCompare(green) === 0) {
+            $('#green').removeClass('hidden');
+          //  getColorName(greenlegend, green);
+        } else if(newColor.localeCompare(plum) === 0) {
+            $('#plum').removeClass('hidden');
+          //  getColorName(plumlegend, plum);
+        } else if(newColor.localeCompare(yellow) === 0) {
+            $('#yellow').removeClass('hidden');
+         //   getColorName(yellowlegend, yellow);
+        } else if(newColor.localeCompare(orange) === 0) {
+            $('#orange').removeClass('hidden');
+          //  getColorName(orangelegend, orange);
+        } else if(newColor.localeCompare(dodgerblue) === 0) {
+            $('#dodgerblue').removeClass('hidden');
+           // getColorName(dodgerbluelegend, dodgerblue);
+        } else if(newColor.localeCompare(deepskyblue) === 0){
+            $('#deepskyblue').removeClass('hidden');
+          //  getColorName(deepskybluelegend, deepskyblue);
+        }
+        // Adapt panel to new height
+        document.getElementById("colorlegend").style.maxHeight = document.getElementById("colorlegend").scrollHeight + "px";
+    }
+
+    // Delete color from legend if not used anymore
+    function deleteColorFromLegend(oldColor, id) {
+        var used = false;
+        // Is color used for another concept?
+        nodes.forEach(function(elem){
+            if((elem.id != id) && (elem.color.background.localeCompare(oldColor) === 0)){
+                used = true;
+            }
+        });
+        // Only delete if not used for another concept
+        if(!used) {
+            if (oldColor.localeCompare(brightgreen) === 0) {
+                $('#brightgreen').addClass('hidden');
+            } else if (oldColor.localeCompare(greenyellow) === 0) {
+                $('#greenyellow').addClass('hidden');
+            } else if (oldColor.localeCompare(green) === 0) {
+                $('#green').addClass('hidden');
+            } else if (oldColor.localeCompare(plum) === 0) {
+                $('#plum').addClass('hidden');
+            } else if (oldColor.localeCompare(yellow) === 0) {
+                $('#yellow').addClass('hidden');
+            } else if (oldColor.localeCompare(orange) === 0) {
+                $('#orange').addClass('hidden');
+            } else if (oldColor.localeCompare(dodgerblue) === 0) {
+                $('#dodgerblue').addClass('hidden');
+            } else if (oldColor.localeCompare(deepskyblue) === 0) {
+                $('#deepskyblue').addClass('hidden');
+            }
+        }
+    }
+
+    // Delete color from legend for a selected group of nodes
+    function deleteColorGroupFromLegend(oldColor, id, nodesArr) {
+        var used = false;
+        // Is color used for another concept?
+        nodes.forEach(function(elem){
+            if((elem.id != id) && (elem.color.background.localeCompare(oldColor) === 0)){
+                nodesArr.forEach(function(toDelete) {
+                    if(nodes.get(toDelete).id === elem.id) {
+
+                        used = false;
+                    }
+                });
+            }
+        });
+        // Only delete if not used for another concept
+        if(!used) {
+            alert("here");
+            if (oldColor.localeCompare(brightgreen) === 0) {
+                $('#brightgreen').addClass('hidden');
+            } else if (oldColor.localeCompare(greenyellow) === 0) {
+                $('#greenyellow').addClass('hidden');
+            } else if (oldColor.localeCompare(green) === 0) {
+                $('#green').addClass('hidden');
+            } else if (oldColor.localeCompare(plum) === 0) {
+                $('#plum').addClass('hidden');
+            } else if (oldColor.localeCompare(yellow) === 0) {
+                $('#yellow').addClass('hidden');
+            } else if (oldColor.localeCompare(orange) === 0) {
+                $('#orange').addClass('hidden');
+            } else if (oldColor.localeCompare(dodgerblue) === 0) {
+                $('#dodgerblue').addClass('hidden');
+            } else if (oldColor.localeCompare(deepskyblue) === 0) {
+                $('#deepskyblue').addClass('hidden');
+            }
+        }
+    }
+
+
+    // Save name of colors
+    function saveColorName() {
+        var brightgreenvalue = document.getElementById("brightgreenlegend").value;
+        var greenyellowvalue = document.getElementById("greenyellowlegend").value;
+        var greenvalue = document.getElementById("greenlegend").value;
+        var plumvalue = document.getElementById("plumlegend").value;
+        var yellowvalue = document.getElementById("yellowlegend").value;
+        var orangevalue = document.getElementById("orangelegend").value;
+        var dodgerbluevalue = document.getElementById("dodgerbluelegend").value;
+        var deepskybluevalue = document.getElementById("deepskybluelegend").value;
+
+        jQuery.ajax({
+            type: "PUT",
+            url: "<%= concept_map_path(@map) %>",
+            data: {"concept_map": {'data':{'legend': {"a": brightgreenvalue, "b": greenyellowvalue, "c": greenvalue, "d": plumvalue, "e": yellowvalue, "f": orangevalue, "g": dodgerbluevalue, "h": deepskybluevalue }}}}
+        });
+    }
+
+    // Get corresponding captions to colors
+      var legendvalues = {
+        <% @concept_map.data["legend"].keys.each do |l|%>
+          <%= l %>: "<%=@concept_map.data["legend"][l] %>",
+          <% end %>
+      }
+
+        document.getElementById("brightgreenlegend").value = legendvalues["a"];
+        document.getElementById("greenyellowlegend").value = legendvalues["b"];
+        document.getElementById("greenlegend").value = legendvalues["c"];
+        document.getElementById("plumlegend").value = legendvalues["d"];
+        document.getElementById("yellowlegend").value = legendvalues["e"];
+        document.getElementById("orangelegend").value = legendvalues["f"];
+        document.getElementById("dodgerbluelegend").value = legendvalues["g"];
+        document.getElementById("deepskybluelegend").value = legendvalues["h"];
+
+
+    //------------------------ Sidebar menu ------------------------\\
+
+    // Open and close the sidebar menu
     function openNav() {
+        var firstAccess = <%= @concept_map.accesses <= 2 %>;
        document.getElementById("menu").style.width = "260px";
        document.getElementById("navbar").style.marginLeft = "260px";
        document.getElementById("map").style.marginLeft = "260px";
        document.getElementById("info").style.marginLeft = "260px";
        document.getElementById("context_help").style.marginLeft = "260px";
        $('#menuSymbol').addClass('hidden');
+       if( firstAccess || tutorialActive ) {
+           $('#conceptCode').popover('hide');
+           $('#tutorial_step0').css('left', '25%');
+           $('#tutorial_step1').css('left', '50%');
+           $('#tutorial_step2').css('left', '47%');
+           $('#tutorial_step3').css('left', '25%');
+       }
     }
 
     function closeNav() {
+        var firstAccess = <%= @concept_map.accesses <= 2 %>;
         document.getElementById("menu").style.width = "0";
         document.getElementById("navbar").style.marginLeft= "0";
         document.getElementById("map").style.marginLeft= "0";
         document.getElementById("info").style.marginLeft = "0px";
         document.getElementById("context_help").style.marginLeft = "0px";
         $('#menuSymbol').removeClass('hidden');
-    }
-
-    // Accordion action of the sidebar menu
-    var acc = document.getElementsByClassName("accordion");
-    var i;
-
-    for (i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var panel = this.nextElementSibling;
-            if (panel.style.maxHeight){
-                panel.style.maxHeight = null;
-            } else {
-                panel.style.maxHeight = panel.scrollHeight + "px";
+        if(firstAccess || tutorialActive) {
+            $('#tutorial_step0').css('left', '20%');
+            $('#tutorial_step1').css('left', '35%');
+            $('#tutorial_step2').css('left', '32%');
+            $('#tutorial_step3').css('left', '10%');
+            if(step1){
+                $('#conceptCode').popover('show');
             }
-        });
+        }
     }
 
-    // Save name of colors
- //   function saveName(colorID) {
-    //    var name = document.getElementById(colorID).value;
-    // jQuery.ajax({
-    //        type: "PUT",
-    //        url: "<%= concept_map_path(@map) %>",
-    //        data: {"concept_map": {'data':{'background_color': backgroundColor, 'legend': name}}}
-    //    });
-    //}
+
+    //------------------------ Tutorial ------------------------\\
+
+    // Extend navigation buttons with popover
+    $('.vis-button.vis-up').html('<div id="arrows" data-container="body" title="<%= t('popover.navigation')%>" data-toggle="popover" data-trigger="manual" data-placement="top" data-content="<%= t('popover.navigation_text')%>"></div>');
+    $('.vis-button.vis-zoomExtends').html('<div id="zoom" data-container="body" title="<%= t('popover.zoom')%>" data-toggle="popover" data-trigger="manual" data-placement="top" data-content="<%= t('popover.zoom_text')%>"></div>');
+
+    // Toggle popovers if necessary
+    function hidePopover(popoverId){
+        $('#' + popoverId).popover('hide');
+    }
+
+    function showPopover(popoverId){
+        $('#' + popoverId).popover('show');
+    }
+
+    // End tutorial
+    function endTutorial() {
+        tutorialActive = false;
+
+        // Restore full opacity
+        document.getElementById("navbar").style.opacity = "1";
+        document.getElementById("map").style.opacity = "1";
+
+        // Hide all possible popovers
+        $('#menuSymbol').popover('hide');
+        $('#conceptCode').popover('hide');
+        $('#questionmark').popover('hide');
+        $('#logout').popover('hide');
+        $('#arrows').popover('hide');
+        $('#zoom').popover('hide');
+        $('#context_help').addClass('hidden');
+    }
+
+    // Step through popovers of tutorial
+    function step(number){
+        switch(number) {
+            case '0':
+                step0 = true;
+                document.getElementById("map").style.opacity = "0.5";
+                document.getElementById("navbar").style.opacity= "0.5";
+                $('#tutorial_step0').removeClass('hidden');
+                break;
+            case '1':
+                step1 = true;
+                step2 = false;
+                document.getElementById("map").style.opacity = "0.5";
+                document.getElementById("navbar").style.opacity= "1";
+                $('#tutorial_step0').addClass('hidden');
+                $('#tutorial_step1').removeClass('hidden');
+                $('#logout').popover('show');
+                $('#conceptCode').popover('show');
+                $('#menuSymbol').popover('show');
+                $('#questionmark').popover('show');
+                $('#arrows').popover('hide');
+                $('#zoom').popover('hide');
+                break;
+            case '2':
+                step1 = false;
+                step2 = true;
+                document.getElementById("map").style.opacity = "1";
+                document.getElementById("navbar").style.opacity= "0.5";
+                $('#logout').popover('hide');
+                $('#conceptCode').popover('hide');
+                $('#menuSymbol').popover('hide');
+                $('#questionmark').popover('hide');
+                $('#tutorial_step1').addClass('hidden');
+                $('#tutorial_step2').removeClass('hidden');
+                $('#arrows').popover('show');
+                $('#zoom').popover('show');
+                break;
+            case '3':
+                step2 = false;
+                step3 = true;
+                $('#arrows').popover('hide');
+                $('#zoom').popover('hide');
+                $('#tutorial_step2').addClass('hidden');
+                $('#tutorial_step3').removeClass('hidden');
+                $('#context_help').removeClass('hidden');
+        }
+    }
 
 </script>

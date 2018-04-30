@@ -15,6 +15,6 @@ s.save
 p1.surveys.build(name: "Test Befragung 2").save
 cm = s.concept_maps.build(code: "test")
 cm.save
-cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
-cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
-cm.links.build(start: Concept.find(1), end: Concept.find(2), label: "hat").save
+cm.concepts.build(label: "schwer", data:{"x"=>200,"y"=>0, "color"=>"rgb(0, 191, 255)"}).save
+cm.concepts.build(label: "Aller Anfang", data:{"x"=>0,"y"=>0, "color"=>"rgb(0, 191, 255)" }).save
+cm.links.build(start: Concept.find(2), end: Concept.find(1), label: "ist").save
