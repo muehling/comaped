@@ -296,7 +296,7 @@ class ConceptMap < ApplicationRecord
       require "rclass"
       #Parse concepts of interest to an R Array-String, needed for input of R-Script
       relevantConcepts = relevantConcepts.gsub(" ", "")
-      tempArray = relevantConcepts.split(",")
+      tempArray = relevantConcepts.split(",").reject(&:blank?)
       #chatch empty input and use it for you
       if tempArray.size == 0
         temp =ConceptMap.find_by_survey_id(survey.id)
