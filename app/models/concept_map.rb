@@ -97,7 +97,6 @@ class ConceptMap < ApplicationRecord
   #Returns: true if the import succeeded, false if an error occurred
   def from_json(data, code_prefix)
     #consider umlaute
-    data =  data.encode('ISO-8859-1','UTF-8')
     vals = ActiveSupport::JSON.decode(data)
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
@@ -132,7 +131,7 @@ class ConceptMap < ApplicationRecord
       edge_defs = nil
     else
       #consider umlaute
-      node_defs = parts[0].encode('ISO-8859-1','UTF-8')
+      node_defs = parts[0]
       edge_defs = parts[1]
     end
     dict = Hash.new
@@ -143,7 +142,7 @@ class ConceptMap < ApplicationRecord
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
           #somehow we need it here a second time... only one of both is not enough
-          c = concepts.build(label: l[1].strip.encode('ISO-8859-1','UTF-8'), data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
+          c = concepts.build(label: l[1].strip, data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
           c.save
           dict[l[0]] = c
           count = count + 1
