@@ -115,17 +115,17 @@ class Survey < ApplicationRecord
   #Returns: -
   def write_stream(prefix, zip, tgf, versions)
     zip.put_next_entry(prefix + 'survey.json')
-    zip.print self.as_json(only: [:name, :description, :code, :introduction, :association_labels, :concept_labels, :initial_map, :start_date, :end_date]).to_json.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+    zip.print self.as_json(only: [:name, :description, :code, :introduction, :association_labels, :concept_labels, :initial_map, :start_date, :end_date]).to_json
     self.concept_maps.each do |map|
       if versions
         map.write_stream(prefix + map.code + "/", zip, tgf)
       else
         if tgf
           zip.put_next_entry((prefix + map.code + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
-          zip.print map.to_tgf.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+          zip.print map.to_tgf
         else
           zip.put_next_entry((prefix + map.code + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
-          zip.print map.to_json.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+          zip.print map.to_tgf
         end
       end
     end
