@@ -65,7 +65,7 @@ l= layout_nicely(g)
 #Distanz-Faktor zum Verhindern überlappender Konzepte (Layoutkoordinaten normiert in [-1,1])
 #Optimalerweise in Abhängigkeit von length(V(g))
 #dm = 750
-dm <- max(500, (length(V(g)))/2 * 150)
+dm <- max(150, ((length(V(g)))/2 * 150)/8)
 
 
 #======
