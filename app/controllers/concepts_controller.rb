@@ -6,6 +6,7 @@ class ConceptsController < ApplicationController
 
   # POST /concept_maps/1/concepts.js
   def create
+    @showColor = true
     @concept = @map.concepts.build(concept_params[:concepts_data])
     respond_to do |format|
       if @concept.save

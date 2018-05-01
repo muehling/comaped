@@ -6,7 +6,7 @@ y: <%= concept.data["y"] || 0 %>,
 shape: 'ellipse',
 borderWidth: 2,
 color: {
-<%if @showColor%>
+<%if @showColor && !concept.data["color"].nil?%>
     background: '<%= concept.data["color"]%>',
     border: '<%= concept.data["color"]%>',
     hover: {

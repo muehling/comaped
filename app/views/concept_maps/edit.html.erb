@@ -289,11 +289,11 @@
 
 <!------------------------ Concept map ------------------------>
 
-<%if @user.nil?%>
-<div id="map" class="well" style="background-color: <%= @concept_map.data['background_color']%>; height: 100%">
-</div>
-<%else%>
+<%if @concept_map.data['background_color'].nil?%>
     <div id="map" class="well" style="background-color: #f8f8f8; height: 100%">
+    </div>
+<%else%>
+    <div id="map" class="well" style="background-color: <%= @concept_map.data['background_color']%>; height: 100%">
     </div>
 <%end%>
 
