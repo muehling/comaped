@@ -83,8 +83,8 @@ class ConceptMap < ApplicationRecord
     save
     temp = file.path.split('.')
     type = temp[-1].downcase
-    return from_json(File.read(file).encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_'), 'I_') if type == "json"
-    return from_tgf(File.read(file).encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_')) if type == "tgf"
+    return from_json(File.read(file), 'I_') if type == "json"
+    return from_tgf(File.read(file)) if type == "tgf"
     return import_zip(file, '') if type == "zip"
   end
 
@@ -96,7 +96,6 @@ class ConceptMap < ApplicationRecord
   #Returns: true if the import succeeded, false if an error occurred
   def from_json(data, code_prefix)
     #consider umlaute
-    data =  data.encode('ISO-8859-1','UTF-8')
     vals = ActiveSupport::JSON.decode(data)
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
@@ -131,7 +130,7 @@ class ConceptMap < ApplicationRecord
       edge_defs = nil
     else
       #consider umlaute
-      node_defs = parts[0].encode('ISO-8859-1','UTF-8')
+      node_defs = parts[0]
       edge_defs = parts[1]
     end
     dict = Hash.new
@@ -142,7 +141,7 @@ class ConceptMap < ApplicationRecord
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
           #somehow we need it here a second time... only one of both is not enough
-          c = concepts.build(label: l[1].strip.encode('ISO-8859-1','UTF-8'), data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
+          c = concepts.build(label: l[1].strip, data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
           c.save
           dict[l[0]] = c
           count = count + 1
@@ -178,10 +177,10 @@ class ConceptMap < ApplicationRecord
       name ||= c.name
       type = name.split('.')[-1]
       if type == "json"
-        res = res && from_json(c.get_input_stream.read.encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_'), 'I_')
+        res = res && from_json(c.get_input_stream.read, 'I_')
       end
       if type == "tgf"
-        res = res && from_tgf(c.get_input_stream.read.encode('UTF-8', 'ISO-8859-1', :undefined => :replace, :replace => '_'))
+        res = res && from_tgf(c.get_input_stream.read)
       end
       versionize(DateTime.parse(name.split('.')[0..-2].join(':')))
       if pos < toDo.size-1
@@ -268,10 +267,10 @@ class ConceptMap < ApplicationRecord
     self.versions.each do |v|
       if tgf
         zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
-        zip.print v.to_tgf.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+        zip.print v
       else
         zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
-        zip.print v.map.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+        zip.print v
       end
     end
   end
@@ -295,7 +294,7 @@ class ConceptMap < ApplicationRecord
       require "rclass"
       #Parse concepts of interest to an R Array-String, needed for input of R-Script
       relevantConcepts = relevantConcepts.gsub(" ", "")
-      tempArray = relevantConcepts.split(",")
+      tempArray = relevantConcepts.split(",").reject(&:blank?)
       #chatch empty input and use it for you
       if tempArray.size == 0
         temp =ConceptMap.find_by_survey_id(survey.id)
