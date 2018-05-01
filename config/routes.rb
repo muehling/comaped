@@ -11,7 +11,11 @@ Rails.application.routes.draw do
     resources :users do
       resources :projects do
         resources :surveys do
-          resources :concept_maps, except: [:edit, :update]
+          resources :concept_maps, except: [:edit, :update] do
+            collection do
+              get :analyze
+            end
+          end
         end
       end
     end

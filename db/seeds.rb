@@ -15,6 +15,58 @@ s.save
 p1.surveys.build(name: "Test Befragung 2").save
 cm = s.concept_maps.build(code: "test")
 cm.save
+
 cm.concepts.build(label: "schwer", data:{"x"=>200,"y"=>0, "color"=>"rgb(0, 191, 255)"}).save
 cm.concepts.build(label: "Aller Anfang", data:{"x"=>0,"y"=>0, "color"=>"rgb(0, 191, 255)" }).save
 cm.links.build(start: Concept.find(2), end: Concept.find(1), label: "ist").save
+cm = s.concept_maps.build(code: "test0")
+cm.save
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(1), end: Concept.find(2), label: "hat").save
+cm = s.concept_maps.build(code: "test1")
+cm.save
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(3), end: Concept.find(4), label: "hat").save
+cm = s.concept_maps.build(code: "tes2")
+cm.save
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(5), end: Concept.find(6), label: "hat").save
+cm = s.concept_maps.build(code: "tes3")
+cm.save
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(7), end: Concept.find(8), label: "hat").save
+cm.save
+cm = s.concept_maps.build(code: "tes4")
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(9), end: Concept.find(10), label: "hat").save
+cm.save
+cm = s.concept_maps.build(code: "tes5")
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(11), end: Concept.find(12), label: "hat").save
+cm.save
+cm = s.concept_maps.build(code: "tes6")
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(13), end: Concept.find(14), label: "hat").save
+cm.save
+cm = s.concept_maps.build(code: "tes7")
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(15), end: Concept.find(16), label: "hat").save
+cm.save
+cm = s.concept_maps.build(code: "tes8")
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(17), end: Concept.find(18), label: "hat").save
+cm.save
+cm = s.concept_maps.build(code: "tes9")
+cm.concepts.build(label: "Auto", data:{"x"=>200,"y"=>0, "color"=>"#ff0000"}).save
+cm.concepts.build(label: "Motor", data:{"x"=>0,"y"=>0, "color"=>"#dff0d8" }).save
+cm.links.build(start: Concept.find(19), end: Concept.find(20), label: "hat").save
+cm.save

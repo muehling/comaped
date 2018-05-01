@@ -18,6 +18,7 @@ class SurveysController < ApplicationController
       format.html {
         @maps = @survey.concept_maps.limit(10).order(updated_at: :desc)
         @page = 0
+        @showColor=false
       }
       format.text {
         if params.has_key?(:versions)

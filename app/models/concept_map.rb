@@ -7,9 +7,9 @@ class ConceptMap < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
 
-  serialize :data, Hash           #Speichert Infos als Key/Value Paare. Feste Keys:
-                                  #-background_color: Hintergrundfarbe einer Map
-                                  # legend: Name zu einer Farbe
+  serialize :data, Hash           #Saves Infos as Key/Value Pairs. Fixed Keys:
+                                  #-background_color: backgroundcolor of the map
+                                  # legend: name of colors
 
 
   def self.generate_slug
@@ -32,7 +32,6 @@ class ConceptMap < ApplicationRecord
         concepts.build(label: c, data:{"x"=> (labels.length/5.0)*100*(Math.sin(count*step) + 1), "y"=> (labels.length/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"}).save
         count = count + 1
       end
-
       save
     else
       unless survey.initial_map.blank?
@@ -98,13 +97,13 @@ class ConceptMap < ApplicationRecord
   #Effect: The necessary concepts and associations are created, also the code is restored from the JSON data
   #Returns: true if the import succeeded, false if an error occurred
   def from_json(data, code_prefix)
-    data =  data.encode('ISO-8859-1','UTF-8')
+    #consider umlaute
     vals = ActiveSupport::JSON.decode(data)
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
     save
-
     vals["concepts"].each do |c|
+      #consider older maps/files
       if(!c["color"].nil?)
         t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
       else
@@ -132,18 +131,19 @@ class ConceptMap < ApplicationRecord
       node_defs = data
       edge_defs = nil
     else
-      node_defs = parts[0].encode('ISO-8859-1','UTF-8')
+      #consider umlaute
+      node_defs = parts[0]
       edge_defs = parts[1]
     end
     dict = Hash.new
     unless node_defs.nil?
       step = 2*Math::PI/node_defs.lines.count
       count = 0
-      puts node_defs
       node_defs.each_line do |line|
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
-          c = concepts.build(label: l[1].strip.encode('ISO-8859-1','UTF-8'), data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
+          #somehow we need it here a second time... only one of both is not enough
+          c = concepts.build(label: l[1].strip, data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
           c.save
           dict[l[0]] = c
           count = count + 1
@@ -201,6 +201,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
+    #build the json-String
     res = ""
     res = res + '{"id":' + self.id.to_s + ',"code":"' +self.code.to_s + '","concepts":['
     self.concepts.each_with_index do |concept,i|
@@ -227,8 +228,11 @@ class ConceptMap < ApplicationRecord
   #Params: -
   #Effect: -
   #Returns: TGF data of the concept map
-  def to_tgf
-    reload(:include => [:concepts, :links])
+  def to_tgf(reload)
+    #hack: needed for a temporary Map, which is not in the DB
+    if reload
+      reload(:include => [:concepts, :links])
+    end
     res = ""
     self.concepts.each do |concept|
       res = res + concept.id.to_s + " " + concept.label + "\n"
@@ -271,6 +275,92 @@ class ConceptMap < ApplicationRecord
         zip.print v
       end
     end
+  end
+
+  #Analyze the concept maps of a survey
+  #Params:
+  # survey: survey of the Concept Maps, which should be analyzed
+  #Returns: Array of a temporary concept map and the analysisdata
+  def self.analyze_maps(survey, relevantConcepts)
+    analyzed_map=""
+    #create temporary directory and create temporary tgf-files of the maps
+    Dir.mktmpdir(survey.name.gsub(" ", "")) do |dir|
+      survey.concept_maps.each do |map|
+        file = Tempfile.new([map.code,'.tgf'], "#{dir}")
+        file.write(map.to_tgf(false))
+        file.rewind
+        file.close
+
+
+      end
+      require "rclass"
+      #Parse concepts of interest to an R Array-String, needed for input of R-Script
+      relevantConcepts = relevantConcepts.gsub(" ", "")
+      tempArray = relevantConcepts.split(",").reject(&:blank?)
+      #chatch empty input and use it for you
+      if tempArray.size == 0
+        temp =ConceptMap.find_by_survey_id(survey.id)
+        temp.concepts.each do |c|
+          tempArray = tempArray + [c.label]
+        end
+        tempArray=tempArray.uniq
+      end
+      #build string for input
+      relevantConceptsArrayR = '"c('
+      tempArray.each_with_index do |label, i|
+        nextLabel = tempArray[i+1]
+        if(nextLabel.nil?)
+          relevantConceptsArrayR = relevantConceptsArrayR + '\"' +label + '\"'
+        else
+          relevantConceptsArrayR = relevantConceptsArrayR + '\"' + label+ '\"' + ','
+        end
+      end
+      relevantConceptsArrayR = relevantConceptsArrayR + ')"'
+
+      #Start Analysis
+      analyzed_map = Rclass.analyze_maps("#{dir}", relevantConceptsArrayR)
+    end
+    vals = ActiveSupport::JSON.decode(analyzed_map)
+    #build temporary map
+    tempMap = build_temporary_map_from_json(vals["aggregated_map"], survey.id, "AggMap:"+survey.name)
+    #save analysis data
+    analysis_data = []
+    analyseKeyWords = vals["analysis"].keys
+    count = 0
+    while count<analyseKeyWords.size do
+      analysis_data[count] = vals["analysis"][analyseKeyWords[count]]
+      count = count +1
+    end
+    #return a temporary map and the analysis data
+    return  [tempMap, analysis_data]
+  end
+  #Create a temporary concept map
+  #Params:
+  # data: about a concept map in JSON-Format
+  # survey_id: associated survey for the temporary map
+  # code: Name of the temporary concept map
+  #Returns: a temporary concept map, which is not saved in the database
+  def self.build_temporary_map_from_json(data, survey_id, code)
+
+    tempMap = ConceptMap.new
+    dict = Hash.new
+    tempMap.id = 0
+    tempMap.survey_id= survey_id
+    tempMap.code = code
+    #create a map by a json-hash
+    #should have only the key: "concepts" and "links"
+    data["concepts"].each do |c|
+      if(!c["color"].nil?)
+        t =tempMap.concepts.build(id:c["id"], label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
+      else
+        t= tempMap.concepts.build(id:id, label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+      end
+      dict[c["id"]] = t
+    end
+    data["links"].each do |l|
+      tempMap.links.build(id: l["id"], label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
+    end
+    return tempMap
   end
 
 end

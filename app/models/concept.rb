@@ -5,10 +5,10 @@ class Concept < ApplicationRecord
 
   validate :concept_present_and_unique
 
-  serialize :data, Hash           #Speichert Infos als Key/Value Paare. Feste Keys:
-                                  #-x: x-Koordinate
-                                  #-y: y-Koordinate
-                                  #-color: Farbe für das Konzept
+  serialize :data, Hash           #Saves Infos as Key/Value Pairs. Fixed Keys:
+                                  #-x: x-coordinate
+                                  #-y: y-coordinate
+                                  #-color: color of the concept
 
 
   def concept_present_and_unique
@@ -18,9 +18,5 @@ class Concept < ApplicationRecord
     unless concept_map.concepts.find_by_label(label).nil? || concept_map.concepts.find_by_label(label) == self
       errors.add(:label, "Unique")
     end
-  end
-
-  def to_json
-    return "hallo"
   end
 end

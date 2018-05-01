@@ -64,6 +64,17 @@ en:
     import: "Import concept maps"
     imported: "Concept maps imported"
     new: "Create concept maps"
+    analysis:
+      task: "Analysis"
+      textToShow: "<h4>Please insert concepts of interest in the next line:</h4><br/><input style='width: 80%;font-size: 20px' id='paramsField'>
+                   <br/><h4>Example: Algorithmus, Code, Class, ...<br/><br/>If field is empty, all concepts are selected.</h4><br/>
+                  <button id='sAnalysisBtn' class='btn btn-primary' style='font-size: 18px' onclick='startAnalysis()'>Start Analysis</button>"
+      wait: "Please wait..."
+      error: "Please insert no or at least two appearing concepts"
+      countConcepts: "Quantity of concepts:"
+      countEdges: "Quantity of edges:"
+      countCommunities: "Quantity of communities:"
+      centralitiy: "Centralitiy:"
     edit:
       action_edit_link: "Edit or delete link"
       action_edit_node: "Edit or delete concept"
@@ -86,6 +97,7 @@ en:
     mails:
       created: 'A concept map has been created for you in CoMapEd'
       edited: 'CoMapEd: Send code for concept map via E-mail'
+
   projects:
     created: "Project created"
     delete: "Delete project"

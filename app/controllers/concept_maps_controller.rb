@@ -2,8 +2,8 @@ class ConceptMapsController < ApplicationController
 
   skip_before_action :check_login_frontend, except: [:edit]
   skip_before_action :check_login_backend, only: [:edit, :show, :update]
-  before_action :login_for_show, only: [:show]
-  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index]
+  before_action :login_for_show, only: [:show, :analyze]
+  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index, :analyze]
   before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
 
   # GET /concept_maps/:page.js
@@ -20,17 +20,22 @@ class ConceptMapsController < ApplicationController
     end
   end
 
+  # simple update for legend and backgroundcolor
   def update
       if @concept_map.update(concept_map_params)
     end
   end
+
+
 
   # GET /concept_maps/1
   # GET /concept_maps/1.text
   # GET /concept_maps/1.json
   def show
     respond_to do |format|
-      format.html {}
+      format.html {
+        @showColor=true
+      }
       format.json {
         if params.has_key?(:versions)
           send_file @concept_map.to_zip(false), filename:@concept_map.code+".zip", type: "application/zip"
@@ -46,7 +51,13 @@ class ConceptMapsController < ApplicationController
             if params.has_key?(:versions)
               send_file @concept_map.to_zip(true), filename:@concept_map.code+".zip", type: "application/zip"
             else
-              send_data @concept_map.to_tgf, filename: @concept_map.code+".tgf", type: :text
+              #catch special case of export (export with temporary Map => true)
+              if(params.has_key?(:aggregated_map_as_json))
+                send_data @concept_map.to_tgf(false), filename: @concept_map.code+".tgf", type: :text
+              else
+                send_data @concept_map.to_tgf(true), filename: @concept_map.code+".tgf", type: :text
+              end
+
             end
         end
       }
@@ -67,6 +78,7 @@ class ConceptMapsController < ApplicationController
 
   # GET /concept_maps/1/edit
   def edit
+    @showColor=true
     if @concept_map.accesses.nil?
       @concept_map.accesses = 0
     end
@@ -147,12 +159,33 @@ class ConceptMapsController < ApplicationController
     redirect_to user_project_survey_path(@user, @project, @survey)
   end
 
+  # Analyze /concept_maps/
+  #Controller method for analysis
+  def analyze
+    respond_to do |format|
+      format.js{
+        #call Modellmethod
+        analyseData = ConceptMap.analyze_maps(@survey,params[:relevantConcepts])
+        @showColor=true
+        @aggregated_map = analyseData[0]
+        @analyse_data = analyseData[1]
+        render 'analysis.js.erb'
+      }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_concept_map
-      @concept_map = ConceptMap.find(params[:id])
-      if concept_map_params.has_key?(:data)&&(concept_map_params[:data].has_key?(:background_color)||concept_map_params[:data].has_key?(:legend)) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
-        puts("haloo")
+      #catch special case for tgf/json-export of a temporary Map
+      if params[:id]=="0"&&params.has_key?(:aggregated_map_as_json)
+        vals = ActiveSupport::JSON.decode(params[:aggregated_map_as_json])
+        @concept_map = ConceptMap.build_temporary_map_from_json(vals, @survey.id, "AggMap:" + @survey.name)
+      else
+        @concept_map = ConceptMap.find(params[:id])
+      end
+      #weaken the security-borders
+      if concept_map_params.has_key?(:data)&&concept_map_params[:data].has_key?(:background_color) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
       elsif @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
       end
@@ -184,6 +217,7 @@ class ConceptMapsController < ApplicationController
   end
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_map_params
-    params.fetch(:concept_map, {}).permit(:data=>[:background_color, :legend=>[:a, :b, :c, :d, :e, :f, :g,:h]])
+
+    params.fetch(:concept_map, {}).permit(:data=>[:background_color, :legend=>[:a, :b, :c, :d, :e, :f, :g,:h]], relevantConcepts:[])
   end
 end
