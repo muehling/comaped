@@ -87,7 +87,7 @@ class Project < ApplicationRecord
     temp = Tempfile.new("CoMapEd")
     Zip::OutputStream.open(temp.path) do |zip|
       zip.put_next_entry('project.json')
-      zip.print self.as_json(only: [:name, :description]).to_json.encode!('ISO-8859-1', :undefined => :replace, :replace => '_')
+      zip.print self.as_json(only: [:name, :description]).to_json
       self.surveys.each do |survey|
         survey.write_stream(survey.name+"/", zip, tgf, versions)
       end
