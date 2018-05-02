@@ -28,6 +28,7 @@ class ConceptsController < ApplicationController
         #-1 Fakeid: used for change background-color, drag&drop
         if(params.has_key?(:id)&&params[:id]!="-1")
           if c.update(concept_params[:concepts_data])
+            @showColor = true
             @concept = c
             unless concept_params[:label] == old
               @map.versionize(DateTime.now)
@@ -39,6 +40,7 @@ class ConceptsController < ApplicationController
         else
           #update/Put was sent by Form
           if c.update(concept_params[:concepts_data][c.id.to_s])
+            @showColor = true
             @concept = c
             unless concept_params[:concepts_data][c.id.to_s][:label] == old
               @map.versionize(DateTime.now)

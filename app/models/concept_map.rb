@@ -21,8 +21,7 @@ class ConceptMap < ApplicationRecord
   #        Otherwise, if a start map is given, the necessary concepts and links are created.
   #Returns: -
   def after_create
-    self.data["background_color"] ="#f8f8f8"
-    #self.data["legend"] ={"rgb(223, 240, 216)"=> " ","rgb(173,255,47)"=> " ","rgb(0,128,0)"=> " ","rgb(221,160,221)"=> " ","rgb(255,255,0)"=> " ","rgb(255,165,0)"=> " ","rgb(30,144,255)"=> " ", "rgb(0,191,255)"=> " "}
+    #self.data["legend"] ={"rgb(223, 240, 216)"=> "1","rgb(173,255,47)"=> "2","rgb(0,128,0)"=> "3","rgb(221,160,221)"=> "4","rgb(255,255,0)"=> "5","rgb(255,165,0)"=> "6","rgb(30,144,255)"=> "7", "rgb(0,191,255)"=> "8"}
     self.accesses ||= 0
     unless survey.concept_labels.blank?
       labels = survey.concept_labels.split(',').map{|s| s.strip}.uniq
@@ -364,3 +363,4 @@ class ConceptMap < ApplicationRecord
   end
 
 end
+
