@@ -1071,7 +1071,7 @@
       var legendvalues = {
         <% @concept_map.data["legend"].keys.each do |l|%>
           <%= l %>: "<%=@concept_map.data["legend"][l] %>",
-          <% end %>
+        <% end %>
       }
 
         document.getElementById("brightgreenlegend").value = legendvalues["a"];

@@ -8,7 +8,7 @@ edges_<%= @concept_map.id%>.clear();
       x: <%= c["x"] %>,
       y: <%= c["y"] %>,
       shape:'ellipse',
-      <%if c["color"].nil?%>
+      <%if c["color"].nil? ||c["color"].blank?%>
         color: '#dff0d8',
       <%else%>
         color: "<%=c["color"]%>",
