@@ -85,11 +85,7 @@ class ConceptMapsController < ApplicationController
     end
     @concept_map.accesses = @concept_map.accesses + 1
     @concept_map.save
-    if @concept_map.accesses == 1  #First time access => Show the intro sceen
-      render '_intro'
-    else
-      render 'edit'
-    end
+    render 'edit'
   end
 
   # POST /concept_maps

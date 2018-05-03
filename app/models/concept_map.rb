@@ -298,9 +298,11 @@ class ConceptMap < ApplicationRecord
       tempArray = relevantConcepts.split(",").reject(&:blank?)
       #chatch empty input and use it for you
       if tempArray.size == 0
-        temp =ConceptMap.find_by_survey_id(survey.id)
-        temp.concepts.each do |c|
+        temp =ConceptMap.where(survey_id: survey.id)
+        temp.each do |cm|
+          cm.concepts.each do |c|
           tempArray = tempArray + [c.label]
+          end
         end
         tempArray=tempArray.uniq
       end
