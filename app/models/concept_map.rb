@@ -21,7 +21,6 @@ class ConceptMap < ApplicationRecord
   #        Otherwise, if a start map is given, the necessary concepts and links are created.
   #Returns: -
   def after_create
-    self.data["legend"] ={"rgb(223, 240, 216)"=> " ","rgb(173,255,47)"=> " ","rgb(0,128,0)"=> " ","rgb(221,160,221)"=> " ","rgb(255,255,0)"=> " ","rgb(255,165,0)"=> " ","rgb(30,144,255)"=> " ", "rgb(0,191,255)"=> " "}
     self.accesses ||= 0
     unless survey.concept_labels.blank?
       labels = survey.concept_labels.split(',').map{|s| s.strip}.uniq
@@ -106,7 +105,7 @@ class ConceptMap < ApplicationRecord
       if(!c["color"].nil?)
         t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>c["color"]})
       else
-        t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"], "color"=>"#dff0d8"})
+        t = self.concepts.build(label: c["label"], data:{"x"=> c["x"], "y"=> c["y"]})
       end
       t.save
       t.reload
@@ -141,8 +140,7 @@ class ConceptMap < ApplicationRecord
       node_defs.each_line do |line|
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
-          #somehow we need it here a second time... only one of both is not enough
-          c = concepts.build(label: l[1].strip, data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1), "color"=>"#dff0d8"})
+          c = concepts.build(label: l[1].strip, data:{"x"=> (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), "y"=> (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1)})
           c.save
           dict[l[0]] = c
           count = count + 1
@@ -205,11 +203,22 @@ class ConceptMap < ApplicationRecord
     res = res + '{"id":' + self.id.to_s + ',"code":"' +self.code.to_s + '","concepts":['
     self.concepts.each_with_index do |concept,i|
       nextConcept = self.concepts[i+1]
-      if(nextConcept.nil?)
-        res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"' + concept.data["color"].to_s + '"}'
+      #for export color could be maybe useful (consistent presentation of concepts in json file)
+      #otherwise delete hard-setted color in first case => consider older maps without color or concepts colorstring empty
+      if concept.data["color"].nil? ||concept.data["color"].blank?
+        if(nextConcept.nil?)
+          res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"#dff0d8"}'
+        else
+          res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"#dff0d8"},'
+        end
       else
-        res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"' + concept.data["color"].to_s + '"},'
+        if(nextConcept.nil?)
+          res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"' + concept.data["color"].to_s + '"}'
+        else
+          res = res + '{"id":' + concept.id.to_s + ',"label":"' + concept.label.to_s + '","x":"' +concept.data["x"].to_s + '","y":"' + concept.data["y"].to_s+ '","color":"' + concept.data["color"].to_s + '"},'
+        end
       end
+
     end
     res = res + '],"links":['
     self.links.each_with_index do |link, i|

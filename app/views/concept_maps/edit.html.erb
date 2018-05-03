@@ -259,7 +259,7 @@
     <ul style="list-style: none;">
       <li id="brightgreen" class="color hidden"><button class="btn btn-default colorShades" style="background-color:#dff0d8;"></button><input id="brightgreenlegend" class="color" type="text" onblur="saveColorName();"></li>
       <li id="greenyellow" class="color hidden"><button class="btn btn-default colorShades" style="background-color:greenyellow;"></button><input id="greenyellowlegend" class="color" type="text" onblur="saveColorName();"></li>
-      <li id="green"       class="color hidden"><button class="btn btn-default colorShades" style="background-color:green;"></button><input id="greenlegend" class="color" type="text"> onblur="saveColorName();"></li>
+      <li id="green"       class="color hidden"><button class="btn btn-default colorShades" style="background-color:green;"></button><input id="greenlegend" class="color" type="text" onblur="saveColorName();"></li>
       <li id="plum"        class="color hidden"><button class="btn btn-default colorShades" style="background-color:plum;"></button><input id="plumlegend" class="color" type="text" onblur="saveColorName();"></li>
       <li id="yellow"      class="color hidden"><button class="btn btn-default colorShades" style="background-color:yellow;"></button><input id="yellowlegend" class="color" type="text" onblur="saveColorName();"></li>
       <li id="orange"      class="color hidden"><button class="btn btn-default colorShades" style="background-color:orange;"></button><input id="orangelegend" class="color" type="text" onblur="saveColorName();"></li>
@@ -455,7 +455,7 @@
     });
 
     // Only show tutorial popovers on "first" access
-    if (<%= @concept_map.accesses <= 2%>){
+    if (<%= @concept_map.accesses < 2%>){
       step('0');
     }
 
@@ -1023,7 +1023,6 @@
             if((elem.id != id) && (elem.color.background.localeCompare(oldColor) === 0)){
                 nodesArr.forEach(function(toDelete) {
                     if(nodes.get(toDelete).id === elem.id) {
-
                         used = false;
                     }
                 });
@@ -1031,7 +1030,6 @@
         });
         // Only delete if not used for another concept
         if(!used) {
-            alert("here");
             if (oldColor.localeCompare(brightgreen) === 0) {
                 $('#brightgreen').addClass('hidden');
             } else if (oldColor.localeCompare(greenyellow) === 0) {
@@ -1072,11 +1070,17 @@
     }
 
     // Get corresponding captions to colors
-      var legendvalues = {
+    var legendvalues = {
+      <%if @concept_map.data["legend"].nil?%>
+        <%('a'..'h').each do |l|%>
+          <%=l%>: "",
+        <%end%>
+      <%else%>
         <% @concept_map.data["legend"].keys.each do |l|%>
           <%= l %>: "<%=@concept_map.data["legend"][l] %>",
         <% end %>
-      }
+      <%end%>
+    }
 
         document.getElementById("brightgreenlegend").value = legendvalues["a"];
         document.getElementById("greenyellowlegend").value = legendvalues["b"];

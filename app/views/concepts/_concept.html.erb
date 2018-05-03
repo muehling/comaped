@@ -6,7 +6,8 @@ y: <%= concept.data["y"] || 0 %>,
 shape: 'ellipse',
 borderWidth: 2,
 color: {
-<%if @showColor && !concept.data["color"].nil?%>
+// only show colors,when they are meaningful set and colors should be visible
+<%if @showColor && !concept.data["color"].nil? && !concept.data["color"].blank?%>
     background: '<%= concept.data["color"]%>',
     border: '<%= concept.data["color"]%>',
     hover: {

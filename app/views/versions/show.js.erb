@@ -8,6 +8,7 @@ edges_<%= @concept_map.id%>.clear();
       x: <%= c["x"] %>,
       y: <%= c["y"] %>,
       shape:'ellipse',
+      // only show colors,when they are meaningful set and colors should be visible
       <%if c["color"].nil? ||c["color"].blank?%>
         color: '#dff0d8',
       <%else%>
