@@ -224,7 +224,11 @@
       </li>
       <br/>
       <li class="dropdown">
-        <div id="currentBackgroundColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%=@concept_map.data['background_color']%>;color: black;width: 150px;box-shadow: 2px 2px #778899;"> <%=t('color_background')%> <span class="caret"></span></div>
+        <%if @concept_map.data['background_color'].nil?%>
+          <div id="currentBackgroundColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: #f8f8f8;color: black;width: 150px;box-shadow: 2px 2px #778899;"> <%=t('color_background')%> <span class="caret"></span></div>
+        <%else%>
+            <div id="currentBackgroundColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%=@concept_map.data['background_color']%>;color: black;width: 150px;box-shadow: 2px 2px #778899;"> <%=t('color_background')%> <span class="caret"></span></div>
+      <%end%>
         <div class="dropdown-menu" style="background-color: #1e8dae;position:absolute;min-width:150px;">
           <table>
             <tr>
@@ -1071,7 +1075,7 @@
       var legendvalues = {
         <% @concept_map.data["legend"].keys.each do |l|%>
           <%= l %>: "<%=@concept_map.data["legend"][l] %>",
-          <% end %>
+        <% end %>
       }
 
         document.getElementById("brightgreenlegend").value = legendvalues["a"];

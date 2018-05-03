@@ -23,6 +23,7 @@ class ConceptMapsController < ApplicationController
   # simple update for legend and backgroundcolor
   def update
       if @concept_map.update(concept_map_params)
+        @showColor = true
     end
   end
 
@@ -85,7 +86,7 @@ class ConceptMapsController < ApplicationController
     @concept_map.accesses = @concept_map.accesses + 1
     @concept_map.save
     if @concept_map.accesses == 1  #First time access => Show the intro sceen
-      render 'intro'
+      render '_intro'
     else
       render 'edit'
     end
@@ -185,7 +186,7 @@ class ConceptMapsController < ApplicationController
         @concept_map = ConceptMap.find(params[:id])
       end
       #weaken the security-borders
-      if concept_map_params.has_key?(:data)&&concept_map_params[:data].has_key?(:background_color) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
+      if concept_map_params.has_key?(:data)&&(concept_map_params[:data].has_key?(:background_color)||concept_map_params[:data].has_key?(:legend)) && !@concept_map.nil?&&concept_map_params[:data].keys.size==1
       elsif @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
       end

@@ -8,7 +8,11 @@ edges_<%= @concept_map.id%>.clear();
       x: <%= c["x"] %>,
       y: <%= c["y"] %>,
       shape:'ellipse',
-      color: '#dff0d8',
+      <%if c["color"].nil? ||c["color"].blank?%>
+        color: '#dff0d8',
+      <%else%>
+        color: "<%=c["color"]%>",
+      <%end%>
       labelHighlightBold: false
     });
 <% end %>
@@ -21,7 +25,8 @@ edges_<%= @concept_map.id%>.clear();
       label: "<%= l["label"] %>",
       font: {align: '<%= if l["start_id"] < l["end_id"] then 'bottom' else 'top' end%>'},
       labelHighlightBold: false,
-      arrowStrikethrough: false
+      arrowStrikethrough: false,
+      color:'#848484'
     });
 <% end %>
 

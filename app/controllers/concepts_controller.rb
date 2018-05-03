@@ -2,7 +2,7 @@ class ConceptsController < ApplicationController
 
   skip_before_action :check_login_backend
   before_action :set_concept_map
-  before_action :set_concepts, only: [:edit, :update, :destroy]
+  before_action :set_concepts, only: [:update, :destroy]
 
   # POST /concept_maps/1/concepts.js
   def create
@@ -22,14 +22,16 @@ class ConceptsController < ApplicationController
   def update
     respond_to do |format|
       #new Structur of sending Concepts: hash of hash(multiupdate)
+      #Set to an array in method set_concepts
       @concepts.each do |c|
         old = c.label
-        #update was sent by drag&drop, colorchange
-        #-1 Fakeid: used for change background-color, drag&drop
-        if(params.has_key?(:id)&&params[:id]!="-1")
+        #update/PUT was sent by form
+        if params.has_key?(:id)&&params[:id]!="-1"
           if c.update(concept_params[:concepts_data])
+            @showColor = true
             @concept = c
-            unless concept_params[:label] == old
+            #update sent by form means: change of label or color -> don't record single colorchange
+            unless @concept.label == old
               @map.versionize(DateTime.now)
             end
             format.js { }
@@ -37,9 +39,12 @@ class ConceptsController < ApplicationController
             format.js { head :ok }
           end
         else
-          #update/Put was sent by Form
+          #update was sent by (multi) drag&drop, multicolorchange
+          #-1 Fakeid: used for (multi) change of color, drag&drop
           if c.update(concept_params[:concepts_data][c.id.to_s])
+            @showColor = true
             @concept = c
+            #don't record, when only one conceptposition has changed (single drag&drop)
             unless concept_params[:concepts_data][c.id.to_s][:label] == old
               @map.versionize(DateTime.now)
             end
@@ -49,12 +54,16 @@ class ConceptsController < ApplicationController
           end
         end
       end
+      #record a multiupdate
+      if @concepts.size >1
+        @map.versionize(DateTime.now)
+      end
     end
   end
 
   # DELETE /concept_maps/1/concepts/1.js
   def destroy
-    #list has only one Object (see set_concepts)
+    #array has only one Object (see set_concepts)
     @concept = @concepts.first
     @concept.destroy
     @map.versionize(DateTime.now)
@@ -70,7 +79,7 @@ class ConceptsController < ApplicationController
     if((params[:id]=="-1"||params[:id].nil?)&&params[:concepts].has_key?(:concepts_data))
       @concepts = Concept.find(params[:concepts][:concepts_data].keys)
     else
-      #single Concept is send (destroy and create)
+      #single Concept is send (create, singleupdate(keyword:form), destroy)
       @concepts = [Concept.find(params[:id])]
     end
     #consider data structure (sending hash of concepts)
