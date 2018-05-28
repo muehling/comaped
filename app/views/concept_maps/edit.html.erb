@@ -26,10 +26,13 @@
             <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
           </ul>
         </li>
+        <li><%= link_to t('privacy') + ' & ' + t('imprint') , '#', data: {toggle: "modal", target: "#legal"}%></li>
         <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
       </ul>
     </div>
 <% end %>
+
+<%= render 'legal'%>
 
 <% if @concept_map.accesses <= 2 && !@concept_map.survey.introduction.blank? %>
   <div class="alert alert-warning alert-dismissible" role="alert">

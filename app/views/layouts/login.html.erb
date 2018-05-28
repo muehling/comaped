@@ -1,7 +1,41 @@
 <% content_for :body do %>
-    <div class="jumbotron">
-      <legend>CoMapEd 2</legend>
-      <%= yield %>
+  <div class="jumbotron">
+    <legend>CoMapEd 2</legend>
+    <%= yield %>
+    <p class="lead text-center">
+      <mark>
+        <%= link_to t('privacy'), '#', data: {toggle: "modal", target: "#privacy"}%>
+        -
+        <%= link_to t('imprint'), '#',  data: {toggle: "modal", target: "#imprint"}%>
+      </mark>
+    </p>
+  </div>
+
+  <div class="modal fade" id="privacy" tabindex="-1" role="dialog" aria-labelledby="privacyLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="privacyLabel"><%= t('privacy') %></h2>
+        </div>
+        <div class="modal-body">
+          <%= render 'privacy_' + action_name%>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="modal fade" id="imprint" tabindex="-1" role="dialog" aria-labelledby="imprintLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="imprintLabel"><%= t('imprint') %></h2>
+        </div>
+        <div class="modal-body">
+          <%= render 'imprint'%>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <% end %>
 <%= render template: "layouts/application" %>
