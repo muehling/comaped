@@ -231,10 +231,10 @@ class ConceptMap < ApplicationRecord
     self.versions.each do |v|
       if tgf
         zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
-        zip.print v
+        zip.print v.to_tgf
       else
         zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
-        zip.print v
+        zip.print v.data
       end
     end
   end
