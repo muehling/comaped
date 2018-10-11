@@ -24,3 +24,6 @@
 /config/database.yml
 /config/secrets.yml
 
+#Ignore IDE
+/.idea
+
