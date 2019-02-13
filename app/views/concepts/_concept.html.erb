@@ -6,15 +6,15 @@ y: <%= concept.y || 0 %>,
 shape: 'ellipse',
 borderWidth: 2,
 color: {
-  background: '#dff0d8',
-  border: '#dff0d8',
+  background: '<%= concept.color || '#dff0d8' %>',
+  border: '<%= concept.color || '#dff0d8' %>',
   hover: {
-    background: '#cfe0c8',
-    border: '#cfe0c8'
+    background: '<%= get_highlight(concept.color) %>',
+    border: '<%= get_highlight(concept.color) %>'
   },
   highlight:{
-    background: '#dff0d8',
-    border: '#449d44'
+    background: '<%= get_highlight(concept.color) %>',
+    border: 'black'
   }
 }
 }

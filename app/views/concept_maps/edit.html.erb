@@ -3,13 +3,25 @@
       <div class="navbar-header">
         <p class="navbar-brand">CoMapEd</p>
       </div>
-      <p class = "navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
-      <p class = "navbar-text"><%= t('.mail')%>:</p>
+      <p class="navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.mail')%><span class="caret"></span></a>
+          <div class="dropdown-menu" style="padding: 5px">
+            <form class="form form-inline">
+              <div id="emailgroup" class="form-group" style="padding-bottom: 5px">
+                <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
+              </div>
+              <button id="submit" type="submit" class="btn btn-block btn-primary" onclick="sendMail();return false;"><%= t('.send')%></button>
+            </form>
+          </div>
+        </li>
+      </ul>
       <form class="navbar-form navbar-left">
-        <div id="emailgroup" class="form-group">
-          <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
+        <div class="form-group">
+          <input id="search" type="text" class="form-control" placeholder="<%= t('concept')%>">
         </div>
-        <button id="submit" type="submit" class="btn btn-default" onclick="sendMail();return false;"><%= t('.send')%></button>
+        <button class="btn btn-default" onclick="searchConcept($('#search').val());"><%= t('search')%></button>
       </form>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
@@ -73,6 +85,7 @@
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
       </div>
+      <%= render 'colorpicker' %>
       <div class="form-group">
         <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
         <button class="btn btn-sm btn-default"onclick="hideForm();return false;"><span class="glyphicon glyphicon-remove"></span></button>
@@ -282,6 +295,7 @@
               $('#action').html("<%= t('.action_new_node')%>");
               $("#entry_concept").val("");
               $("#entry_concept").removeClass("hidden");
+              $("#colorpicker").removeClass("hidden");
               $("#entry_link").addClass("hidden");
               $("#delete").addClass("hidden");
               $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
@@ -295,6 +309,8 @@
               $('#action').html("<%= t('.action_edit_node')%>");
               $("#entry_concept").val(nodes.get(id).label);
               $("#entry_concept").removeClass("hidden");
+              $("#colorpicker").removeClass("hidden");
+              selectColor(nodes.get(id).color.background);
               $("#entry_link").addClass("hidden");
               $("#delete").removeClass("hidden");
               $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>/' + id);
@@ -309,6 +325,7 @@
               $("#entry_link").val(edges.get(id).label);
               $("#entry_link").removeClass("hidden");
               $("#entry_concept").addClass("hidden");
+              $("#colorpicker").addClass("hidden");
               $("#delete").removeClass("hidden");
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
               $("#form").attr('method', 'put');
@@ -320,6 +337,7 @@
               $("#entry_link").val("");
               $("#entry_link").removeClass("hidden");
               $("#entry_concept").addClass("hidden");
+              $("#colorpicker").addClass("hidden");
               $("#delete").addClass("hidden");
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
               $("#form").attr('method', 'post');
@@ -349,15 +367,14 @@
 
     function validateForm() {
       if (mode == addNode || mode == editNode) {
-        t = $('#entry_concept').val();
+        var t = $('#entry_concept').val();
         hideForm();
         node = nodes.get({
           filter: function (item) {
             return (item.label.toLocaleLowerCase() === t.toLocaleLowerCase());
           }
         });
-
-        if (node == null)
+        if (node == null || node.length == 0 || node[0].id == id)
             return true;
         else {
           network.focus(node[0].id);
@@ -385,5 +402,15 @@
         $('#submit').addClass('btn-danger');
         $('#emailgroup').addClass('has-error');
       }
+    }
+
+    function searchConcept(concept) {
+        node = nodes.get({
+            filter: function (item) {
+                return (item.label.toLocaleLowerCase() === concept.toLocaleLowerCase());
+            }
+        });
+        if (node != null && node.length > 0)
+            network.focus(node[0].id);
     }
 </script>
