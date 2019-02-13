@@ -3,8 +3,8 @@
       <div class="navbar-header">
         <p class="navbar-brand">CoMapEd</p>
       </div>
-      <p class="navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></p>
       <ul class="nav navbar-nav">
+        <li class="navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.mail')%><span class="caret"></span></a>
           <div class="dropdown-menu" style="padding: 5px">
@@ -17,12 +17,16 @@
           </div>
         </li>
       </ul>
-      <form class="navbar-form navbar-left">
-        <div class="form-group">
-          <input id="search" type="text" class="form-control" placeholder="<%= t('concept')%>">
-        </div>
-        <button class="btn btn-default" onclick="searchConcept($('#search').val());"><%= t('search')%></button>
-      </form>
+
+      <ul class="nav navbar-nav navbar-center">
+        <li>
+          <form class="navbar-form">
+            <input id="search" type="text" class="form-control" placeholder="<%= t('concept')%>">
+            <button class="btn btn-default" onclick="searchConcept($('#search').val()); $('#search').attr('value', ''); return false;"><%= t('search')%></button>
+          </form>
+        </li>
+      </ul>
+
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.help') %><span class="caret"></span></a>
