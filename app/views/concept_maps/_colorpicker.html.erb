@@ -23,7 +23,7 @@
     function changeColor(id) {
         $('#currentColor').css('background-color', $('#color'+id).css('background-color'));
         var color = $('#currentColor').css('background-color');
-        $("#color").attr("value", color);
+        $("#color").attr("value", standardizeColor(color));
         for (var i = 1; i <= 6; ++i)
           $('#color'+i).html("<span></span>");
         $('#color'+id).html("<span class='glyphicon glyphicon-ok'></span>");
@@ -33,7 +33,13 @@
 
     function selectColor(color) {
         for (var i = 1; i <= 6; ++i)
-            if ($('#color' + i).css('background-color') === color)
+            if (standardizeColor($('#color' + i).css('background-color')) === color)
                 changeColor(i);
+    }
+
+    function standardizeColor(color) {
+        var ctx = document.createElement('canvas').getContext('2d');
+        ctx.fillStyle = color;
+        return ctx.fillStyle;
     }
 </script>

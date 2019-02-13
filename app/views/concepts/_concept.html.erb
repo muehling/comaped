@@ -1,20 +1,20 @@
 {
-id: <%= concept.id %>,
-label: "<%= concept.label %>",
-x: <%= concept.x || 0 %>,
-y: <%= concept.y || 0 %>,
-shape: 'ellipse',
-borderWidth: 2,
-color: {
-  background: '<%= concept.color || '#dff0d8' %>',
-  border: '<%= concept.color || '#dff0d8' %>',
-  hover: {
-    background: '<%= get_highlight(concept.color) %>',
-    border: '<%= get_highlight(concept.color) %>'
-  },
-  highlight:{
-    background: '<%= get_highlight(concept.color) %>',
-    border: 'black'
-  }
-}
+  id: <%= concept.id %>,
+  label: "<%= concept.label %>",
+  x: <%= concept.x || 0 %>,
+  y: <%= concept.y || 0 %>,
+  shape: 'ellipse',
+  borderWidth: 2,
+  color: {
+      background: '<%= concept.color || '#cfe0c8' %>',
+      border: '<%= concept.color || '#cfe0c8' %>',
+      hover: {
+        background: '<%= get_highlight(concept.color) %>',
+        border: '<%= get_highlight(concept.color) %>'
+      },
+      highlight:{
+        background: '<%= get_highlight(concept.color) %>',
+        border: 'black'
+      }
+    }
 }
