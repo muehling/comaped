@@ -6,8 +6,8 @@
   shape: 'ellipse',
   borderWidth: 2,
   color: {
-      background: '<%= concept.color || '#cfe0c8' %>',
-      border: '<%= concept.color || '#cfe0c8' %>',
+      background: '<%= concept.color || default_color %>',
+      border: '<%= concept.color || default_color %>',
       hover: {
         background: '<%= get_highlight(concept.color) %>',
         border: '<%= get_highlight(concept.color) %>'

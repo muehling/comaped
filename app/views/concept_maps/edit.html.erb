@@ -4,7 +4,7 @@
         <p class="navbar-brand">CoMapEd</p>
       </div>
       <ul class="nav navbar-nav">
-        <li class="navbar-text"><%= t('.code')%>: <b><%= @concept_map.code%></b></li>
+        <li class="navbar-text" id="help_code"><%= t('.code')%>: <b><%= @concept_map.code%></b></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.mail')%><span class="caret"></span></a>
           <div class="dropdown-menu" style="padding: 5px">
@@ -21,8 +21,8 @@
       <ul class="nav navbar-nav navbar-center">
         <li>
           <form class="navbar-form">
-            <input id="search" type="text" class="form-control" placeholder="<%= t('concept')%>">
-            <button class="btn btn-default" onclick="searchConcept($('#search').val()); $('#search').attr('value', ''); return false;"><%= t('search')%></button>
+            <input id="search" type="text" class="form-control input-sm" placeholder="<%= t('concept')%>">
+            <button class="btn btn-sm btn-default" onclick="searchConcept($('#search').val()); $('#search').attr('value', ''); return false;"><%= t('search')%></button>
           </form>
         </li>
       </ul>
@@ -42,7 +42,7 @@
             <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
           </ul>
         </li>
-        <li><%= link_to t('privacy') + ' & ' + t('imprint') , '#', data: {toggle: "modal", target: "#legal"}%></li>
+        <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}%></li>
         <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
       </ul>
     </div>
