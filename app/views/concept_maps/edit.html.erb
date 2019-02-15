@@ -1,52 +1,53 @@
-<% content_for :header do %>
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <p class="navbar-brand">CoMapEd</p>
+  <div id="nav">
+    <div class="dropdown">
+      <div class="dropdown-toggle" id="menuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <span class="glyphicon glyphicon-menu-hamburger canvasButton" title="<%=t('menu')%>"></span>
       </div>
-      <ul class="nav navbar-nav">
-        <li class="navbar-text" id="help_code"><%= t('.code')%>: <b><%= @concept_map.code%></b></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.mail')%><span class="caret"></span></a>
-          <div class="dropdown-menu" style="padding: 5px">
-            <form class="form form-inline">
-              <div id="emailgroup" class="form-group" style="padding-bottom: 5px">
-                <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
-              </div>
-              <button id="submit" type="submit" class="btn btn-block btn-primary" onclick="sendMail();return false;"><%= t('.send')%></button>
-            </form>
-          </div>
-        </li>
-      </ul>
-
-      <ul class="nav navbar-nav navbar-center">
-        <li>
-          <form class="navbar-form">
-            <input id="search" type="text" class="form-control input-sm" placeholder="<%= t('concept')%>">
-            <button class="btn btn-sm btn-default" onclick="searchConcept($('#search').val()); $('#search').attr('value', ''); return false;"><%= t('search')%></button>
-          </form>
-        </li>
-      </ul>
-
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('.help') %><span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><%= link_to t('.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
-            <li><%= link_to t('.help_info'), '', onclick: "$('#info').removeClass('hidden');return false;"%></li>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= t('export') %><span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
-            <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
-          </ul>
-        </li>
+      <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
+        <li class="dropdown-header"><%= t('.help') %></li>
+        <li><%= link_to t('.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
+        <li><%= link_to t('.help_info'), '', onclick: "$('#info').removeClass('hidden');return false;"%></li>
+        <li role="separator" class="divider"></li>
+        <li class="dropdown-header"><%= t('export') %></li>
+        <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
+        <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
+        <li role="separator" class="divider"></li>
         <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}%></li>
         <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
       </ul>
     </div>
-<% end %>
+  </div>
+
+  <div id="code" class="alert">
+    <div class="dropdown">
+      <div class="dropdown-toggle" id="mailButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <%= t('.code')%>: <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="glyphicon glyphicon-envelope" title="<%=t('send_as_mail')%>"></span>
+      </div>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mailButton" style="padding: 3px">
+        <form class="form form-inline">
+          <div class="form-group" style="padding-bottom: 3px">
+            <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
+          </div>
+          <button id="submit" type="submit" class="btn btn-block btn-primary" onclick="sendMail();return false;"><%= t('.send')%></button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="search">
+    <div class="dropdown">
+      <div class="dropdown-toggle" id="searchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <span class="glyphicon glyphicon-search canvasButton" title="<%=t('search')%>"></span>
+      </div>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="searchButton" style="background-color: white; padding: 0px; border: 0px">
+        <form class="form-inline">
+          <div class="form-group" id="searchGroup">
+            <input id="searchInput" type="text" class="form-control input-sm" onkeyup="searchConcept($('#searchInput').val());" placeholder="<%= t('concept')%>">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 <%= render 'legal'%>
 
@@ -70,7 +71,7 @@
   <%= render 'context_help'%>
 </div>
 
-<div id="map" class="well" style="background-color: #f8f8f8; height: 100%">
+<div id="map" class="" style="background-color: #f8f8f8; height: 100%">
 </div>
 
 <div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
@@ -154,6 +155,7 @@
     };
 
     var network = new vis.Network(container, data, options);
+
     $('#context_help_text').html($('#ch_normal').html());
 
     network.on("hoverNode", function (params) {
@@ -409,12 +411,24 @@
     }
 
     function searchConcept(concept) {
+        if (concept === "") {
+            $('#searchGroup').removeClass('has-error');
+            $('#searchGroup').removeClass('has-success');
+            return;
+        }
         node = nodes.get({
             filter: function (item) {
                 return (item.label.toLocaleLowerCase() === concept.toLocaleLowerCase());
             }
         });
-        if (node != null && node.length > 0)
+        if (node != null && node.length > 0) {
             network.focus(node[0].id);
+            $('#searchGroup').removeClass('has-error');
+            $('#searchGroup').addClass('has-success');
+        }
+        else {
+            $('#searchGroup').removeClass('has-success');
+            $('#searchGroup').addClass('has-error');
+        }
     }
 </script>
