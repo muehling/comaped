@@ -1,4 +1,6 @@
-<% content_for :header do %>
+<% content_for :body do %>
+
+  <div class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
         <p class="navbar-brand">CoMapEd</p>
@@ -9,16 +11,17 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <% if @login.admin? %>
-            <li><%= link_to t('.users'), users_path%></li>
+          <li><%= link_to t('.users'), users_path%></li>
         <% end %>
         <li><%= link_to t('privacy') + ' & ' + t('imprint') , '#', data: {toggle: "modal", target: "#legal"}%></li>
         <li><%= link_to t('logout'), logout_path(target: 'backend')%></li>
       </ul>
     </div>
-<% end %>
+  </div>
 
-<% content_for :body do %>
-  <%= yield %>
+  <div class="container-fluid" style="margin: 15px">
+    <%= yield %>
+  </div>
 
   <%= render 'legal'%>
 <% end %>

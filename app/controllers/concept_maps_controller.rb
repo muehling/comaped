@@ -25,7 +25,7 @@ class ConceptMapsController < ApplicationController
   # GET /concept_maps/1.json
   def show
     respond_to do |format|
-      format.html {}
+      format.html {render 'show', layout: 'backend'}
       format.json {
         if params.has_key?(:versions)
           send_file @concept_map.to_zip(false), filename:@concept_map.code+".zip", type: "application/zip"

@@ -1,9 +1,9 @@
 edges.remove([
     <% @concept.in_links.each do |l| %>
-    <%= l.id %>,
+      <%= l.id %>,
     <% end %>
     <% @concept.out_links.each do |l| %>
-    <%= l.id %>,
+      <%= l.id %>,
     <% end %>
 ]);
 

@@ -9,7 +9,14 @@ html, body {
   padding: 0px;
 }
 
-#map {
+#login {
+  position: relative;
+  margin-top: 50px;
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
+#map-canvas {
   position: fixed;
   top: 0px;
   left: 0px;
@@ -18,7 +25,7 @@ html, body {
   box-sizing: border-box;
 }
 
-#nav {
+#header-nav {
   position: absolute;
   top: 15px;
   left: 30px;
@@ -26,7 +33,7 @@ html, body {
   display: block;
 }
 
-#code {
+#header-code {
   position: absolute;
   right: 50%;
   top: 15px;
@@ -38,12 +45,20 @@ html, body {
   color: white;
 }
 
-#search {
+#header-search {
   position: absolute;
   right: 30px;
   top: 15px;
   z-index: 1;
   display: block;
+}
+
+#submit-mail {
+  background-color: #1b809e;
+}
+
+#submit-mail:hover {
+  background-color: #07668a;
 }
 
 .canvasButton {
@@ -55,6 +70,18 @@ html, body {
 .canvasButton:hover {
   color: #07668a;
   cursor: pointer;
+}
+
+#context_help {
+  position: absolute;
+  right: 50%;
+  bottom: 15px;
+  z-index: 1;
+  display: inline-block;
+  transform: translatex(50%);
+  background-color: #1b809e;
+  padding: 5px;
+  color: white;
 }
 
 .vis-button {
