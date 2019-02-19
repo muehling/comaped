@@ -17,7 +17,6 @@ Rails.application.routes.draw do
     end
   end
 
-
   post 'login' => 'application#login'
   get 'logout' => 'application#logout'
   post 'send_code' => 'application#send_code'

@@ -129,11 +129,10 @@
     network.on("dragEnd", function (params) {
       switch (mode) {
         case dragNode:
-          nodes.update({id: id, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y});
           jQuery.ajax({
             type: "PUT",
             url: "<%= concept_map_concepts_path(@map) %>/" + id + "/",
-            data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y}}
+            data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y':  params.pointer.canvas.y}}
           });
           hideForm();
       }
