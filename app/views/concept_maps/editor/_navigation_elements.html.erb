@@ -1,0 +1,78 @@
+<!-- Menubutton top left corner -->
+<div id="header-nav">
+  <div class="dropdown">
+    <div class="dropdown-toggle" id="menuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span class="glyphicon glyphicon-menu-hamburger canvasButton" title="<%=t('concept_maps.edit.menu')%>"></span>
+    </div>
+    <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
+      <li class="dropdown-header"><%= t('concept_maps.edit.help') %></li>
+      <li><%= link_to t('concept_maps.edit.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
+      <li><%= link_to t('concept_maps.edit.help_info'), '#',  data: {toggle: "modal", target: "#info"}%></li>
+      <li role="separator" class="divider"></li>
+      <li class="dropdown-header"><%= t('export') %></li>
+      <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
+      <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
+      <li role="separator" class="divider"></li>
+      <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}%></li>
+      <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Code info + Mailform top center -->
+<div id="header-code" class="alert">
+  <div class="dropdown">
+    <div class="dropdown-toggle" id="mailButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= t('concept_maps.edit.code')%>: <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="glyphicon glyphicon-envelope" title="<%=t('concept_maps.edit.mail')%>"></span>
+    </div>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mailButton" style="padding: 3px">
+      <form class="form form-inline">
+        <div class="form-group" style="padding-bottom: 3px">
+          <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
+        </div>
+        <button id="submit-mail" type="submit" class="btn btn-block btn-primary" onclick="sendMail();return false;"><%= t('concept_maps.edit.send')%></button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Search button top right corner -->
+<div id="header-search">
+  <div class="dropdown">
+    <div class="dropdown-toggle" id="searchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span class="glyphicon glyphicon-search canvasButton" title="<%=t('concept_maps.edit.search')%>"></span>
+    </div>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="searchButton" style="background-color: white; padding: 0px; border: 0px">
+      <form class="form-inline">
+        <div class="form-group" id="searchGroup">
+          <input id="searchInput" type="text" class="form-control input-sm" onkeyup="searchConcept($('#searchInput').val());" placeholder="<%= t('concept')%>">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modals for menu entries -->
+<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4><%= t('concept_maps.edit.help_info') %></h4>
+      </div>
+      <div class="modal-body">
+        <%= render 'concept_maps/editor/info'%>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render 'legal'%>
+
+<!-- Context help bottom center -->
+<div id="context_help" class="alert <% if @concept_map.accesses > 2 %> hidden <% end %>">
+  <button type="button" class="close" aria-label="Close" onclick="$('#context_help').addClass('hidden');return false;"><span aria-hidden="true" style="color: white">&times;</span></button>
+  <p id="context_help_text">
+  </p>
+  <%= render 'concept_maps/editor/context_help'%>
+</div>
