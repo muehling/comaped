@@ -1,54 +1,6 @@
-  <div id="header-nav">
-    <div class="dropdown">
-      <div class="dropdown-toggle" id="menuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <span class="glyphicon glyphicon-menu-hamburger canvasButton" title="<%=t('.menu')%>"></span>
-      </div>
-      <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
-        <li class="dropdown-header"><%= t('.help') %></li>
-        <li><%= link_to t('.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
-        <li><%= link_to t('.help_info'), '#',  data: {toggle: "modal", target: "#info"}%></li>
-        <li role="separator" class="divider"></li>
-        <li class="dropdown-header"><%= t('export') %></li>
-        <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
-        <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
-        <li role="separator" class="divider"></li>
-        <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}%></li>
-        <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
-      </ul>
-    </div>
-  </div>
+<%= render 'concept_maps/editor/navigation_elements' %>
 
-  <div id="header-code" class="alert">
-    <div class="dropdown">
-      <div class="dropdown-toggle" id="mailButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <%= t('.code')%>: <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="glyphicon glyphicon-envelope" title="<%=t('.mail')%>"></span>
-      </div>
-      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mailButton" style="padding: 3px">
-        <form class="form form-inline">
-          <div class="form-group" style="padding-bottom: 3px">
-            <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
-          </div>
-          <button id="submit-mail" type="submit" class="btn btn-block btn-primary" onclick="sendMail();return false;"><%= t('.send')%></button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div id="header-search">
-    <div class="dropdown">
-      <div class="dropdown-toggle" id="searchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <span class="glyphicon glyphicon-search canvasButton" title="<%=t('.search')%>"></span>
-      </div>
-      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="searchButton" style="background-color: white; padding: 0px; border: 0px">
-        <form class="form-inline">
-          <div class="form-group" id="searchGroup">
-            <input id="searchInput" type="text" class="form-control input-sm" onkeyup="searchConcept($('#searchInput').val());" placeholder="<%= t('concept')%>">
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
+<!-- Intro -->
 <% if @concept_map.accesses <= 2 && !@concept_map.survey.introduction.blank? %>
   <div class="alert alert-warning alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -56,41 +8,16 @@
   </div>
 <% end %>
 
-<%= render 'legal'%>
-
-<div class="modal fade" id="info" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4><%= t('.help_info') %></h4>
-      </div>
-      <div class="modal-body">
-        <%= render 'concept_maps/editor/info'%>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="context_help" class="alert <% if @concept_map.accesses > 2 %> hidden <% end %>">
-  <button type="button" class="close" aria-label="Close" onclick="$('#context_help').addClass('hidden');return false;"><span aria-hidden="true" style="color: white">&times;</span></button>
-  <p id="context_help_text">
-  </p>
-  <%= render 'concept_maps/editor/context_help'%>
-</div>
-
-<div id="map-canvas" class="" style="background-color: #f8f8f8; height: 100%">
-</div>
-
+<!-- Flexible form for CRUD-actions -->
 <div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
   <div class="panel-body">
     <p><em id="action"></em></p>
     <form id="form" class="form-inline" method="post" data-remote="true">
       <div class="form-group">
         <% if @concept_map.survey.association_labels.blank? %>
-            <input id="entry_link" class="form-control" name="link[label]" placeholder="<%= t :name %>" type="text" />
+          <input id="entry_link" class="form-control" name="link[label]" placeholder="<%= t :name %>" type="text" />
         <% else %>
-            <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
+          <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
         <% end %>
         <input id="entry_concept" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
         <input id="x" type="hidden" name="concept[x]"/>
@@ -108,6 +35,11 @@
   </div>
 </div>
 
+<!-- Dummy element vor Vis-canvas -->
+<div id="map-canvas" class="" style="background-color: #f8f8f8; height: 100%">
+</div>
+
+<!-- Scripts -->
 <script type="text/javascript">
     const none = 0;
     const addNode = 1;
