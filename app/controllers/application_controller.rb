@@ -40,7 +40,6 @@ class ApplicationController < ActionController::Base
   end
 
   def send_code
-
   end
 
   #GET /map/:code

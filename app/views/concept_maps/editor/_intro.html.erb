@@ -1,3 +1,5 @@
+<%= render 'concept_maps/editor/explanation' %>
+
 <script>
     let ids = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
     let placements = ["right", "bottom", "left", "top", "right", "left"];
@@ -31,7 +33,10 @@
     };
 
     let i = 0;
-    next();
+    $('#intro').modal('show');
+    $('#intro').on('hidden.bs.modal', function (e) {
+        next();
+    });
 
 </script>
 
