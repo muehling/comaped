@@ -9,15 +9,16 @@
 <% end %>
 
 <!-- Flexible form for CRUD-actions -->
-<div id="panel" class="hidden panel panel-default" style="position:absolute;left:0px;top:0px">
+<div id="panel" class="hidden panel panel-default" style="z-index:1; position:absolute; left:0px; top:0px;">
   <div class="panel-body">
-    <p><em id="action"></em></p>
+    <p><em id="action"></em><button type="button" class="close pull-right" onclick="hideForm();" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>
+
     <form id="form" class="form-inline" method="post" data-remote="true">
       <div class="form-group">
         <% if @concept_map.survey.association_labels.blank? %>
-          <input id="entry_link" class="form-control" name="link[label]" placeholder="<%= t :name %>" type="text" />
+            <input id="entry_link" class="form-control" name="link[label]" placeholder="<%= t :name %>" type="text" />
         <% else %>
-          <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
+            <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
         <% end %>
         <input id="entry_concept" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
         <input id="x" type="hidden" name="concept[x]"/>
@@ -28,15 +29,14 @@
       <%= render 'concept_maps/editor/colorpicker' %>
       <div class="form-group">
         <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
-        <button class="btn btn-sm btn-default"onclick="hideForm();return false;"><span class="glyphicon glyphicon-remove"></span></button>
         <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Dummy element vor Vis-canvas -->
-<div id="map-canvas" class="" style="background-color: #f8f8f8; height: 100%">
+<!-- Dummy element for Vis-canvas -->
+<div id="map-canvas">
 </div>
 
 <!-- Scripts -->
@@ -234,7 +234,7 @@
 
     function showForm() {
       $("#panel").removeClass("hidden");
-      $("#panel").attr("style", "position:absolute;left:" + ($("#map-canvas").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map-canvas").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
+      $("#panel").attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map-canvas").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
       switch (mode) {
             case addNode:
               $('#context_help_text').html($('#ch_new').html());
