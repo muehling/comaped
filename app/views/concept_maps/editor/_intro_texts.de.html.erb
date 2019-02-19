@@ -1,19 +1,11 @@
-<%
-  texts =  [
-      "In diesem Menü finden Sie z.B. eine Kurzanleitung und können ihr Begriffsnetz herunterladen.",
-      "Diesen Code müssen Sie sich merken, um später an Ihrem Begriffsnetz weiterarbeiten zu können. Mit dem Icon rechts können Sie sich den Code auch selbst als E-Mail schicken.",
-      "Hier können Sie nach einem Konzept in Ihrem Begriffsnetz suchen, falls Sie mal den Überblick verlieren.",
-      "Das Zeichnen findet auf der Zeichenfläche statt. Hier steht immer welche Aktionen gerade möglich sind. Die Hilfe Kann geschlossen (<span class='glyphicon glyphicon-remove'></span>) und später im Menü auch wieder geöffnet werden.",
-      "Hiermit können Sie die Zeichenfläche verschieben, das geht auch mit Maus oder Finger",
-      "Hier können Sie die Ansicht vergrößern/verkleinern (geht auch mit Mausrad oder Fingern) und optimal einstellen."
-  ]
-%>
-
-let texts = [
-<% texts.each do |t| %>
-  "<p class='text-justify'><%= raw t %></p>" +
-  "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'><%= t == texts.last() ? "Los geht's" : "Weiter" %></button></p>",
-<% end %>
-];
-
-let title = "Einführung <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='glyphicon glyphicon-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
+let texts =  [
+    "In diesem Menü finden Sie z.B. eine Kurzanleitung und können ihr Begriffsnetz herunterladen.",
+    "Diesen Code müssen Sie sich merken, um später an Ihrem Begriffsnetz weiterarbeiten zu können. Mit dem Icon rechts können Sie sich den Code auch selbst als E-Mail schicken.",
+    "Hier können Sie nach einem Konzept in Ihrem Begriffsnetz suchen, falls Sie mal den Überblick verlieren.",
+    "Das Zeichnen findet auf der Zeichenfläche statt. Hier steht immer welche Aktionen gerade möglich sind. Die Hilfe Kann geschlossen (<span class='glyphicon glyphicon-remove'></span>) und später im Menü auch wieder geöffnet werden.",
+    "Hiermit können Sie die Zeichenfläche verschieben, das geht auch mit Maus oder Finger",
+    "Hier können Sie die Ansicht vergrößern/verkleinern (geht auch mit Mausrad oder Fingern) und optimal einstellen."
+]
+let btn_standard = "Weiter"
+let btn_last = "Los geht's"
+let title = "Einführung"

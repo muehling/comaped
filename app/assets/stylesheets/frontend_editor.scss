@@ -83,6 +83,8 @@ html, body {
   background-color: #1b809e;
   padding: 5px;
   color: white;
+  padding: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 
 #task {
@@ -92,9 +94,11 @@ html, body {
   z-index: 1;
   display: inline-block;
   transform: translatex(50%);
-  background-color: #1b809e;
+  background-color: white;
   padding: 5px;
-  color: white;
+  color: black;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  padding: 10px;
 }
 
 .vis-button {

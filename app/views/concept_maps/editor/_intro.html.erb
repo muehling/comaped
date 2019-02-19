@@ -4,6 +4,12 @@
 
     <%= render 'concept_maps/editor/intro_texts' %>
 
+    for (let i = 0; i < texts.length; ++i)
+        texts[i] = "<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'>" + (i == texts.length-1 ? btn_last : btn_standard) + "</button></p>";
+
+    title = title + " <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='glyphicon glyphicon-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
+
+
     function next() {
         if (i > 0)
             $(ids[i-1]).popover("destroy");
