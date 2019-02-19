@@ -70,7 +70,7 @@ en:
       action_new_link: "Create new link"
       action_new_node: "Create new concept"
       code: "This concept map has the code"
-      help: "Show help"
+      help: "Help"
       help_info: "Short manual"
       help_short: "Show hints"
       legal: "Legal information"
@@ -78,6 +78,7 @@ en:
       menu: "Menu"
       search: "Search for concept"
       send: "Send"
+      task: "Show task description"
     _form_email:
       anonymize: "Send anonymous codes"
       description: "Create codes for a list of e-mail addresses and send the codes"

@@ -6,7 +6,10 @@
     </div>
     <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
       <li class="dropdown-header"><%= t('concept_maps.edit.help') %></li>
-      <li><%= link_to t('concept_maps.edit.help_short'), '', onclick: "$('#context_help').removeClass('hidden');return false;"%></li>
+      <% unless @concept_map.survey.introduction.blank? %>
+        <li><%= link_to t('concept_maps.edit.task'), '', onclick: "$('#task').removeClass('hidden');return false;"%></li>
+      <% end %>
+      <li><%= link_to t('concept_maps.edit.help_short'), '', onclick: "$('#context-help').removeClass('hidden');return false;"%></li>
       <li><%= link_to t('concept_maps.edit.help_info'), '#',  data: {toggle: "modal", target: "#info"}%></li>
       <li role="separator" class="divider"></li>
       <li class="dropdown-header"><%= t('export') %></li>
@@ -70,9 +73,18 @@
 <%= render 'legal'%>
 
 <!-- Context help bottom center -->
-<div id="context_help" class="alert <% if @concept_map.accesses > 2 %> hidden <% end %>">
-  <button type="button" class="close" aria-label="Close" onclick="$('#context_help').addClass('hidden');return false;"><span aria-hidden="true" style="color: white">&times;</span></button>
-  <p id="context_help_text">
+<div id="context-help" class="alert <% unless @concept_map.first? %> hidden <% end %>">
+  <button type="button" class="close" aria-label="Close" onclick="$('#context-help').addClass('hidden');return false;"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: white; font-size: 12pt"></span></button>
+  <p id="context-help-text">
   </p>
   <%= render 'concept_maps/editor/context_help'%>
 </div>
+
+<% unless @concept_map.survey.introduction.blank? %>
+  <div id="task" class="alert <% unless @concept_map.first? %> hidden <% end %>">
+    <button type="button" class="close" aria-label="Close" onclick="$('#task').addClass('hidden');return false;"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: white; font-size: 12pt"></span></button>
+    <p>
+      <%= @concept_map.survey.introduction %>
+    </p>
+  </div>
+<% end %>

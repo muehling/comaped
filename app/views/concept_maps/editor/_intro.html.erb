@@ -1,0 +1,31 @@
+<script>
+    let ids = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
+    let placements = ["right", "bottom", "left", "top", "right", "left"];
+
+    <%= render 'concept_maps/editor/intro_texts' %>
+
+    function next() {
+        if (i > 0)
+            $(ids[i-1]).popover("destroy");
+        if (i < ids.length) {
+            $(ids[i]).data("toggle", "popover");
+            $(ids[i]).data("viewport", {'selector': 'body', 'padding': 15});
+            $(ids[i]).data("placement", placements[i]);
+            $(ids[i]).data("title", title);
+            $(ids[i]).data("content", texts[i]);
+            $(ids[i]).popover({html: true});
+            $(ids[i]).popover("show");
+            ++i;
+        }
+    };
+
+    function stop() {
+        $(ids[i-1]).popover("destroy");
+        i = ids.length;
+    };
+
+    let i = 0;
+    next();
+
+</script>
+

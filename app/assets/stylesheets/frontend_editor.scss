@@ -73,10 +73,22 @@ html, body {
   cursor: pointer;
 }
 
-#context_help {
+#context-help {
   position: absolute;
   right: 50%;
   bottom: 15px;
+  z-index: 1;
+  display: inline-block;
+  transform: translatex(50%);
+  background-color: #1b809e;
+  padding: 5px;
+  color: white;
+}
+
+#task {
+  position: absolute;
+  right: 50%;
+  top: 75px;
   z-index: 1;
   display: inline-block;
   transform: translatex(50%);

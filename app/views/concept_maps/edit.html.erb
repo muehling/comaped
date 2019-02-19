@@ -1,17 +1,14 @@
 <%= render 'concept_maps/editor/navigation_elements' %>
 
 <!-- Intro -->
-<% if @concept_map.accesses <= 2 && !@concept_map.survey.introduction.blank? %>
-  <div class="alert alert-warning alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <%= @concept_map.survey.introduction %>
-  </div>
+<% if @concept_map.first? %>
+  <%= render 'concept_maps/editor/intro' %>
 <% end %>
 
 <!-- Flexible form for CRUD-actions -->
 <div id="panel" class="hidden panel panel-default" style="z-index:1; position:absolute; left:0px; top:0px;">
   <div class="panel-body">
-    <p><em id="action"></em><button type="button" class="close pull-right" onclick="hideForm();" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>
+    <p><em id="action"></em><button type="button" class="close pull-right" onclick="hideForm();" aria-label="Close"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></button></p>
 
     <form id="form" class="form-inline" method="post" data-remote="true">
       <div class="form-group">
@@ -96,27 +93,27 @@
 
     var network = new vis.Network(container, data, options);
 
-    $('#context_help_text').html($('#ch_normal').html());
+    $('#context-help-text').html($('#ch_normal').html());
 
     network.on("hoverNode", function (params) {
       if (mode == none)
-        $('#context_help_text').html($('#ch_hovernode').html());
+        $('#context-help-text').html($('#ch_hovernode').html());
       network.canvas.body.container.style.cursor = 'pointer'
     });
     network.on("hoverEdge", function (params) {
       if (mode == none)
-        $('#context_help_text').html($('#ch_hoveredge').html());
+        $('#context-help-text').html($('#ch_hoveredge').html());
       network.canvas.body.container.style.cursor = 'pointer'
     });
 
     network.on("blurNode", function (params) {
       if (mode == none)
-        $('#context_help_text').html($('#ch_normal').html());
+        $('#context-help-text').html($('#ch_normal').html());
       network.canvas.body.container.style.cursor = 'default'
     });
     network.on("blurEdge", function (params) {
       if (mode == none)
-        $('#context_help_text').html($('#ch_normal').html());
+        $('#context-help-text').html($('#ch_normal').html());
       network.canvas.body.container.style.cursor = 'default'
     });
 
@@ -207,7 +204,7 @@
         if (params.nodes.length > 0) {
           id = params.nodes[0];
           mode = addEdge;
-          $('#context_help_text').html($('#ch_addedge').html());
+          $('#context-help-text').html($('#ch_addedge').html());
         }
         else {
           <% if @concept_map.survey.concept_labels.blank? %>
@@ -237,7 +234,7 @@
       $("#panel").attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map-canvas").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
       switch (mode) {
             case addNode:
-              $('#context_help_text').html($('#ch_new').html());
+              $('#context-help-text').html($('#ch_new').html());
               $('#action').html("<%= t('.action_new_node')%>");
               $("#entry_concept").val("");
               $("#entry_concept").removeClass("hidden");
@@ -251,7 +248,7 @@
               $("#entry_concept").focus();
               break;
             case editNode:
-              $('#context_help_text').html($('#ch_edit').html());
+              $('#context-help-text').html($('#ch_edit').html());
               $('#action').html("<%= t('.action_edit_node')%>");
               $("#entry_concept").val(nodes.get(id).label);
               $("#entry_concept").removeClass("hidden");
@@ -266,7 +263,7 @@
               $("#entry_concept").focus();
               break;
             case editEdge:
-              $('#context_help_text').html($('#ch_edit').html());
+              $('#context-help-text').html($('#ch_edit').html());
               $('#action').html("<%= t('.action_edit_link')%>");
               $("#entry_link").val(edges.get(id).label);
               $("#entry_link").removeClass("hidden");
@@ -278,7 +275,7 @@
               $("#entry_link").focus();
               break;
             case addEdge:
-              $('#context_help_text').html($('#ch_new').html());
+              $('#context-help-text').html($('#ch_new').html());
               $('#action').html("<%= t('.action_new_link')%>");
               $("#entry_link").val("");
               $("#entry_link").removeClass("hidden");
@@ -298,7 +295,7 @@
         $("#panel").focusout();
         network.unselectAll();
         mode = none;
-        $('#context_help_text').html($('#ch_normal').html());
+        $('#context-help-text').html($('#ch_normal').html());
     }
 
     //Form bei ESC oder Enter schließen

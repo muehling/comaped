@@ -267,7 +267,7 @@ de:
       action_new_link: "Neue Verbindung anlegen"
       action_new_node: "Neues Konzept anlegen"
       code: "Dieses Begriffsnetz hat den Code"
-      help: "Hilfe anzeigen"
+      help: "Hilfe"
       help_info: "Kurzanleitung"
       help_short: "Hinweise anzeigen"
       legal: "Rechtliche Hinweise"
@@ -275,6 +275,7 @@ de:
       menu: "Menü"
       search: "Nach Konzept suchen"
       send: "Absenden"
+      task: "Aufgabenbeschreibung anzeigen"
     _form_email:
       anonymize: "Codes anonym verschicken"
       description: "Codes für eine Liste von E-Mail Adressen generieren und versenden"

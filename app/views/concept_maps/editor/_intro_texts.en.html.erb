@@ -1,0 +1,19 @@
+<%
+  texts =  [
+      "In this menu you can find a short manual and also e.g. download your concept map.",
+      "Remeber this code to continue working on your concept map later on. Using the icon on the right, you can send yourself an e-mail with the code.",
+      "Here you can search for a concept in your map in case you get lost some time.",
+      "The drawing itself is done on the canvas. Here you can always see the actions that are possible currently. You can close this help (<span class='glyphicon glyphicon-remove'></span>) and reopen it later from the menu",
+      "Here you can move the canvas around, also works with mouse or touch",
+      "Here you can zoom in/out (also works with scrollwheel or touch) and set the optimal zoom",
+  ]
+%>
+
+let texts = [
+<% texts.each do |t| %>
+  "<p class='text-justify'><%= raw t %></p>" +
+  "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'><%= t == texts.last() ? "Let's start" : "Continue" %></button></p>",
+<% end %>
+];
+
+let title = "Introduction <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='glyphicon glyphicon-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";

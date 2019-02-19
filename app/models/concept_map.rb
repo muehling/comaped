@@ -7,8 +7,16 @@ class ConceptMap < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
 
+  #Generate a random code
+  #Returns: Randomly generated alpha-numerical code of length 6, is not guaranteed to be unique.
   def self.generate_slug
     Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6].to_s
+  end
+
+  #Returns whether or not the concept map is edited for the first time
+  #Returns: Boolean value indicating whether the map is edited for the first time.
+  def first?
+    return self.accesses <= 20 #Debug
   end
 
   #Prepares a map using the information of the survey.
