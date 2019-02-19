@@ -7,6 +7,12 @@ class ConceptMap < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
 
+  #Use slug instead of id for routing
+  #Return: Code of concept map
+  def to_param
+    self.code
+  end
+
   #Generate a random code
   #Returns: Randomly generated alpha-numerical code of length 6, is not guaranteed to be unique.
   def self.generate_slug

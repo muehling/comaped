@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
 
   #GET /map/:code
   def map_link
-    @map = ConceptMap.find_by_code(params[:id])
+    @map = ConceptMap.find_by_code(params[:code])
     if @map.nil?
       redirect_to '/'
     else

@@ -139,9 +139,9 @@ class ConceptMapsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    #Load concept maps and check whether user is allowed to access it (frontend or backend)
     def set_concept_map
-      @concept_map = ConceptMap.find(params[:id])
+      @concept_map = ConceptMap.find_by_code(params[:code])
       if @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
         redirect_to '/'
       end
@@ -168,7 +168,7 @@ class ConceptMapsController < ApplicationController
       check_login_backend
       set_user_project_survey
     else
-        check_login_frontend
+      check_login_frontend
     end
   end
 

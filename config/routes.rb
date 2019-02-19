@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :concept_maps, only: [:edit, :update, :show] do
+  resources :concept_maps, path: 'maps', param: :code, only: [:edit, :update, :show] do
     resources :concepts
     resources :links
     resources :versions
@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     resources :users do
       resources :projects do
         resources :surveys do
-          resources :concept_maps, except: [:edit, :update]
+          resources :concept_maps, param: :code, except: [:edit, :update]
         end
       end
     end
@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   post 'login' => 'application#login'
   get 'logout' => 'application#logout'
   post 'send_code' => 'application#send_code'
-  get 'map/(:id)' => 'application#map_link'
+  get 'map/(:code)' => 'application#map_link'
   post 'map' => 'application#map_form'
 
   root 'application#frontend'

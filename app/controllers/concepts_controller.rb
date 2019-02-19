@@ -51,7 +51,7 @@ class ConceptsController < ApplicationController
   end
 
   def set_concept_map
-    @concept_map = ConceptMap.find(params[:concept_map_id])
+    @concept_map = ConceptMap.find_by_code(params[:concept_map_code])
     unless !@concept_map.nil? && @concept_map == @map
       redirect_to '/'
     end

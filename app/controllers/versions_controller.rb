@@ -19,7 +19,7 @@ class VersionsController < ApplicationController
   private
 
   def set_version_and_check
-    @concept_map = ConceptMap.find(params[:concept_map_id])
+    @concept_map = ConceptMap.find_by_code(params[:concept_map_code])
     if @concept_map.nil? || (@concept_map.survey.project.user != @login && !@login.admin?)
       redirect_to '/backend'
     end
