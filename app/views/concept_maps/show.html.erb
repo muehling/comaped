@@ -1,53 +1,54 @@
 <div class="row">
+  <div class = "col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <%= @concept_map.survey.project.name %>
+        <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
+      </div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <%= @concept_map.survey.project.name %>
-      <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
-    </div>
+      <div class="panel-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <%= @concept_map.survey.name %>
+            <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @concept_map.survey.project), class: "pull-right"%>
+          </div>
 
-    <div class="panel-body">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <%= @concept_map.survey.name %>
-          <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @concept_map.survey.project), class: "pull-right"%>
-        </div>
-
-        <div class="panel-body">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <%= @concept_map.code %>
-              <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_survey_path(@user, @concept_map.survey.project, @concept_map.survey), class: "pull-right"%>
-            </div>
-
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-md-2">
-                  <%= render partial: "versions/index", locals: {concept_map: @concept_map}%>
-                </div>
-                <div class="col-md-10">
-                  <%= render partial: 'versions/timeline', locals: {concept_map: @concept_map}%>
-                </div>
+          <div class="panel-body">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <%= @concept_map.code %>
+                <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_survey_path(@user, @concept_map.survey.project, @concept_map.survey), class: "pull-right"%>
               </div>
-              <div class="row">
-                <div class="col-md-2">
-                </div>
-                <div class="col-md-10">
-                  <p class="text-center">
-                    <%= render partial: "versions/show", locals: {concept_map: @concept_map}%>
-                  </p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-2">
-                  <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
 
-                  <%= link_to t('versions.delete'), concept_map_version_path(@concept_map, 0), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-block btn-danger" %>
-
-                  <%= link_to t('concept_maps.delete'), user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-block btn-danger" %>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-2">
+                    <%= render partial: "versions/index", locals: {concept_map: @concept_map}%>
+                  </div>
+                  <div class="col-md-10">
+                    <%= render partial: 'versions/timeline', locals: {concept_map: @concept_map}%>
+                  </div>
                 </div>
-                <div class="col-md-10">
-                  <%= render partial: 'concept_maps/preview', locals: {concept_map: @concept_map}%>
+                <div class="row">
+                  <div class="col-md-2">
+                  </div>
+                  <div class="col-md-10">
+                    <p class="text-center">
+                      <%= render partial: "versions/show", locals: {concept_map: @concept_map}%>
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2">
+                    <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
+
+                    <%= link_to t('versions.delete'), concept_map_version_path(@concept_map, 0), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-block btn-danger" %>
+
+                    <%= link_to t('concept_maps.delete'), user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-block btn-danger" %>
+                  </div>
+                  <div class="col-md-10">
+                    <%= render partial: 'concept_maps/preview', locals: {concept_map: @concept_map}%>
+                  </div>
                 </div>
               </div>
             </div>

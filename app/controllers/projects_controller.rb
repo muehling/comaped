@@ -56,7 +56,7 @@ class ProjectsController < ApplicationController
       format.js {
         @project = @user.projects.build(project_params)
         if @project.save
-         redirect_to user_project_path(@user, @project), notice: I18n.t('projects.created')
+         redirect_to user_project_path(@user, @project)
         else
           render :new
         end

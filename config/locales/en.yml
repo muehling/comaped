@@ -91,7 +91,6 @@ en:
       created: 'A concept map has been created for you in CoMapEd'
       edited: 'CoMapEd: Send code for concept map via email'
   projects:
-    created: "Project created"
     delete: "Delete project"
     destroyed: "Project was deleted"
     edit: "Edit project"
@@ -114,7 +113,6 @@ en:
     mails:
       created: "A CoMapEd user account has been created"
   surveys:
-    created: "Survey created"
     delete: "Delete survey"
     destroyed: "Survey was deleted"
     edit: "Edit survey"

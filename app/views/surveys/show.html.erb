@@ -1,67 +1,67 @@
 <div class="row">
+  <div class = "col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <%= @survey.project.name %>
+        <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
+      </div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <%= @survey.project.name %>
-      <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
-    </div>
+      <div class="panel-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <%= @survey.name %>
+            <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @survey.project), class: "pull-right"%>
+          </div>
 
-    <div class="panel-body">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <%= @survey.name %>
-          <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @survey.project), class: "pull-right"%>
-        </div>
-
-        <div class="panel-body">
-          <div class="container-fluid">
-            <div class="row">
-              <div class = "col-md-12">
-                <ul class="nav nav-pills" role="tablist">
-                  <li role="presentation" <% if @survey.concept_maps.size == 0 %> class='active' <% end %> ><a href="#details" aria-controls="details" role="tab" data-toggle="tab"><%= t('details') %></a></li>
-                  <li role="presentation" <% if @survey.concept_maps.size > 0 %> class='active' <% end %>><a href="#maps" aria-controls="maps" role="tab" data-toggle="tab"><%= t('maps') %></a></li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class = "col-md-12">
-                <p>&nbsp;</p>
-              </div>
-            </div>
-
-            <div class="tab-content">
-              <div role="tabpanel" class="tab-pane <% if @survey.concept_maps.size == 0 %> active <% end %>" id="details">
-                <div class="row">
-                  <div class = "col-md-3">
-                    <table class="table table-hover" width="50%">
-                      <tr><td><%= t('activerecord.attributes.survey.description') %>:</td><td><%= @survey.description.blank? ? '-' : @survey.description %></td></tr>
-                      <tr><td><%= t('maps') %>:</td><td><%= @survey.concept_maps.count %></td></tr>
-                      <tr><td><%= t('activerecord.attributes.survey.code') %>:</td><td><%= @survey.code.blank? ? '-' : @survey.code %></td></tr>
-                      <tr><td><%= t('activerecord.attributes.survey.start_date') %>:</td><td><%= @survey.start_date || "-" %></td></tr>
-                      <tr><td><%= t('activerecord.attributes.survey.end_date') %>:</td><td><%= @survey.end_date || "-" %></td></tr>
-                    </table>
-                  </div>
-                  <div class = "col-md-9" id="form">
-                    <table class="table table-hover" width="50%">
-                      <tr><td><%= t('activerecord.attributes.survey.introduction') %>:</td><td><% if @survey.introduction.blank? %> - <% else %><pre><%= @survey.introduction %></pre><% end %></td></tr>
-                      <tr><td><%= t('activerecord.attributes.survey.concept_labels') %>:</td><td><%= @survey.concept_labels.blank? ? '-' : @survey.concept_labels %></td></tr>
-                      <tr><td><%= t('activerecord.attributes.survey.association_labels') %>:</td><td><%= @survey.association_labels.blank? ? '-' : @survey.association_labels %></td></tr>
-                      <tr><td><%= t('activerecord.attributes.survey.initial_map') %>:</td><td><% if @survey.initial_map.blank? %> - <% else %><pre><%= @survey.initial_map %></pre><% end %></td></tr>
-                    </table>
-                    <%= link_to t('edit'), edit_user_project_survey_path(@user, @project, @survey), class: "btn btn-default", remote: true %>
-                  </div>
+          <div class="panel-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class = "col-md-12">
+                  <ul class="nav nav-pills" role="tablist">
+                    <li role="presentation" <% if @survey.concept_maps.size == 0 %> class='active' <% end %> ><a href="#details" aria-controls="details" role="tab" data-toggle="tab"><%= t('details') %></a></li>
+                    <li role="presentation" <% if @survey.concept_maps.size > 0 %> class='active' <% end %>><a href="#maps" aria-controls="maps" role="tab" data-toggle="tab"><%= t('maps') %></a></li>
+                  </ul>
                 </div>
               </div>
-              <div role="tabpanel" class="tab-pane  <% if @survey.concept_maps.size > 0 %> active <% end %>" id="maps">
-                <%= render 'concept_maps/index' %>
+
+              <div class="row">
+                <div class = "col-md-12">
+                  <p>&nbsp;</p>
+                </div>
+              </div>
+
+              <div class="tab-content">
+                <div role="tabpanel" class="tab-pane <% if @survey.concept_maps.size == 0 %> active <% end %>" id="details">
+                  <div class="row">
+                    <div class = "col-md-3">
+                      <table class="table table-hover" width="50%">
+                        <tr><td><%= t('activerecord.attributes.survey.description') %>:</td><td><%= @survey.description.blank? ? '-' : @survey.description %></td></tr>
+                        <tr><td><%= t('maps') %>:</td><td><%= @survey.concept_maps.count %></td></tr>
+                        <tr><td><%= t('activerecord.attributes.survey.code') %>:</td><td><%= @survey.code.blank? ? '-' : @survey.code %></td></tr>
+                        <tr><td><%= t('activerecord.attributes.survey.start_date') %>:</td><td><%= @survey.start_date || "-" %></td></tr>
+                        <tr><td><%= t('activerecord.attributes.survey.end_date') %>:</td><td><%= @survey.end_date || "-" %></td></tr>
+                      </table>
+                    </div>
+                    <div class = "col-md-9" id="form">
+                      <table class="table table-hover" width="50%">
+                        <tr><td><%= t('activerecord.attributes.survey.introduction') %>:</td><td><% if @survey.introduction.blank? %> - <% else %><pre><%= @survey.introduction %></pre><% end %></td></tr>
+                        <tr><td><%= t('activerecord.attributes.survey.concept_labels') %>:</td><td><%= @survey.concept_labels.blank? ? '-' : @survey.concept_labels %></td></tr>
+                        <tr><td><%= t('activerecord.attributes.survey.association_labels') %>:</td><td><%= @survey.association_labels.blank? ? '-' : @survey.association_labels %></td></tr>
+                        <tr><td><%= t('activerecord.attributes.survey.initial_map') %>:</td><td><% if @survey.initial_map.blank? %> - <% else %><pre><%= @survey.initial_map %></pre><% end %></td></tr>
+                      </table>
+                      <%= link_to t('edit'), edit_user_project_survey_path(@user, @project, @survey), class: "btn btn-default", remote: true %>
+                    </div>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane  <% if @survey.concept_maps.size > 0 %> active <% end %>" id="maps">
+                  <%= render 'concept_maps/index' %>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </div>
   </div>
-
 </div>

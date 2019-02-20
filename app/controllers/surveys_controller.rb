@@ -58,7 +58,7 @@ class SurveysController < ApplicationController
       format.js {
         @survey = @project.surveys.build(survey_params)
         if @survey.save
-          redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.created')
+          redirect_to user_project_survey_path(@user, @project, @survey)
         else
           render :new
         end
