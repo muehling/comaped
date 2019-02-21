@@ -22,7 +22,7 @@ class ConceptMap < ApplicationRecord
   #Returns whether or not the concept map is edited for the first time
   #Returns: Boolean value indicating whether the map is edited for the first time.
   def first?
-    return self.accesses <= 20 #Debug
+    return self.accesses < 2
   end
 
   #Prepares a map using the information of the survey.
