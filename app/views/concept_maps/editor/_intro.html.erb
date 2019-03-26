@@ -37,6 +37,11 @@
         next();
     });
 
+    $("#intro").modal({
+        show:true,
+        backdrop:'static'
+    });
+
     $(document).ready(function(){
         $("#intro").modal("show");
     });
