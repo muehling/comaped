@@ -10,16 +10,18 @@
 
   <div class="container-fluid">
 
-    <div class="jumbotron" id="login">
-      <legend>CoMapEd 2</legend>
-      <%= yield %>
-      <p class="lead text-center">
-        <mark>
-          <%= link_to t('privacy'), '#', data: {toggle: "modal", target: "#privacy"}%>
-          -
-          <%= link_to t('imprint'), '#',  data: {toggle: "modal", target: "#imprint"}%>
-        </mark>
-      </p>
+    <div class="row">
+      <div class="well" id="login">
+        <legend>CoMapEd 2</legend>
+        <%= yield %>
+        <p class="text-center">
+          <mark>
+            <%= link_to t('privacy'), '#', data: {toggle: "modal", target: "#privacy"}%>
+            -
+            <%= link_to t('imprint'), '#',  data: {toggle: "modal", target: "#imprint"}%>
+          </mark>
+        </p>
+      </div>
     </div>
 
     <div class="modal fade" id="privacy" tabindex="-1" role="dialog" aria-labelledby="privacyLabel" aria-hidden="true">
