@@ -244,7 +244,7 @@
               $("#form").attr('method', 'post');
               $("#x").attr("value", canvasX);
               $("#y").attr("value", canvasY);
-              $("#entry_concept").focus();
+              focus("#entry_concept");
               break;
             case editNode:
               $('#context-help-text').html($('#ch_edit').html());
@@ -259,7 +259,7 @@
               $("#form").attr('method', 'put');
               $("#x").attr("value", canvasX);
               $("#y").attr("value", canvasY);
-              $("#entry_concept").focus();
+              focus("#entry_concept");
               break;
             case editEdge:
               $('#context-help-text').html($('#ch_edit').html());
@@ -271,7 +271,7 @@
               $("#delete").removeClass("hidden");
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
               $("#form").attr('method', 'put');
-              $("#entry_link").focus();
+              focus("#entry_link");
               break;
             case addEdge:
               $('#context-help-text').html($('#ch_new').html());
@@ -283,8 +283,7 @@
               $("#delete").addClass("hidden");
               $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
               $("#form").attr('method', 'post');
-              $("#entry_link").focus();
-
+              focus("#entry_link");
         }
    }
 
@@ -295,7 +294,13 @@
         network.unselectAll();
         mode = none;
         $('#context-help-text').html($('#ch_normal').html());
-        zoomOut();
+        //Zoom-Out by Mobilgeräten veranlassen
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if ( viewport ) {
+            viewport.content = 'initial-scale=1';
+            viewport.content = 'width=device-width';
+            viewport.content = 'maximum-scale=1';
+        }
     }
 
     //Form bei ESC oder Enter schließen
@@ -369,12 +374,9 @@
         }
     }
 
-    function zoomOut() {
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if ( viewport ) {
-            viewport.content = 'initial-scale=1';
-            viewport.content = 'width=device-width';
-            viewport.content = 'maximum-scale=1';
-        }
+    function focus(id) {
+        let timer = setInterval(function() {
+            $(id).focus();
+        }, 100);
     }
 </script>
