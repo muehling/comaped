@@ -295,6 +295,7 @@
         network.unselectAll();
         mode = none;
         $('#context-help-text').html($('#ch_normal').html());
+        zoomOut();
     }
 
     //Form bei ESC oder Enter schließen
@@ -366,5 +367,14 @@
             $('#searchGroup').removeClass('has-success');
             $('#searchGroup').addClass('has-error');
         }
+    }
+
+    function zoomOut() {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if ( viewport ) {
+            viewport.content = 'initial-scale=1';
+            viewport.content = 'width=device-width';
+        }
+
     }
 </script>

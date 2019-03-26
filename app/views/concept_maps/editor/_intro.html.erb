@@ -32,10 +32,12 @@
         i = ids.length;
     };
 
-    let i = 0;
-    $('#intro').modal({"show": true});
-    $('#intro').on("hidden.bs.modal", function (e) {
-        next();
+    $(document).ready(function(){
+        let i = 0;
+        $("#intro").modal();
+        $("#intro").on("hidden.bs.modal", function (e) {
+            next();
+        });
     });
 
 </script>
