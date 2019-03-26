@@ -7,6 +7,11 @@ html, body {
   min-height: 100%;
   margin: 0px;
   padding: 0px;
+  font-size: 100%
+}
+
+input {
+  font-size: 100% !important;
 }
 
 #login {
