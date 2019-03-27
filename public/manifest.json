@@ -1,0 +1,7 @@
+{
+  "name": "CoMapEd",
+  "short_name": "CMPD",
+  "start_url": ".",
+  "display": "minimal-ui",
+  "orientation": "landscape"
+}
