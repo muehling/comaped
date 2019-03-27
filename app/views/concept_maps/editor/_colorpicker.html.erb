@@ -1,4 +1,4 @@
-<div class="form-group" id="colorpicker">
+<span id="colorpicker">
   <input id="color" type="hidden" name="concept[color]" value="<%= palette(0) %>"/>
   <div class="dropdown" style="display: inline-block">
     <div id="currentColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%= default_color %>;"><%= t :color %>&nbsp;<span class="caret"></span></div>
@@ -17,7 +17,7 @@
       </table>
     </div>
   </div>
-</div>
+</span>
 
 <script>
     function changeColor(id) {
