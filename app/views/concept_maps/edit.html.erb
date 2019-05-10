@@ -379,4 +379,27 @@
             $(id).focus();
         }, 100);
     }
+
+    //Prevent firing of onresize multiple times during e.g. manual resize
+    var waitForFinalEvent = (function () {
+        var timers = {};
+        return function (callback, ms, uniqueId) {
+            if (!uniqueId) {
+                uniqueId = "Not Resize";
+            }
+            if (timers[uniqueId]) {
+                clearTimeout (timers[uniqueId]);
+            }
+            timers[uniqueId] = setTimeout(callback, ms);
+        };
+    })();
+
+    //Prevent disappearing nodes in Safari when resizing
+    $(window).resize(function () {
+        waitForFinalEvent(function(){
+            network.redraw();
+            console.log("Yay");
+        }, 250, "Resize");
+    });
+
 </script>
