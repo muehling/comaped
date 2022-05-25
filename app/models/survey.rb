@@ -2,7 +2,7 @@ require 'zip'
 
 class Survey < ApplicationRecord
   validates :name, presence: true
-  validates :code, uniqueness: true, if: 'code.present?'
+  validates :code, uniqueness: true, if: -> {code.present?}
 
   belongs_to :project
   has_many :concept_maps, dependent: :destroy
