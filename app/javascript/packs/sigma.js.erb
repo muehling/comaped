@@ -1,0 +1,246 @@
+import Graph from "graphology";
+import Sigma from "sigma";
+import chroma from "chroma-js";
+import { v4 as uuid } from "uuid";
+import ForceSupervisor from "graphology-layout-force/worker";
+import $ from "jquery";
+
+const container = document.getElementById("map-canvas");
+const graph = new Graph();
+
+graph.addNode("n1", {label:'test', x: 0, y: 0, size: 10, color: chroma.random().hex() });
+$("#form").attr('action', 'concepts');
+$("#x").attr("value", x);
+$("#x").attr("value", y);
+
+graph.addNode("n2", { label:'superSduperlongtest', 
+x: -5, y: 5, size: 10, color: chroma.random().hex() });
+graph.addNode("n3", { label:'', x: 5, y: 5, size: 10, color: chroma.random().hex() });
+graph.addNode("n4", { label:'', x: 0, y: 10, size: 10, color: chroma.random().hex() });
+graph.addEdge("n1", "n2");
+graph.addEdge("n2", "n4");
+graph.addEdge("n4", "n3");
+graph.addEdge("n3", "n1");
+
+
+
+
+console.log("js");
+//<%logger.debug "this is rails code"%>
+//console.log(concepts)
+const renderer = new Sigma(graph, container);
+
+let draggedNode = null;
+let clickedNode = null;
+let isDragging = false;
+let id = 0
+let none = 0;
+let addNode = 1;
+let editNode = 2;
+let addEdge = 3;
+let editEdge = 4;
+let dragNode = 5;
+let mode = none;
+
+
+renderer.on("clickNode", (e) => {
+    isClicked = true;
+    clickedNode = e.node;
+    console.log('clicked:' + clickedNode)
+    graph.setNodeAttribute(clickedNode, "highlighted", true);
+});
+
+
+// On mouse down on a node
+//  - we enable the drag mode
+//  - save in the dragged node in the state
+//  - highlight the node
+//  - disable the camera so its state is not updated
+renderer.on("downNode", (e) => {
+    isDragging = true;
+    draggedNode = e.node;
+    console.log('dragged:' + draggedNode)
+    graph.setNodeAttribute(draggedNode, "highlighted", true);
+});
+
+// On mouse move, if the drag mode is enabled, we change the position of the draggedNode
+renderer.getMouseCaptor().on("mousemovebody", (e) => {
+    if (!isDragging || !draggedNode) return;
+    
+    // Get new position of node
+    const pos = renderer.viewportToGraph(e);
+    
+    graph.setNodeAttribute(draggedNode, "x", pos.x);
+    graph.setNodeAttribute(draggedNode, "y", pos.y);
+
+    // Prevent sigma to move camera:
+    e.preventSigmaDefault();
+    e.original.preventDefault();
+    e.original.stopPropagation();
+});
+
+// On mouse up, we reset the autoscale and the dragging mode
+renderer.getMouseCaptor().on("mouseup", (event) => {
+    if (draggedNode) {
+        graph.removeNodeAttribute(draggedNode, "highlighted");
+        console.log(event.x)
+        $.ajax({
+            type: "PUT",
+            url: concepts + "/" + draggedNode + "/",
+            data: {"concept": {'label': graph.getNodeAttribute(draggedNode, 'label'), 'x': event.x, 'y':  event.y}}
+        });
+    }
+    isDragging = false;
+    draggedNode = null;
+});
+
+// Disable the autoscale at the first down interaction
+renderer.getMouseCaptor().on("mousedown", () => {
+    if (!renderer.getCustomBBox()) renderer.setCustomBBox(renderer.getBBox());
+});
+
+
+
+//
+// Create node (and edge) by click
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+renderer.on("clickStage", ({ event }) => {
+    const coordForGraph = renderer.viewportToGraph({ x: event.x, y: event.y });
+    
+    // We create a new node
+    const node = {
+        ...coordForGraph,
+        size: 10,
+        color: chroma.random().hex(),
+    };
+    
+    // We register the new node into graphology instance
+    id = uuid();
+    console.log(id);
+    graph.addNode(id, node);
+    
+    // We create the edges
+    //closestNodes.forEach((e) => graph.addEdge(id, e.nodeId));
+
+    console.log(event.x);
+    console.log($("#map-canvas").offset().left);
+    console.log($("#form").width()/2);
+    
+    
+    
+    
+    mode = addNode;
+    showForm();
+    
+});
+    
+    
+function showForm() {
+    $("#panel").removeClass("hidden");
+    $("#panel").attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left+event.x-$("#form").width()/2) + "px;top:" + ($("#map-canvas").offset().top+event.y-$("#form").height()/2) + "px;");
+    switch (mode) {
+        case addNode:
+            $('#context-help-text').html($('#ch_new').html());
+            $('#action').html("<%= t('.action_new_node')%>");
+            //console.log("still here");
+            $("#entry_concept").val("");
+            $("#entry_concept").removeClass("hidden");
+            $("#colorpicker").removeClass("hidden");
+            $("#entry_link").addClass("hidden");
+            $("#delete").addClass("hidden");
+            // $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
+            // $("#form").attr('method', 'post');
+            // $("#x").attr("value", coordForGraph.x);
+            // $("#y").attr("value", coordForGraph.y);
+            // focus("#entry_concept");
+            break;
+        case editNode:
+            $('#context-help-text').html($('#ch_edit').html());
+            $('#action').html("Placeholder");
+            $("#entry_concept").val(nodes.get(id).label);
+            $("#entry_concept").removeClass("hidden");
+            $("#colorpicker").removeClass("hidden");
+            // selectColor(nodes.get(id).color.background);
+            $("#entry_link").addClass("hidden");
+            $("#delete").removeClass("hidden");
+            $("#form").attr('action', links+'/' + id);
+            $("#form").attr('method', 'put');
+            $("#x").attr("value", coordForGraph.x);
+            $("#y").attr("value", coordForGraph.y);
+            focus("#entry_concept");
+            break;
+        }
+};        
+        
+        
+        
+        
+    
+    
+////////////
+// EVENTS //
+////////////
+$('#close').click(function(){
+        console.log("event triggered")
+        hideForm();
+    })
+
+$('#success').click(function(){
+    console.log("success-event triggered")
+    validateForm();
+})
+
+
+//Edit/Create Aktion beenden
+function hideForm() {
+    $("#panel").addClass("hidden");
+    $("#panel").focusout();
+    //network.unselectAll();
+    mode = none;
+    $('#context-help-text').html($('#ch_normal').html());
+    //Zoom-Out by Mobilgeräten veranlassen
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if ( viewport ) {
+        viewport.content = 'initial-scale=1';
+        viewport.content = 'width=device-width';
+        viewport.content = 'maximum-scale=1';
+    }
+}
+
+
+function validateForm() {
+    if (mode == addNode || mode == editNode) {
+      var t = $('#entry_concept').val();
+      console.log(t);
+      hideForm();
+    //   node = nodes.get({
+    //     filter: function (item) {
+    //       return (item.label.toLocaleLowerCase() === t.toLocaleLowerCase());
+    //     }
+    //   });
+    //   if (node == null || node.length == 0 || node[0].id == id)
+    //       return true;
+    //   else {
+    //     network.focus(node[0].id);
+    //     return false;
+    //   }
+    // }
+    // else {
+    //   hideForm();
+    //   return true;
+    }
+
+  }
+
+//alert($("#panel"));
+//alert("Die Seite wurde geladen");
+
+//alert($("#panel"));
+
+
+    //document.getElementById("panel").style = "display:block";
+
+
+
+    //$("#readyConcept").html( $("#readyConcept").html() + "Dies ist appended text")

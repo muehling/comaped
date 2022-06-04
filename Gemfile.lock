@@ -82,7 +82,7 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
-    capistrano-bundler (2.0.1)
+    capistrano-bundler (2.1.0)
       capistrano (~> 3.1)
     capistrano-passenger (0.2.1)
       capistrano (~> 3.0)
@@ -126,7 +126,6 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
     minitest (5.15.0)
-    mysql2 (0.5.4)
     net-imap (0.2.3)
       digest
       net-protocol
@@ -151,7 +150,7 @@ GEM
     pg (1.3.5)
     puma (3.12.6)
     racc (1.6.0)
-    rack (2.2.3)
+    rack (2.2.3.1)
     rack-proxy (0.7.2)
       rack
     rack-test (1.1.0)
@@ -253,7 +252,6 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails
   listen (~> 3.0.5)
-  mysql2
   pg (>= 0.18, < 2.0)
   puma (~> 3.0)
   rails (~> 7.0.2)

@@ -1,3 +1,4 @@
+<% append_javascript_pack_tag 'test' %>
 <%= render 'concept_maps/editor/navigation_elements' %>
 
 <!-- Intro -->
@@ -8,7 +9,7 @@
 <!-- Flexible form for CRUD-actions -->
 <div id="panel" class="hidden panel panel-default" style="z-index:1; position:absolute; left:0px; top:0px;">
   <div class="panel-body">
-    <p><em id="action"></em><button type="button" class="close pull-right" onclick="hideForm();" aria-label="Close"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></button></p>
+    <p><em id="action"></em><button type="button" id="close" class="close pull-right" aria-label="Close"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></button></p>
 
     <form id="form" class="form-inline" method="post" data-remote="true">
       <div class="form-group">
@@ -25,7 +26,7 @@
       </div>
       <div class="form-group">
         <%= render 'concept_maps/editor/colorpicker' %>
-        <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
+        <button type="button" id="success" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
         <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
       </div>
     </form>
@@ -36,4 +37,15 @@
 <div id="map-canvas">
 </div>
 
-<% append_javascript_pack_tag 'graph_example' %>
+<script type="text/javascript">
+
+  //import Graph from "graphology";
+  window.concepts = "<%= concept_map_concepts_path(@map) %>";
+
+  //const graph = new Graph();
+</script>
+
+
+
+
+<!% append_javascript_pack_tag 'graph_example' %>
