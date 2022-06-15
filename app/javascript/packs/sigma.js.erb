@@ -2,36 +2,44 @@ import Graph from "graphology";
 import Sigma from "sigma";
 import chroma from "chroma-js";
 import { v4 as uuid } from "uuid";
-import ForceSupervisor from "graphology-layout-force/worker";
+//import ForceSupervisor from "graphology-layout-force/worker";
 import $ from "jquery";
+
+
 
 const container = document.getElementById("map-canvas");
 const graph = new Graph();
 
-graph.addNode("n1", {label:'test', x: 0, y: 0, size: 10, color: chroma.random().hex() });
-$("#form").attr('action', 'concepts');
-$("#x").attr("value", x);
-$("#x").attr("value", y);
+graph.addNode("n1", {label:'Asphalt', x: 2, y: 2, size: 50, color: chroma.random().hex() });
+// $("#form").attr('action', 'g_concepts');
+// $("#x").attr("value", x);
+// $("#x").attr("value", y);
 
-graph.addNode("n2", { label:'superSduperlongtest', 
-x: -5, y: 5, size: 10, color: chroma.random().hex() });
-graph.addNode("n3", { label:'', x: 5, y: 5, size: 10, color: chroma.random().hex() });
-graph.addNode("n4", { label:'', x: 0, y: 10, size: 10, color: chroma.random().hex() });
-graph.addEdge("n1", "n2");
-graph.addEdge("n2", "n4");
-graph.addEdge("n4", "n3");
-graph.addEdge("n3", "n1");
-
-
+graph.addNode("n2", { label:'Fahrer', 
+x: 0, y: 2, size: 50, color: chroma.random().hex() });
+graph.addNode("n3", { label:'Reifen', x: 3, y: 4, size: 50, color: chroma.random().hex() });
+graph.addNode("n4", { label:'Auto', x: 0, y: 4, size: 50, color: chroma.random().hex() });
+graph.addEdge("n2", "n1", { type: "line", label: "überquert", size: 5 });
+graph.addEdge("n2", "n4", { type: "arrow", label: "fährt", size: 5 }); //id adden 
+graph.addEdge("n4", "n3", { type: "arrow", label: "benötigt", size: 5 });
+graph.addEdge("n3", "n1", { type: "arrow", label: "berühren", size: 10 });
 
 
-console.log("js");
-//<%logger.debug "this is rails code"%>
-//console.log(concepts)
-const renderer = new Sigma(graph, container);
+//var nodes = "<%= Concept.find(19).label %>"
+          
+//console.log(nodes);
+//console.log(graph.getNodeAttribute("n1", "label"));
+
+
+const renderer = new Sigma(graph, container,{
+renderEdgeLabels: true,
+enableEdgeClickEvents: true,
+enableEdgeHoverEvents: "debounce"
+});
 
 let draggedNode = null;
 let clickedNode = null;
+let isClicked = false;
 let isDragging = false;
 let id = 0
 let none = 0;
@@ -41,13 +49,29 @@ let addEdge = 3;
 let editEdge = 4;
 let dragNode = 5;
 let mode = none;
+let coordForGraph = 0;
+let button = none;
+let node = 6
+let edge = 7
+let node1 = null
+let node2 = null
+
+function delay(milliseconds){
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
+}
+
+function focus(id) {
+    setTimeout(function() {
+        $(id).focus();
+    }, 100);
+}
 
 
-renderer.on("clickNode", (e) => {
-    isClicked = true;
-    clickedNode = e.node;
-    console.log('clicked:' + clickedNode)
-    graph.setNodeAttribute(clickedNode, "highlighted", true);
+renderer.on("clickEdge", ({ edge }) => {
+  console.log("edge label: " + graph.getEdgeAttribute(edge, 'label'))
+  renderer.refresh();
 });
 
 
@@ -57,16 +81,39 @@ renderer.on("clickNode", (e) => {
 //  - highlight the node
 //  - disable the camera so its state is not updated
 renderer.on("downNode", (e) => {
-    isDragging = true;
+    isClicked = true;
     draggedNode = e.node;
-    console.log('dragged:' + draggedNode)
-    graph.setNodeAttribute(draggedNode, "highlighted", true);
+    console.log(button)
+    if (button == node || button == none ){
+        coordForGraph = renderer.viewportToGraph({ x: e.x, y: e.y })
+        console.log('downNode:' + draggedNode)
+        graph.setNodeAttribute(draggedNode, "highlighted", true);
+        mode = editNode;
+        delay(300);
+        showForm();
+    } 
+    if (button == edge) {  
+        if (node1!= null) {
+            node2 = draggedNode; 
+            
+            mode = addEdge;
+            showForm()
+        }
+        else {
+            node1 = draggedNode; 
+           
+        }
+    }
 });
+
 
 // On mouse move, if the drag mode is enabled, we change the position of the draggedNode
 renderer.getMouseCaptor().on("mousemovebody", (e) => {
-    if (!isDragging || !draggedNode) return;
+    if (!isClicked || !draggedNode) return;
     
+    isDragging = true;
+    mode = none;
+    hideForm()
     // Get new position of node
     const pos = renderer.viewportToGraph(e);
     
@@ -81,17 +128,18 @@ renderer.getMouseCaptor().on("mousemovebody", (e) => {
 
 // On mouse up, we reset the autoscale and the dragging mode
 renderer.getMouseCaptor().on("mouseup", (event) => {
-    if (draggedNode) {
+    if (isDragging) {
         graph.removeNodeAttribute(draggedNode, "highlighted");
-        console.log(event.x)
         $.ajax({
             type: "PUT",
-            url: concepts + "/" + draggedNode + "/",
-            data: {"concept": {'label': graph.getNodeAttribute(draggedNode, 'label'), 'x': event.x, 'y':  event.y}}
+            url: g_concepts + "/" + draggedNode + "/",
+            data: {"concept": {'label': graph.getNodeAttribute(draggedNode, 'label'), 'x': event.x, 'y':  event.y, size: 10, color: chroma.random().hex()}}
         });
+        draggedNode = null;
     }
+    
+    isClicked = false;
     isDragging = false;
-    draggedNode = null;
 });
 
 // Disable the autoscale at the first down interaction
@@ -106,12 +154,12 @@ renderer.getMouseCaptor().on("mousedown", () => {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 renderer.on("clickStage", ({ event }) => {
-    const coordForGraph = renderer.viewportToGraph({ x: event.x, y: event.y });
+    coordForGraph = renderer.viewportToGraph({ x: event.x, y: event.y });
     
     // We create a new node
     const node = {
         ...coordForGraph,
-        size: 10,
+        size: 50,
         color: chroma.random().hex(),
     };
     
@@ -119,85 +167,147 @@ renderer.on("clickStage", ({ event }) => {
     id = uuid();
     console.log(id);
     graph.addNode(id, node);
-    
-    // We create the edges
-    //closestNodes.forEach((e) => graph.addEdge(id, e.nodeId));
 
-    console.log(event.x);
-    console.log($("#map-canvas").offset().left);
-    console.log($("#form").width()/2);
-    
-    
-    
-    
+    draggedNode = id;
     mode = addNode;
     showForm();
-    
 });
+
+
+function destroy() {
+    switch (mode) {
+      case editNode:
+        graph.dropNode(draggedNode);
+        $.ajax({type: "DELETE", url: g_concepts + '/' + draggedNode });
+        break;
+      case editEdge:
+        $.ajax({type: "DELETE", url: g_links + '/' + draggedNode });
+        break;
+    }
+    hideForm();
+  }
     
     
 function showForm() {
+    if (isDragging) return;
     $("#panel").removeClass("hidden");
     $("#panel").attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left+event.x-$("#form").width()/2) + "px;top:" + ($("#map-canvas").offset().top+event.y-$("#form").height()/2) + "px;");
     switch (mode) {
         case addNode:
             $('#context-help-text').html($('#ch_new').html());
-            $('#action').html("<%= t('.action_new_node')%>");
-            //console.log("still here");
+            $('#action').html("<%= I18n.t('concept_maps.edit.action_new_node') %>");
             $("#entry_concept").val("");
             $("#entry_concept").removeClass("hidden");
             $("#colorpicker").removeClass("hidden");
             $("#entry_link").addClass("hidden");
             $("#delete").addClass("hidden");
-            // $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
-            // $("#form").attr('method', 'post');
-            // $("#x").attr("value", coordForGraph.x);
-            // $("#y").attr("value", coordForGraph.y);
-            // focus("#entry_concept");
-            break;
-        case editNode:
-            $('#context-help-text').html($('#ch_edit').html());
-            $('#action').html("Placeholder");
-            $("#entry_concept").val(nodes.get(id).label);
-            $("#entry_concept").removeClass("hidden");
-            $("#colorpicker").removeClass("hidden");
-            // selectColor(nodes.get(id).color.background);
-            $("#entry_link").addClass("hidden");
-            $("#delete").removeClass("hidden");
-            $("#form").attr('action', links+'/' + id);
-            $("#form").attr('method', 'put');
+            $("#form").attr('action', g_concepts);
+            $("#form").attr('method', 'post');
             $("#x").attr("value", coordForGraph.x);
             $("#y").attr("value", coordForGraph.y);
             focus("#entry_concept");
             break;
+        case editNode:
+            $('#context-help-text').html($('#ch_edit').html());
+            $('#action').html("<%= I18n.t('concept_maps.edit.action_new_node') %>");
+            $("#entry_concept").val(graph.getNodeAttribute(draggedNode, 'label'));
+            $("#entry_concept").removeClass("hidden");
+            $("#colorpicker").removeClass("hidden");
+            selectColor(graph.getNodeAttribute(draggedNode, "color"));
+            $("#entry_link").addClass("hidden");
+            $("#delete").removeClass("hidden");
+            //$("#form").attr('action', g_concepts + '/' + draggedNode);
+            //$("#form").attr('method', 'put');
+            // $("#x").attr("value", renderer.viewportToGraph({ x: event.x, y: event.y }).x);
+            // $("#y").attr("value", coordForGraph.y);
+            focus("#entry_concept");
+            break;
+        case editEdge:
+            $('#context-help-text').html($('#ch_edit').html());
+            $('#action').html("<%= I18n.t('concept_maps.edit.action_edit_link')%>");
+            $("#entry_link").val(edges.get(id).label);
+            $("#entry_link").removeClass("hidden");
+            $("#entry_concept").addClass("hidden");
+            $("#colorpicker").addClass("hidden");
+            $("#delete").removeClass("hidden");
+            $("#form").attr('action', g_links + '/' + draggedNode);
+            $("#form").attr('method', 'put');
+            focus("#entry_link");
+            break;
+        case addEdge:
+            $('#context-help-text').html($('#ch_new').html());
+            $('#action').html("<%= I18n.t('concept_maps.edit.action_new_link')%>");
+            $("#entry_link").val("");
+            $("#entry_link").removeClass("hidden");
+            $("#entry_concept").addClass("hidden");
+            $("#colorpicker").addClass("hidden");
+            $("#delete").addClass("hidden");
+            $("#form").attr('action', g_links);
+            $("#form").attr('method', 'post');
+            focus("#entry_link");
         }
 };        
         
-        
-        
-        
-    
-    
+           
 ////////////
 // EVENTS //
 ////////////
 $('#close').click(function(){
-        console.log("event triggered")
-        hideForm();
-    })
+    console.log("close-event triggered")
+    graph.removeNodeAttribute(draggedNode, "highlighted");
+    hideForm();
+    mode == none;
+})
 
 $('#success').click(function(){
     console.log("success-event triggered")
+    graph.removeNodeAttribute(draggedNode, "highlighted");
     validateForm();
+    graph.setNodeAttribute(draggedNode, 'label', $("#entry_concept").val())
+    if (mode == addNode) {
+        console.log("here comes ajax!!!")
+        $.ajax({
+            type: "POST",
+            url: g_concepts ,
+            data: {"concept": {'label': graph.getNodeAttribute(draggedNode, 'label'), 'x': event.x, 'y':  event.y, size: 10, color: chroma.random().hex()}}
+        })
+
+       
+    }
+    if (mode == addEdge) {
+        graph.addEdge(node1, node2, { type: "arrow", label: $('#entry_link').val(), size: 10 });
+        node1 = null
+        node2 = null 
+    }
+    hideForm();
+    mode == none;
 })
 
+$('#delete').click(function(){
+    console.log("delete-event triggered");
+    destroy();
+    //graph.removeNodeAttribute(draggedNode, "highlighted");
+    hideForm();
+    mode == none;
+    return false;
+})
+
+$('#edge-button').click(function(){
+    console.log("edge-event triggered");
+    button = edge;
+})
+
+$('#node-button').click(function(){
+    console.log("node-event triggered");
+    button = node;
+    node1 = null
+    node2 = null
+})
 
 //Edit/Create Aktion beenden
 function hideForm() {
     $("#panel").addClass("hidden");
     $("#panel").focusout();
-    //network.unselectAll();
-    mode = none;
     $('#context-help-text').html($('#ch_normal').html());
     //Zoom-Out by Mobilgeräten veranlassen
     const viewport = document.querySelector('meta[name="viewport"]');
@@ -211,36 +321,25 @@ function hideForm() {
 
 function validateForm() {
     if (mode == addNode || mode == editNode) {
-      var t = $('#entry_concept').val();
-      console.log(t);
-      hideForm();
-    //   node = nodes.get({
-    //     filter: function (item) {
-    //       return (item.label.toLocaleLowerCase() === t.toLocaleLowerCase());
-    //     }
-    //   });
-    //   if (node == null || node.length == 0 || node[0].id == id)
-    //       return true;
-    //   else {
-    //     network.focus(node[0].id);
-    //     return false;
-    //   }
-    // }
-    // else {
-    //   hideForm();
-    //   return true;
+        var t = $('#entry_concept').val();
+        hideForm();
+        let node = null;
+        for (let i = 1; i < 5; i++) {
+            if (graph.getNodeAttribute("n"+i, "label") === t) {
+                node = "n"+i
+                break;
+            }
+        }
+        console.log("node: " + node);
+        if (node == null) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    } else {
+        hideForm();
+        return true;
     }
-
-  }
-
-//alert($("#panel"));
-//alert("Die Seite wurde geladen");
-
-//alert($("#panel"));
-
-
-    //document.getElementById("panel").style = "display:block";
-
-
-
-    //$("#readyConcept").html( $("#readyConcept").html() + "Dies ist appended text")
+}
+     

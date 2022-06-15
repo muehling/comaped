@@ -1,5 +1,5 @@
-<% append_javascript_pack_tag 'test' %>
 <%= render 'concept_maps/editor/navigation_elements' %>
+<% append_javascript_pack_tag 'sigma' %>
 
 <!-- Intro -->
 <% if @concept_map.first? %>
@@ -27,7 +27,7 @@
       <div class="form-group">
         <%= render 'concept_maps/editor/colorpicker' %>
         <button type="button" id="success" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-ok"></span></button>
-        <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
+        <button type="button" id="delete" class="btn btn-sm btn-danger" ><span class="glyphicon glyphicon-trash"></span></button>
       </div>
     </form>
   </div>
@@ -39,13 +39,15 @@
 
 <script type="text/javascript">
 
+ 
   //import Graph from "graphology";
-  window.concepts = "<%= concept_map_concepts_path(@map) %>";
+  
+  window.g_concepts = "<%= concept_map_concepts_path(@map) %>";  // maps/1346ds/concepts
+  window.g_links = "<%= concept_map_links_path(@map) %>";
 
+
+ 
+  
   //const graph = new Graph();
 </script>
 
-
-
-
-<!% append_javascript_pack_tag 'graph_example' %>

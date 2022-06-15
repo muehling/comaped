@@ -54,6 +54,24 @@ html, body {
   display: block;
 }
 
+#edge-button {
+  position: absolute;
+  right: 160px;
+  top: 20px;
+  z-index: 1;
+  display: block;
+  background-color: #10a0cc;
+}
+
+#node-button {
+  position: absolute;
+  right: 210px;
+  top: 20px;
+  z-index: 1;
+  display: block;
+  background-color: #10b468;
+}
+
 #submit-mail {
   background-color: #1b809e;
 }

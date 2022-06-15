@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :null_session # was :exception
 
   before_action :set_locale
   before_action :check_login_frontend, except: [:frontend, :backend, :login, :map_link, :map_form, :logout]  #Logout hier drin lassen? Sonst: getrennte Actions?
