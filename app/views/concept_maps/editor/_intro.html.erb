@@ -1,26 +1,33 @@
 <%= render 'concept_maps/editor/explanation' %>
 
-<script>
-    let ids = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
-    let placements = ["right", "bottom", "left", "top", "right", "left"];
+<script type="module">
+    
+    import "jquery"
+    import "bootstrap"
+
+    const ids = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
+    const placements = ["right", "bottom", "left", "top", "right", "left"];
 
     <%= render 'concept_maps/editor/intro_texts' %>
 
-    for (let i = 0; i < texts.length; ++i)
-        texts[i] = "<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'>" + (i == texts.length-1 ? btn_last : btn_standard) + "</button></p>";
+    const textHtml = []
+    for (let i = 0; i < texts.length; ++i) {
+        textHtml.push("<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'>" + (i == texts.length-1 ? btn_last : btn_standard) + "</button></p>");
+    }
 
-    title = title + " <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='glyphicon glyphicon-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
+    const titleHtml = title + " <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='glyphicon glyphicon-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
 
 
     function next() {
-        if (i > 0)
+        if (i > 0) {
             $(ids[i-1]).popover("destroy");
+        }
         if (i < ids.length) {
             $(ids[i]).data("toggle", "popover");
             $(ids[i]).data("viewport", {'selector': 'body', 'padding': 15});
             $(ids[i]).data("placement", placements[i]);
-            $(ids[i]).data("title", title);
-            $(ids[i]).data("content", texts[i]);
+            $(ids[i]).data("title", titleHtml);
+            $(ids[i]).data("content", textHtml[i]);
             $(ids[i]).popover({html: true});
             $(ids[i]).popover("show");
             ++i;
@@ -46,5 +53,8 @@
         $("#intro").modal("show");
     });
 
-</script>
+    // expose handlers to the DOM
+    window.next = next
+    window.stop = stop
 
+</script>

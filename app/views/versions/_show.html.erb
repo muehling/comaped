@@ -4,11 +4,15 @@
 <button id="next" class="btn btn-default" disabled="disabled" onclick="version = Math.min(max_version, version+1);; updatePreview();"><span class="glyphicon glyphicon-step-forward"></span></button>
 <button class="btn btn-default" onclick="version = max_version; updatePreview();"><span class="glyphicon glyphicon-fast-forward"></span></button>
 
-<script>
+<script type="module">
+  import "vis-network"
+  import "jquery"
   const max_version = <%= concept_map.versions.count-1%>;
-  var version = max_version;
+  
+  let version = max_version;
   var playing = false;
   var timerID = -1;
+  let timerId
 
     function updatePreview() {
       jQuery.ajax({
@@ -16,11 +20,11 @@
         url: "<%= concept_map_versions_path(concept_map) %>/" + version + "/"
       });
       $('#cur_ver').html(version+1);
-      if (version == 0)
+      if (version === 0)
         $('#prev').attr("disabled", "disabled");
       else
         $('#prev').removeAttr("disabled");
-      if (version == max_version)
+      if (version === max_version)
         $('#next').attr("disabled", "disabled");
       else
         $('#next').removeAttr("disabled");
@@ -28,6 +32,7 @@
 
     function play() {
       playing = !playing
+      
       if (playing) {
         $('#play').html("<span class='glyphicon glyphicon-pause'></span>");
         timerId = window.setInterval(function() {if (version == max_version) $('#play').click(); else $('#next').click();}, 1500);
@@ -37,4 +42,9 @@
         window.clearInterval(timerId);
       }
     };
+
+    window.play = play
+    window.updatePreview = updatePreview
+    window.version = version
+    window.max_version = max_version
 </script>

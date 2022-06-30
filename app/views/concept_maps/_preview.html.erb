@@ -3,7 +3,9 @@
   </div>
 </div>
 
-<script>
+<script type="module">
+  import "vis-network"
+
   var nodes_<%= concept_map.id%> = new vis.DataSet([
     <% concept_map.concepts.each do |c| %>
     <%= render c %>,

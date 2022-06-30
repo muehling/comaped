@@ -23,6 +23,6 @@ Rails.application.routes.draw do
   get 'map/(:code)' => 'application#map_link'
   post 'map' => 'application#map_form'
 
-  root 'application#frontend'
+  root 'application#frontend', as: :frontend
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

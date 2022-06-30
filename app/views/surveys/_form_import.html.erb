@@ -16,8 +16,9 @@
   </div>
 </div>
 
-<script>
-    function cancelForm() {
-      $('#new_survey').html("<%= escape_javascript render('new.html.erb') %>");
-    }
+<script type="module">
+  import "jquery"
+  function cancelForm() {
+    $('#new_survey').html("<%= escape_javascript render('new.html.erb') %>");
+  }
 </script>

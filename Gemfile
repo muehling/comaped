@@ -49,3 +49,4 @@ gem 'rubyzip'
 gem 'bootstrap-sass', '~> 3.3.7'
 gem "importmap-rails", "~> 1.1"
 gem "js-routes"
+gem 'mime-types', '~> 3.1'

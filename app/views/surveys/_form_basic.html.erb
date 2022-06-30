@@ -35,12 +35,13 @@
   </div>
 </div>
 
-<script>
-    function cancelForm() {
-        <% if @survey.id.nil? then %>
-          $('#new_survey').html("<%= escape_javascript(render 'new') %>");
-        <% else %>
-          $('#survey_<%= @survey.id %>').html("<%= escape_javascript(render @survey) %>");
-        <% end %>
-    }
+<script type="module">
+  import "jquery"
+  function cancelForm() {
+      <% if @survey.id.nil? then %>
+        $('#new_survey').html("<%= escape_javascript(render 'new') %>");
+      <% else %>
+        $('#survey_<%= @survey.id %>').html("<%= escape_javascript(render @survey) %>");
+      <% end %>
+  }
 </script>

@@ -29,3 +29,6 @@ network_<%= @concept_map.id%>.redraw();
 
 timeline.setCustomTime("<%= @version.timestamp%>", timeBar);
 timeline.moveTo("<%= @version.timestamp%>");
+
+window.nodes_<%= @concept_map.id%> = nodes_<%= @concept_map.id%>
+window.edges_<%= @concept_map.id%> = edges_<%= @concept_map.id%>

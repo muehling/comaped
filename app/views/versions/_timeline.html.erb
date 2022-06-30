@@ -1,6 +1,9 @@
 <div id="timeline_<%= concept_map.id %>" style="height: 160px"></div>
 
-<script type="text/javascript">
+<script type="module">
+  import "vis-network"
+  import "vis-timeline"
+
   var container = document.getElementById('timeline_<%= concept_map.id %>');
   var items = [
      <%  concept_map.versions.each do |v| %>
