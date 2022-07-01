@@ -3,7 +3,6 @@
 pin "application", preload: true
 pin "entrypoint", preload: true
 pin "ConceptMap", preload: true
-pin "Intro", preload: true
 
 pin "chroma-js", to: "https://ga.jspm.io/npm:chroma-js@2.4.2/chroma.js"
 pin "events", to: "https://ga.jspm.io/npm:@jspm/core@2.0.0-beta.24/nodelibs/browser/events.js"

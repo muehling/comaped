@@ -23,7 +23,3 @@ export const init = (edgeData, nodeData) => {
   window.nodes = cm.nodes
   window.changeColor = cm.changeColor
 }
-
-export const initJQuery = () => {
-  return $
-}
