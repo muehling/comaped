@@ -1,64 +1,73 @@
 <button class="btn btn-default" onclick="updatePreview(0);"><span class="glyphicon glyphicon-fast-backward"></span></button>
-<button id="prev" class="btn btn-default" onclick="updatePreview(Math.max(0, version-1));"><span class="glyphicon glyphicon-step-backward"></span></button>
+<button id="prev" class="btn btn-default" onclick="updatePreview(Math.max(0, window.version-1));"><span class="glyphicon glyphicon-step-backward"></span></button>
 <button id="play" class="btn btn-default" onclick="play();"><span class="glyphicon glyphicon-play"></span></button>
-<button id="next" class="btn btn-default" disabled="disabled" onclick="updatePreview(Math.min(max_version, version+1));"><span class="glyphicon glyphicon-step-forward"></span></button>
+<button id="next" class="btn btn-default" disabled="disabled" onclick="updatePreview(Math.min(max_version, window.version+1));"><span class="glyphicon glyphicon-step-forward"></span></button>
 <button class="btn btn-default" onclick="updatePreview(max_version);"><span class="glyphicon glyphicon-fast-forward"></span></button>
 
 <script type="module">
   import "jquery"
   const max_version = <%= concept_map.versions.count-1%>;
-  
-  let version = max_version;
-  var playing = false;
-  var timerID = -1;
+
+  window.version = max_version;
+  let playing = false;
+  let timerID = -1;
   let timerId
 
-    function updatePreview(desiredVersion) {
-      window.version = version = desiredVersion
-      const url = "<%= concept_map_versions_path(concept_map) %>/" + desiredVersion + "/"
-       jQuery.ajax({
-        "type": "GET",
-        "url": url,
-        "dataType": "text/javascript"
-      }).fail((res)=>{        
-        eval(res.responseText)
-      })
-      
-      $('#cur_ver').html(version+1);
-      if (version === 0) {
-        $('#prev').attr("disabled", "disabled");
-      } else {
-        $('#prev').removeAttr("disabled");
-      }
-      if (version === max_version) {
-        $('#next').attr("disabled", "disabled");
-      } else {
-        $('#next').removeAttr("disabled");
-      }
-      
-    };
+  async function updatePreview(desiredVersion) {
+    window.version = version = desiredVersion
+    const url = "<%= concept_map_versions_path(concept_map) %>/" + desiredVersion + "/"
+    const res = await fetch(url, {
+      "method": "GET",
+      mode: "cors",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+    })
+    const body = await res.json()
+    window.nodes_<%= @concept_map.id%>.clear();
+    window.edges_<%= @concept_map.id%>.clear();
+    window.nodes_<%= @concept_map.id%>.update(body.nodes)
+    window.edges_<%= @concept_map.id%>.update(body.edges.map(node=>({id: node.id, from: node.start_id, to: node.end_id, ...node})))
 
-    function play() {
-      playing = !playing
-      
-      if (playing) {
-        $('#play').html("<span class='glyphicon glyphicon-pause'></span>");
-        timerId = window.setInterval(function() {
-          if (version == max_version) {
-            $('#play').click(); 
-          }else {
-            $('#next').click();
-          }
-        }, 1500);
-      }
-      else {
-        $('#play').html("<span class='glyphicon glyphicon-play'></span>");
-        window.clearInterval(timerId);
-      }
-    };
+    network_<%= @concept_map.id%>.redraw();
 
-    window.play = play
-    window.updatePreview = updatePreview
-    window.version = version
-    window.max_version = max_version
+    $('#cur_ver').html(window.version+1);
+    if (version === 0) {
+      $('#prev').attr("disabled", "disabled");
+    } else {
+      $('#prev').removeAttr("disabled");
+    }
+    if (version === max_version) {
+      $('#next').attr("disabled", "disabled");
+    } else {
+      $('#next').removeAttr("disabled");
+    }
+
+    window.timeline.setCustomTime(body.timestamp, window.timeBar);
+    window.timeline.moveTo(body.timestamp);
+  };
+
+  function play() {
+    playing = !playing
+
+    if (playing) {
+      $('#play').html("<span class='glyphicon glyphicon-pause'></span>");
+      timerId = window.setInterval(function() {
+        if (window.version == max_version) {
+          $('#play').click();
+        }else {
+          $('#next').click();
+        }
+      }, 1500);
+    }
+    else {
+      $('#play').html("<span class='glyphicon glyphicon-play'></span>");
+      window.clearInterval(timerId);
+    }
+  };
+  window.play = play
+  window.updatePreview = updatePreview
+  window.version = version
+  window.max_version = max_version
 </script>

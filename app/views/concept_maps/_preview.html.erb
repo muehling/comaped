@@ -6,13 +6,13 @@
 <script type="module">
   import "vis-network"
 
-  var nodes_<%= concept_map.id%> = new vis.DataSet([
+  window.nodes_<%= concept_map.id%> = new vis.DataSet([
     <% concept_map.concepts.each do |c| %>
     <%= render c %>,
     <% end %>
   ]);
 
-  var edges_<%= concept_map.id%> = new vis.DataSet([
+  window.edges_<%= concept_map.id%> = new vis.DataSet([
     <% concept_map.links.each do |l| %>
     <%= render l %>,
     <% end %>
@@ -21,8 +21,8 @@
   var container_<%= concept_map.id%> = document.getElementById('canvas_<%= concept_map.id%>');
 
   var data_<%= concept_map.id%> = {
-    nodes: nodes_<%= concept_map.id%>,
-    edges: edges_<%= concept_map.id%>
+    nodes: window.nodes_<%= concept_map.id%>,
+    edges: window.edges_<%= concept_map.id%>
   };
 
   var options = {
@@ -50,7 +50,7 @@
     }
   };
 
-  var network_<%= concept_map.id%> = new vis.Network(container_<%= concept_map.id%>, data_<%= concept_map.id%>, options);
+  window.network_<%= concept_map.id%> = new vis.Network(container_<%= concept_map.id%>, data_<%= concept_map.id%>, options);
   network_<%= concept_map.id%>.once('afterDrawing', function(params) {network_<%= concept_map.id%>.fit();});
   network_<%= concept_map.id%>.redraw();
 </script>
