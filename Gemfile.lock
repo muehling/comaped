@@ -102,6 +102,9 @@ GEM
     importmap-rails (1.1.2)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
+    jbuilder (2.11.5)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     js-routes (2.2.4)
       railties (>= 4)
     listen (3.0.8)
@@ -227,6 +230,7 @@ DEPENDENCIES
   capistrano-passenger
   capistrano-rails
   importmap-rails (~> 1.1)
+  jbuilder
   js-routes
   listen (~> 3.0.5)
   mime-types (~> 3.1)
