@@ -40,7 +40,7 @@ class SurveysController < ApplicationController
   def new
     @survey = Survey.new
     respond_to do |format|
-      format.js {
+      format.html {
       }
       format.zip {
         render 'import.js.erb', content_type: Mime::JS
@@ -50,20 +50,28 @@ class SurveysController < ApplicationController
 
   # GET /surveys/1/edit.js
   def edit
+    if params[:detail].nil?
+      render 'edit'
+    else
+      render 'edit_detail'
+    end
   end
 
   # POST /surveys
   def create
     respond_to do |format|
-      format.js {
-        @survey = @project.surveys.build(survey_params)
-        if @survey.save
-          redirect_to user_project_survey_path(@user, @project, @survey)
-        else
-          render :new
-        end
-      }
       format.html {
+        if params.has_key?(:survey) && params[:survey][:file].nil?
+          @survey = @project.surveys.build(survey_params)
+          logger.info @survey.inspect
+          if @survey.save
+            redirect_to user_project_survey_path(@user, @project, @survey)
+          else
+            render :new
+          end
+          return
+        end
+
         if params.has_key?(:survey) && !params[:survey][:file].nil?
           res = true
           params[:survey][:file].each do |f|

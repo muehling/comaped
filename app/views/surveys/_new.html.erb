@@ -2,7 +2,7 @@
   <div class = "col-sm-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <%= link_to raw("<span class='glyphicon glyphicon-plus'></span> ") + t('surveys.new'), new_user_project_survey_path(@user, @project), remote: true %>
+        <%= link_to raw("<span class='glyphicon glyphicon-plus'></span> ") + t('surveys.new'), new_user_project_survey_path(@user, @project), remote: true, data: {action: 'basic'} %>
       </div>
     </div>
   </div>

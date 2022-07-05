@@ -34,34 +34,39 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # GET /projects/new.js
+  # GET /projects/new.html
   def new
     @project = Project.new
     respond_to do |format|
-      format.js {
-      }
-      format.zip {
-        render 'import.js.erb', content_type: Mime::JS
-      }
+      format.html {}
     end
   end
 
-  # GET /projects/1/edit.js
-  def edit
+  def import
+    render 'import'
   end
 
-  # POST /projects.js
+  # GET /projects/1/edit.html
+  def edit
+
+  end
+
+  # POST /projects.html
   def create
     respond_to do |format|
-      format.js {
-        @project = @user.projects.build(project_params)
-        if @project.save
-         redirect_to user_project_path(@user, @project)
-        else
-          render :new
-        end
-      }
       format.html {
+        # create project from form inputs
+        if params.has_key?(:project) && params[:project][:file].nil?
+          @project = @user.projects.build(project_params)
+          if @project.save
+           redirect_to user_project_path(@user, @project)
+          else
+            render :new
+          end
+          return
+        end
+
+        # create projects from input file
         if params.has_key?(:project) && !params[:project][:file].nil?
           res = true
           params[:project][:file].each do |f|
@@ -69,6 +74,7 @@ class ProjectsController < ApplicationController
             res = res && @project.import_file(f.tempfile)
           end
         end
+
         if res
           if params[:project][:file].size == 1
             redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')

@@ -3,19 +3,36 @@ class ConceptMapsController < ApplicationController
   skip_before_action :check_login_frontend, except: [:edit]
   skip_before_action :check_login_backend, only: [:edit, :show]
   before_action :login_for_show, only: [:show]
-  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index]
+  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index, :page]
   before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
 
-  # GET /concept_maps/:page.js
+  # GET /concept_maps/
 
   def index
     @page = params[:page].to_i || 0
     @maps = @survey.concept_maps.offset(@page*10).limit(10).order(updated_at: :desc)
     respond_to do |format|
-      format.js {
+      format.html {
         if @maps.size == 0
           head :ok
         end
+      }
+      format.json { }
+    end
+  end
+
+  # GET /concept_maps/
+  # will render the partial without a layout; used for scroll-loading
+  def page
+    @page = params[:page].to_i || 0
+    @maps = @survey.concept_maps.offset(@page*10).limit(10).order(updated_at: :desc)
+    respond_to do |format|
+      format.html {
+        if @maps.size == 0
+          head :ok
+          return
+        end
+        render layout: false
       }
     end
   end
@@ -51,7 +68,7 @@ class ConceptMapsController < ApplicationController
   # GET /concept_maps/new
   def new
     respond_to do |format|
-      format.js {
+      format.html {
       }
       format.zip {
         @concept_map = ConceptMap.new
@@ -73,44 +90,51 @@ class ConceptMapsController < ApplicationController
   # POST /concept_maps
   def create
     respond_to do |format|
-      format.js {
-        res = I18n.t('error')
-        if params[:type] == "simple"
-          count = params[:number].to_i || 0
-          res = I18n.t('concept_maps.create') + ":<br/>"
-          count.times do
-            cm = @survey.concept_maps.build
-            cm.save
-            res = res + cm.code + "<br/>"
-          end
-        else
-          if params[:type] == "email"
-            anonymous = params[:anonymized] == '1'
-            list = params[:email]
-            codes = []
-            list.split("\n").each do |email|
+
+      format.html {
+
+        if params.has_key?(:number) || params.has_key?(:email)
+          res = I18n.t('error')
+          if params[:type] == "simple"
+            # create number of concept maps
+            count = params[:number].to_i || 0
+            res = I18n.t('concept_maps.create') + ":<br/>"
+            count.times do
               cm = @survey.concept_maps.build
               cm.save
-              codes = codes + [[email, cm.code]]
-              ConceptMapMailer.created(email, cm.code, anonymous).deliver_later
+              res = res + cm.code + "<br/>"
             end
-            res = I18n.t('concept_maps.create') + ":<br/>"
-            if (anonymous)
-              codes.map{|x| x[1]}.sort.each do |c|
-                res = res + c + "<br/>"
+          else
+            # create concepts maps and mail them
+            if params[:type] == "email"
+              anonymous = params[:anonymized] == '1'
+              list = params[:email]
+              codes = []
+              list.split("\n").each do |email|
+                cm = @survey.concept_maps.build
+                cm.save
+                codes = codes + [[email, cm.code]]
+                ConceptMapMailer.created(email, cm.code, anonymous).deliver_later
               end
-            else
-              res = res + "<table class='table table-condensed' style='width: auto'><tbody>"
-              codes.each do |c|
-                res = res + "<tr><td>" + c[1] + "</td><td>" + c[0] + "</td></tr>"
+              res = I18n.t('concept_maps.create') + ":<br/>"
+              if (anonymous)
+                codes.map{|x| x[1]}.sort.each do |c|
+                  res = res + c + "<br/>"
+                end
+              else
+                res = res + "<table class='table table-condensed' style='width: auto'><tbody>"
+                codes.each do |c|
+                  res = res + "<tr><td>" + c[1] + "</td><td>" + c[0] + "</td></tr>"
+                end
+                res = res + "</tbody></table>"
               end
-              res = res + "</tbody></table>"
             end
           end
+          redirect_to user_project_survey_path(@user, @project, @survey), notice: res
+          return
         end
-        redirect_to user_project_survey_path(@user, @project, @survey), notice: res
-      }
-      format.html {
+
+        # import concept maps
         if params.has_key?(:concept_map) && !params[:concept_map][:file].nil?
           res = true
           params[:concept_map][:file].each do |f|

@@ -29,6 +29,8 @@
     window.edges_<%= @concept_map.id%>.clear();
     window.nodes_<%= @concept_map.id%>.update(body.nodes)
     window.edges_<%= @concept_map.id%>.update(body.edges.map(node=>({id: node.id, from: node.start_id, to: node.end_id, ...node})))
+    //TODO for weird reasons, in the preview, the nodes have a border, and the edges are colored in the node color
+    //TODO despite the settings being equal to the editor
 
     network_<%= @concept_map.id%>.redraw();
 

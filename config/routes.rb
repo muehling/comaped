@@ -9,8 +9,10 @@ Rails.application.routes.draw do
   scope 'backend' do
     root 'application#backend'
     resources :users do
+      get '/projects/import', to: 'projects#import'
       resources :projects do
         resources :surveys do
+          get 'concept_maps/page', to: 'concept_maps#page'
           resources :concept_maps, param: :code, except: [:edit, :update]
         end
       end

@@ -3,7 +3,7 @@ class VersionsController < ApplicationController
 
   before_action :set_version_and_check
 
-  #GET /concept_maps/1/version/1.js
+  #GET /concept_maps/1/version/1.json
   def show
   end
 
