@@ -43,6 +43,8 @@ en:
         initial_map: "Initial concept map"
         introduction: "Introduction"
         start_date: "Available from"
+      user:
+        capabilities: "Capabilites"
   application:
     backend:
       email: "E-mail"

@@ -35,7 +35,7 @@ class Survey < ApplicationRecord
   #Returns: true if the update succeeded, false if an error occurred
   def from_json(data, name_prefix)
     vals = ActiveSupport::JSON.decode(data)
-    update_attributes(vals.slice("name", "description", "introduction", "association_labels", "concept_labels", "initial_map"))
+    update(vals.slice("name", "description", "introduction", "association_labels", "concept_labels", "initial_map"))
     self.name = name_prefix + self.name
     return save
   end
@@ -125,7 +125,7 @@ class Survey < ApplicationRecord
           zip.print map.to_tgf
         else
           zip.put_next_entry((prefix + map.code + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
-          zip.print map.to_tgf
+          zip.print map.to_json
         end
       end
     end

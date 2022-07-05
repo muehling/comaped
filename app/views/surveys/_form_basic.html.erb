@@ -29,7 +29,7 @@
         <%= f.submit :class => "btn btn-primary" %>
         <button type="button" class="btn btn-default" onclick="history.back()"><%= t('cancel') %></button>
         <% unless @survey.id.nil? %>
-            <%= link_to t('surveys.delete'), user_project_survey_path(@user, @project, @survey), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
+            <%= link_to t('surveys.delete'), user_project_survey_path(@user, @project, @survey), data: {turbo_method: :delete, turbo_confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
         <% end %>
       </div>
     <% end %>

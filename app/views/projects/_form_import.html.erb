@@ -3,7 +3,7 @@
     <%= t('projects.import') %>
   </div>
   <div class="panel-body">
-    <%= form_for(@user, url: user_projects_import_path(@user), class: "form", multipart: true) do |f| %>
+    <%= form_for([@user, @project], method: :post, class: "form", multipart: true) do |f| %>
         <div class="form-group">
           <%= f.label t('file'), class: "control-label" %>
           <%= f.file_field "file", accept: '.json, .zip', multiple: true, onchange: "$('#submit').removeClass('disabled');" %>

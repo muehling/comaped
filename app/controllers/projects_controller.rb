@@ -37,18 +37,18 @@ class ProjectsController < ApplicationController
   # GET /projects/new.html
   def new
     @project = Project.new
-    respond_to do |format|
-      format.html {}
+    if params['import'].nil?
+      render "create_project"
+    else
+      render "import_project"
     end
   end
 
   def import
-    render 'import'
   end
 
   # GET /projects/1/edit.html
   def edit
-
   end
 
   # POST /projects.html
@@ -103,7 +103,7 @@ class ProjectsController < ApplicationController
   def destroy
     @project.destroy
     respond_to do |format|
-      format.html { redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed')}
+      format.html { redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed'), status: :see_other}
     end
   end
 
