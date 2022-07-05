@@ -3,22 +3,15 @@
     <%= t('projects.import') %>
   </div>
   <div class="panel-body">
-    <%= form_for([@user, @project], class: "form", multipart: true) do |f| %>
+    <%= form_for(@user, url: user_projects_import_path(@user), class: "form", multipart: true) do |f| %>
         <div class="form-group">
           <%= f.label t('file'), class: "control-label" %>
           <%= f.file_field "file", accept: '.json, .zip', multiple: true, onchange: "$('#submit').removeClass('disabled');" %>
         </div>
         <div class="form-group">
           <%= f.submit t('import'), class: "btn btn-primary disabled", id: "submit" %>
-          <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
+          <button type="button" class="btn btn-default" onclick="history.back()"><%= t('cancel') %></button>
         </div>
     <% end %>
   </div>
 </div>
-
-<script type="module">
-    import "jquery"
-    function cancelForm() {
-      $('#new_project').html("<%= escape_javascript render('new.html.erb') %>");
-    }
-</script>

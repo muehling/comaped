@@ -7,6 +7,6 @@
     <br/>
     <div class="form-group">
       <%= submit_tag t('concept_maps._form_simple.submit'), class: "btn btn-primary" %>
-      <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
+      <button type="button" class="btn btn-default" onclick="history.back()"><%= t('cancel') %></button>
     </div>
 <% end %>

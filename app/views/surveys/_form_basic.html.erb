@@ -25,8 +25,9 @@
         <%= f.date_select :end_date, class: "form-control", order: [:day, :month, :year]%>
       </div>
       <div class="form-group">
+        <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>"/>
         <%= f.submit :class => "btn btn-primary" %>
-        <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
+        <button type="button" class="btn btn-default" onclick="history.back()"><%= t('cancel') %></button>
         <% unless @survey.id.nil? %>
             <%= link_to t('surveys.delete'), user_project_survey_path(@user, @project, @survey), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
         <% end %>
@@ -34,14 +35,3 @@
     <% end %>
   </div>
 </div>
-
-<script type="module">
-  import "jquery"
-  function cancelForm() {
-      <% if @survey.id.nil? then %>
-        $('#new_survey').html("<%= escape_javascript(render 'new') %>");
-      <% else %>
-        $('#survey_<%= @survey.id %>').html("<%= escape_javascript(render @survey) %>");
-      <% end %>
-  }
-</script>
