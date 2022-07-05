@@ -9,7 +9,7 @@
   <div class = "col-sm-6">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <%= link_to raw("<span class='glyphicon glyphicon-import'></span> ") + t('projects.import'), user_projects_import_path(@user), remote: true %>
+        <%= link_to raw("<span class='glyphicon glyphicon-import'></span> ") + t('projects.import'), new_user_project_path(@user, import: true), remote: true %>
       </div>
     </div>
   </div>
