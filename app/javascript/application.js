@@ -1,2 +1,24 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
-//import "@rails/ujs"
+import "jquery"
+import "vis-network"
+import "bootstrap"
+import ConceptMap from "./ConceptMap"
+
+export let cm
+
+export const init = (edgeData, nodeData) => {
+  cm = new ConceptMap(edgeData, nodeData)
+
+  // expose handlers needed for DOM events
+  window.hideForm = cm.hideForm
+  window.validateForm = cm.validateForm
+  window.destroy = cm.destroy
+  window.submitChanges = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    cm.onSubmit()
+    return false
+  }
+  window.edges = cm.edges
+  window.nodes = cm.nodes
+  window.changeColor = cm.changeColor
+}

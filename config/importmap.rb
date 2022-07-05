@@ -1,7 +1,6 @@
 # Pin npm packages by running ./bin/importmap
 
 pin "application", preload: true
-pin "entrypoint", preload: true
 pin "ConceptMap", preload: true
 
 pin "chroma-js", to: "https://ga.jspm.io/npm:chroma-js@2.4.2/chroma.js"
