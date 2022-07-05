@@ -14,7 +14,7 @@
         <%= f.label t('users._form.password_confirmation'), class: "control-label" %>
         <%= f.password_field :password_confirmation, class: "form-control" %>
       </div>
-      <% if @user.admin? %>
+      <% if @login.admin? %>
         <div class="form-group">
           <%= f.label t('activerecord.attributes.user.capabilities'), class: "control-label" %>
           <%= f.text_field :capabilities, class: "form-control" %>
