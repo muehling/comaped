@@ -1,6 +1,3 @@
-import "vis-network"
-import "jquery"
-
 class ConceptMap {
 
   static none = 0
@@ -129,7 +126,7 @@ class ConceptMap {
     })
 
     /*********************************
-     * Network release: edit node or edge     
+     * Network release: edit node or edge
      ********************************/
     this.network.on("release", (params) => {
       if (this.mode === ConceptMap.none) {
@@ -326,7 +323,7 @@ class ConceptMap {
         path = this.linksPath
         break
       default:
-        // Nothing to submit, really. Shouldn't happen, but you never know.        
+        // Nothing to submit, really. Shouldn't happen, but you never know.
         return
     }
 

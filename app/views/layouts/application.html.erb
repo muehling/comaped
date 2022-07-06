@@ -5,19 +5,12 @@
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
     <!-- Mobile Unterstützung verbessern -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="manifest" href="/manifest.json">
     <%= javascript_importmap_tags %>
 
-    <!-- init globally needed libraries -->
-    <script type="module">
-      import "jquery"
-      import "bootstrap"
-      import "@hotwired/turbo-rails"
-    </script>
   </head>
 
   <body>

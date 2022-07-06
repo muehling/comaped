@@ -1,6 +1,7 @@
 import "jquery"
 import "vis-network"
 import "bootstrap"
+import "@hotwired/turbo-rails"
 import ConceptMap from "./ConceptMap"
 
 export let cm
