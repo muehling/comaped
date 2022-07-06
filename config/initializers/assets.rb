@@ -9,6 +9,7 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 # application.js, application.css.sass, and all non-JS/CSS in app/assets folder are already added.
 Rails.application.config.assets.precompile += %w( jquery.js jquery.simplecolorpicker.* @hotwired--turbo-rails.js @hotwired--turbo.js @rails--actioncable--src.js )
-Rails.application.config.assets.precompile += %w( bootstrap.js @popperjs--core.js )
+Rails.application.config.assets.precompile += %w( bootstrap.min.js popper.js )
 Rails.application.config.assets.precompile += %w( vis-network.js vis-timeline.js vis-data--peer--umd--vis-data.js moment.js )
 Rails.application.config.assets.precompile += %w( ConceptMap.js )
+Rails.application.config.assets.precompile += %w( application.scss )

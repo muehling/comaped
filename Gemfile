@@ -12,9 +12,6 @@ gem 'rails', '~> 7.0.2'
 gem 'sqlite3', '~> 1.4.2'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbo-rails', '~> 1'
@@ -48,7 +45,13 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 #Additional gems:
 gem 'rubyzip'
-gem 'bootstrap-sass', '~> 3.3.7'
 gem "importmap-rails", "~> 1.1"
 gem "js-routes"
 gem 'mime-types', '~> 3.1'
+
+# use bootstrap gem to avoid hassle of managing the js part through importmap and css part by hand
+gem "bootstrap", "~> 5.1"
+gem "sassc-rails"
+
+# js runtime for sass compilation
+gem "mini_racer"

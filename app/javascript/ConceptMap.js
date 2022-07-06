@@ -1,3 +1,7 @@
+import $ from "jquery"
+import vis from "vis-network"
+import { DataSet } from "vis-data/peer/umd/vis-data.js"
+
 class ConceptMap {
 
   static none = 0
@@ -9,8 +13,8 @@ class ConceptMap {
 
   constructor({ edgeData, nodeData, conceptsPath, linksPath, dialogTexts }) {
 
-    this.edges = new vis.DataSet(edgeData)
-    this.nodes = new vis.DataSet(nodeData)
+    this.edges = new DataSet(edgeData)
+    this.nodes = new DataSet(nodeData)
     this.conceptsPath = conceptsPath
     this.linksPath = linksPath
     this.dialogTexts = dialogTexts
@@ -201,7 +205,7 @@ class ConceptMap {
     if (params.nodes.length > 0) {
       $('#start').val(this.id)
       $('#end').val(params.nodes[0])
-      $('#context-help-text').html($('#ch_addedge').html()).removeClass("hidden")
+      $('#context-help-text').html($('#ch_addedge').html()).removeClass("d-none")
       const startNode = this.nodes.get(this.id)
       const endNode = this.nodes.get(params.nodes[0])
       const canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
@@ -371,22 +375,22 @@ class ConceptMap {
 
 
   initNodeInputs = (canvasX, canvasY) => {
-    $("#entry_concept").removeClass("hidden")
-    $("#colorpicker").removeClass("hidden")
-    $("#entry_link").addClass("hidden")
-    this.mode === ConceptMap.addNode && $("#delete").addClass("hidden")
-    this.mode === ConceptMap.editNode && $("#delete").removeClass("hidden")
+    $("#entry_concept").removeClass("d-none")
+    $("#colorpicker").removeClass("d-none")
+    $("#entry_link").addClass("d-none")
+    this.mode === ConceptMap.addNode && $("#delete").addClass("d-none")
+    this.mode === ConceptMap.editNode && $("#delete").removeClass("d-none")
     $("#x").attr("value", canvasX)
     $("#y").attr("value", canvasY)
     this.focus("#entry_concept")
   }
 
   initEdgeInputs = (canvasX, canvasY) => {
-    $("#entry_link").removeClass("hidden")
-    $("#entry_concept").addClass("hidden")
-    $("#colorpicker").addClass("hidden")
-    this.mode === ConceptMap.addEdge && $("#delete").addClass("hidden")
-    this.mode === ConceptMap.editEdge && $("#delete").removeClass("hidden")
+    $("#entry_link").removeClass("d-none")
+    $("#entry_concept").addClass("d-none")
+    $("#colorpicker").addClass("d-none")
+    this.mode === ConceptMap.addEdge && $("#delete").addClass("d-none")
+    this.mode === ConceptMap.editEdge && $("#delete").removeClass("d-none")
     $("#x").attr("value", canvasX)
     $("#y").attr("value", canvasY)
     this.focus("#entry_link")
@@ -401,7 +405,7 @@ class ConceptMap {
     })
 
     $("#panel")
-      .removeClass("hidden")
+      .removeClass("d-none")
       .attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left + this.network.canvasToDOM({ x: canvasX, y: canvasY }).x - $("#form").width() / 2) + "px;top:" + ($("#map-canvas").offset().top + this.network.canvasToDOM({ x: canvasX, y: canvasY }).y - $("#form").height() / 2) + "px;")
     switch (this.mode) {
       case ConceptMap.addNode:
@@ -433,7 +437,7 @@ class ConceptMap {
 
   //Edit/Create Aktion beenden
   hideForm = () => {
-    $("#panel").addClass("hidden")
+    $("#panel").addClass("d-none")
     $("#panel").focusout()
     this.network.unselectAll()
     $('#context-help-text').html($('#ch_normal').html())
