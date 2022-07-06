@@ -67,13 +67,11 @@ class ConceptMapsController < ApplicationController
 
   # GET /concept_maps/new
   def new
-    respond_to do |format|
-      format.html {
-      }
-      format.zip {
-        @concept_map = ConceptMap.new
-        render 'import.js.erb', content_type: Mime::JS
-      }
+    if params['import'].nil?
+      render "create_concept_map"
+    else
+      @concept_map = ConceptMap.create
+      render "import_concept_map"
     end
   end
 
@@ -92,7 +90,6 @@ class ConceptMapsController < ApplicationController
     respond_to do |format|
 
       format.html {
-
         if params.has_key?(:number) || params.has_key?(:email)
           res = I18n.t('error')
           if params[:type] == "simple"
@@ -144,11 +141,14 @@ class ConceptMapsController < ApplicationController
         end
         if res
           if params[:concept_map][:file].size == 1
+            logger.info "1-----------------------------"
             redirect_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), notice: I18n.t('concept_maps.imported')
           else
-            redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('concept_maps.imported')
+            logger.info "2-----------------------------"
+            redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('concept_maps.imported')
           end
         else
+          logger.info "3-----------------------------"
           redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('error_import')
         end
       }

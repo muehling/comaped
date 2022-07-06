@@ -108,6 +108,8 @@ class ConceptMap < ApplicationRecord
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
     save
+    logger.info "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+    logger.info vals["concepts"].inspect
     vals["concepts"].each do |c|
       t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
       t.save

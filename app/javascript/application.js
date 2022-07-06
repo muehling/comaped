@@ -1,8 +1,11 @@
+import "@hotwired/turbo-rails"
 import "jquery"
 import "vis-network"
 import "bootstrap"
-import "@hotwired/turbo-rails"
 import ConceptMap from "./ConceptMap"
+
+window.$ = jQuery
+window.jQuery = jQuery
 
 export let cm
 

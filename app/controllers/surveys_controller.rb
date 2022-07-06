@@ -39,12 +39,10 @@ class SurveysController < ApplicationController
   # GET /surveys/new.js
   def new
     @survey = Survey.new
-    respond_to do |format|
-      format.html {
-      }
-      format.zip {
-        render 'import.js.erb', content_type: Mime::JS
-      }
+    if params['import'].nil?
+      render "create_survey"
+    else
+      render "import_survey"
     end
   end
 
@@ -108,7 +106,7 @@ class SurveysController < ApplicationController
   def destroy
     @survey.destroy
     respond_to do |format|
-      format.html { redirect_to user_project_path(@user, @project), notice: I18n.t('surveys.destroyed') }
+      format.html { redirect_to user_project_path(@user, @project), notice: I18n.t('surveys.destroyed'), status: :see_other }
     end
   end
 
