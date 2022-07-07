@@ -9,12 +9,10 @@ html, body {
   padding: 0px;
 }
 
-
-
 #map-canvas {
   position: fixed;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -59,7 +57,7 @@ html, body {
 
 .canvasButton {
   color: #1b809e;
-  font-family: "Glyphicons Halflings";
+  font-family: "bootstrap-icons";
   font-size: 32px;
 }
 
@@ -98,7 +96,7 @@ html, body {
 
 .vis-button {
   color: #1b809e;
-  font-family: "Glyphicons Halflings";
+  font-family: "bootstrap-icons";
   font-size: 32px;
   cursor: pointer;
 }
@@ -115,7 +113,7 @@ html, body {
 }
 
 .vis-right::after {
-  content: "\e131";
+  content: "\f133";
 }
 
 .vis-left {
@@ -124,7 +122,7 @@ html, body {
   margin-bottom: 15px;
 }
 .vis-left::after {
-  content: "\e132";
+  content: "\f129";
 }
 
 .vis-up {
@@ -133,7 +131,7 @@ html, body {
   margin-bottom: 15px;
 }
 .vis-up::after {
-  content: "\e133";
+  content: "\f139";
 }
 
 .vis-down {
@@ -142,7 +140,7 @@ html, body {
   margin-bottom: 15px;
 }
 .vis-down::after {
-  content: "\e134";
+  content: "\f118";
 }
 
 .vis-zoomIn {
@@ -151,7 +149,7 @@ html, body {
   margin-bottom: 15px;
 }
 .vis-zoomIn::after {
-  content: "\e081";
+  content: "\f4f9";
 }
 
 .vis-zoomOut {
@@ -160,7 +158,7 @@ html, body {
   margin-bottom: 15px;
 }
 .vis-zoomOut::after {
-  content: "\e082";
+  content: "\f2e5";
 }
 
 .vis-zoomExtends {
@@ -169,5 +167,5 @@ html, body {
   margin-bottom: 15px;
 }
 .vis-zoomExtends::after {
-  content: "\e087";
+  content: "\f2dd";
 }

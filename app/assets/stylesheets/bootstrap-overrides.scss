@@ -1,0 +1,13 @@
+.dropdown-toggle {
+  &:after {
+    display: none;
+  }
+}
+
+.dropdown-menu {
+  box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.175)
+}
+
+#menuButton span:before {
+  font-weight: bold !important;
+}
