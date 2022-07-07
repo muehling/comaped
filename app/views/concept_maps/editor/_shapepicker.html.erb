@@ -1,0 +1,18 @@
+<span id="shapepicker">
+  <input id="shape" type="hidden" name="concept[shape]" value= ""/>
+  <div class="dropdown" style="display: inline-block;">
+    <div id="currentShape" class="shapes shape btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%= default_color %>;"><span class="caret"></span></div>
+    <div id= "shapeSelect" class="dropdown-menu">
+      <table>
+        <tr>
+          <td style="padding-left: 12px;"><div id="shape1" class="ellipse shape btn " style="width: 40px;height:30px;" value= <%= shape_palette(0) %> onclick="changeShape(1);"></div></td>
+          <td style="padding-left: 7px;"><div id="shape2" class="box shape btn " style="width: 40px;height:30px;" value= <%= shape_palette(1) %> onclick="changeShape(2);"></div></td>
+          <td style="padding-left: 7px;"><div id="shape3" class="circle shape btn" style="width: 40px;height:30px;" value= <%= shape_palette(2) %> onclick="changeShape(3);"></div></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</span>
+
+
+

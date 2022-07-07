@@ -10,8 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2019_02_13_154714) do
-  create_table "concept_maps", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2022_07_07_145525) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "concept_maps", id: :serial, force: :cascade do |t|
     t.string "code"
     t.integer "accesses"
     t.integer "survey_id"
@@ -19,7 +22,7 @@ ActiveRecord::Schema[7.0].define(version: 2019_02_13_154714) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "concepts", force: :cascade do |t|
+  create_table "concepts", id: :serial, force: :cascade do |t|
     t.string "label"
     t.float "x"
     t.float "y"
@@ -27,18 +30,20 @@ ActiveRecord::Schema[7.0].define(version: 2019_02_13_154714) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "color"
+    t.string "shape"
   end
 
-  create_table "links", force: :cascade do |t|
+  create_table "links", id: :serial, force: :cascade do |t|
     t.integer "start_id"
     t.integer "end_id"
     t.string "label"
     t.integer "concept_map_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "arrows"
   end
 
-  create_table "projects", force: :cascade do |t|
+  create_table "projects", id: :serial, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.integer "user_id"
@@ -46,7 +51,7 @@ ActiveRecord::Schema[7.0].define(version: 2019_02_13_154714) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "surveys", force: :cascade do |t|
+  create_table "surveys", id: :serial, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.string "code"
@@ -61,7 +66,7 @@ ActiveRecord::Schema[7.0].define(version: 2019_02_13_154714) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :serial, force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
     t.string "capabilities"
@@ -69,7 +74,7 @@ ActiveRecord::Schema[7.0].define(version: 2019_02_13_154714) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "versions", force: :cascade do |t|
+  create_table "versions", id: :serial, force: :cascade do |t|
     t.integer "concept_map_id"
     t.text "map"
     t.datetime "created_at", precision: nil, null: false

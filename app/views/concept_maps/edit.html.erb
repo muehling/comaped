@@ -25,12 +25,36 @@
       </div>
       <div class="form-group">
         <%= render 'concept_maps/editor/colorpicker' %>
-        <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
-        <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
+        <%= render 'concept_maps/editor/shapepicker' %>
+        <%= render 'concept_maps/editor/edgepicker' %>
+        <button class="btn btn-sm btn-success glyphicon glyphicon-ok" onclick="validateForm();"></button>
+        <button id="delete" class="btn btn-sm btn-danger glyphicon glyphicon-trash" onclick="destroy();return false;"></button>
       </div>
     </form>
   </div>
 </div>
+<!-- Cursor Function Button -->
+<div id="header-cursor">
+  <button id="cursor-button" class="btn info"><span>Edit</span></button>
+</div>
+
+<!-- Node Function Button -->
+<div id="header-node">
+  <button id="node-button" class="btn info"><span>Add Node</span></button>
+</div>
+
+<!-- Edge Function Button -->
+<div id="header-edge">
+  <button id="edge-button" class="btn info"><span>Add Edge</span></button>
+</div>
+
+<!-- Misc Function Button -->
+<div id="header-misc">
+  <button id="misc-button" class="hidden btn info" >Misc</button>
+</div>
+
+
+
 <!-- Dummy element for Vis-canvas -->
 <div id="map-canvas">
 </div>
