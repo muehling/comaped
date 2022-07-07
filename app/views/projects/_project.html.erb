@@ -1,6 +1,6 @@
 <div id="project_<%= project.id%>">
-  <div class="panel <%= if project.available then "panel-success" else "panel-default" end %>">
-    <div class="panel-heading">
+  <div class="card <%= if project.available then "card-success" else "card-default" end %>">
+    <div class="card-header">
       <%= link_to project.name, user_project_path(@user, project) %>
       <p class = "pull-right">
         <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_path(@user, project), remote: true %>
@@ -8,7 +8,7 @@
         <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_path(@user, project, format: 'json', versions: true)%>
       </p>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p><%= project.description.blank? ? raw("<i>#{t('no_description')}</i>") : project.description %></p>
       <table class="table">
         <tr><td><%= t('.surveys') %>:</td><td><%= project.surveys.count %></td></tr>

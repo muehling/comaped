@@ -1,14 +1,19 @@
 <%= render 'concept_maps/editor/navigation_elements' %>
 
 <!-- Intro -->
-<% if @concept_map.first? %>
+
   <%= render 'concept_maps/editor/intro' %>
-<% end %>
 
 <!-- Flexible form for CRUD-actions -->
-<div id="panel" class="hidden panel panel-default" style="z-index:1; position:absolute; left:0px; top:0px;">
-  <div class="panel-body">
-    <p><em id="action"></em><button type="button" class="close pull-right" onclick="hideForm();" aria-label="Close"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></button></p>
+<div id="edit-dialog" class="d-none card" style="z-index:1; position:absolute; left:0px; top:0px;">
+  <div class="card-header d-flex justify-content-between">
+    <em id="action"></em>
+    <button type="button" class="close pull-right border-0" onclick="hideForm();" aria-label="Close">
+      <span class="bi-x-lg" aria-hidden="true" style="font-size: 12pt">
+    </span>
+    </button>
+  </div>
+  <div class="card-body">
 
     <form id="form" class="form-inline" onsubmit="submitChanges(event);return false;">
       <div class="form-group">
@@ -23,10 +28,11 @@
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
       </div>
-      <div class="form-group">
+      <div class="form-group mt-2 d-flex">
         <%= render 'concept_maps/editor/colorpicker' %>
-        <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
-        <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
+        <div class="flex-grow-1"></div>
+        <button class="btn btn-sm btn-success flex-grow-0  me-1" onclick="return validateForm();"><span class="bi-check-lg"></span></button>
+        <button id="delete" class="btn btn-sm btn-danger flex-grow-0" onclick="destroy();return false;"><span class="bi-trash"></span></button>
       </div>
     </form>
   </div>
@@ -51,6 +57,7 @@
         <% end %>
     ],
     conceptsPath: "<%= concept_map_concepts_path(@map) %>",
+    conceptMapsPath: "<%= concept_map_path(@concept_map, format: :text)%>",
     linksPath: "<%= concept_map_links_path(@map) %>",
     dialogTexts: {
       editNode: "<%= t('.action_edit_node')%>",

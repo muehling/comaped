@@ -1,23 +1,23 @@
 <!-- Menubutton top left corner -->
 <div id="header-nav">
   <div class="dropdown">
-    <div class="dropdown-toggle" id="menuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <span class="glyphicon glyphicon-menu-hamburger canvasButton" title="<%=t('concept_maps.edit.menu')%>"></span>
+    <div class="dropdown-toggle" id="menuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span class="bi-list canvasButton" title="<%=t('concept_maps.edit.menu')%>"></span>
     </div>
     <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
       <li class="dropdown-header"><%= t('concept_maps.edit.help') %></li>
       <% unless @concept_map.survey.introduction.blank? %>
-        <li><%= link_to t('concept_maps.edit.task'), '', onclick: "$('#task').removeClass('hidden');return false;"%></li>
+        <li><%= link_to t('concept_maps.edit.task'), '', onclick: "$('#task').removeClass('d-none');return false;", class: "dropdown-item"%></li>
       <% end %>
-      <li><%= link_to t('concept_maps.edit.help_short'), '', onclick: "$('#context-help').removeClass('hidden');return false;"%></li>
-      <li><%= link_to t('concept_maps.edit.help_info'), '#',  data: {toggle: "modal", target: "#info"}%></li>
-      <li role="separator" class="divider"></li>
+      <li><%= link_to t('concept_maps.edit.help_short'), '', onclick: "$('#context-help').removeClass('d-none');return false;", class: "dropdown-item"%></li>
+      <li><%= link_to t('concept_maps.edit.help_info'), '#',  data: {"bs-toggle": "modal", "bs-target": "#info"}, class: "dropdown-item"%></li>
+      <li role="separator" class="dropdown-divider"></li>
       <li class="dropdown-header"><%= t('export') %></li>
-      <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text')%></li>
-      <li><a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
-      <li role="separator" class="divider"></li>
-      <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}%></li>
-      <li><%= link_to t('logout'), logout_path(target: 'frontend')%></li>
+      <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text'), class: "dropdown-item"%></li>
+      <li><a id="png_link"  class="dropdown-item" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
+      <li role="separator" class="dropdown-divider"></li>
+      <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}, class: "dropdown-item"%></li>
+      <li><%= link_to t('logout'), logout_path(target: 'frontend'), class: "dropdown-item"%></li>
     </ul>
   </div>
 </div>
@@ -25,8 +25,8 @@
 <!-- Code info + Mailform top center -->
 <div id="header-code" class="alert">
   <div class="dropdown">
-    <div class="dropdown-toggle" id="mailButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <%= t('concept_maps.edit.code')%>: <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="glyphicon glyphicon-envelope" title="<%=t('concept_maps.edit.mail')%>"></span>
+    <div class="dropdown-toggle" id="mailButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= t('concept_maps.edit.code')%>: <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="bi-envelope" title="<%=t('concept_maps.edit.mail')%>"></span>
     </div>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mailButton" style="padding: 3px">
       <form class="form form-inline">
@@ -42,8 +42,8 @@
 <!-- Search button top right corner -->
 <div id="header-search">
   <div class="dropdown">
-    <div class="dropdown-toggle" id="searchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <span class="glyphicon glyphicon-search canvasButton" title="<%=t('concept_maps.edit.search')%>"></span>
+    <div class="dropdown-toggle" id="searchButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span class="bi-search canvasButton" title="<%=t('concept_maps.edit.search')%>"></span>
     </div>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="searchButton" style="background-color: white; padding: 0px; border: 0px">
       <form class="form-inline">
@@ -60,7 +60,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></span></button>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></span></button>
         <h4><%= t('concept_maps.edit.help_info') %></h4>
       </div>
       <div class="modal-body">
@@ -74,8 +74,8 @@
 <%= render 'legal'%>
 
 <!-- Context help bottom center -->
-<div id="context-help" class="alert <% unless @concept_map.first? %> hidden <% end %>">
-  <button type="button" class="close" aria-label="Close" onclick="$('#context-help').addClass('hidden');return false;"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: white; font-size: 12pt"></span></button>
+<div id="context-help" role="alert" class="alert <% unless @concept_map.first? %> d-none <% end %>">
+  <button type="button" class="close" aria-label="Close" onclick="$('#context-help').addClass('d-none');return false;"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: white; font-size: 12pt"></span></button>
   <p id="context-help-text">
   </p>
   <%= render 'concept_maps/editor/context_help'%>
@@ -83,8 +83,8 @@
 
 <!-- Survey introduction-->
 <% unless @concept_map.survey.introduction.blank? %>
-  <div id="task" class="alert <% unless @concept_map.first? %> hidden <% end %>">
-    <button type="button" class="close" aria-label="Close" onclick="$('#task').addClass('hidden');return false;"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></button>
+  <div id="task" class="alert <% unless @concept_map.first? %> d-none <% end %>">
+    <button type="button" class="close" aria-label="Close" onclick="$('#task').addClass('d-none');return false;"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></button>
     <p>
       <%= @concept_map.survey.introduction %>
     </p>

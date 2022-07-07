@@ -1,60 +1,83 @@
 <%= render 'concept_maps/editor/explanation' %>
 
-<script type="module">
-    
-    import "jquery"
-    import "bootstrap"
+<script >
 
-    const ids = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
+document.addEventListener('DOMContentLoaded', () => {
+    //TODO this is executed twice. Probably something to do with the way rails embeds partials, causing the script to run twice
+
+    const selectors = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
     const placements = ["right", "bottom", "left", "top", "right", "left"];
+    const introModal = new bootstrap.Modal(document.getElementById("intro"), { backdrop: "static" })
 
+    // will render the translated introtexts
+    // declares these variables
+    // - texts
+    // - btn_last
+    // - btn_standard
+    // - title
     <%= render 'concept_maps/editor/intro_texts' %>
 
-    const textHtml = []
-    for (let i = 0; i < texts.length; ++i) {
-        textHtml.push("<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'>" + (i == texts.length-1 ? btn_last : btn_standard) + "</button></p>");
-    }
 
-    const titleHtml = title + " <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='glyphicon glyphicon-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
+    const textHtml = texts.map((text, i)=>{
+        return ("<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'>" + (i === texts.length-1 ? btn_last : btn_standard) + "</button></p>")
+    })
 
+    const titleHtml = title + " <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='bi-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
+
+    let popover
+    let popoverIndex = 1
 
     function next() {
-        if (i > 0) {
-            $(ids[i-1]).popover("destroy");
+        if (popover){
+            popover.dispose()
         }
-        if (i < ids.length) {
-            $(ids[i]).data("toggle", "popover");
-            $(ids[i]).data("viewport", {'selector': 'body', 'padding': 15});
-            $(ids[i]).data("placement", placements[i]);
-            $(ids[i]).data("title", titleHtml);
-            $(ids[i]).data("content", textHtml[i]);
-            $(ids[i]).popover({html: true});
-            $(ids[i]).popover("show");
-            ++i;
-        }
+
+        const el = $(selectors[popoverIndex])[0]
+console.log('awghghghg', el);
+
+        popover = new bootstrap.Popover(
+            el,
+            {
+                viewport: {'selector': 'body', 'padding': 15},
+                placement: placements[popoverIndex],
+                title: titleHtml,
+                content: textHtml[popoverIndex],
+                html: true,
+                sanitize: false,
+            }
+        )
+        popover.show()
+        console.log('next', popoverIndex);
+
+        popoverIndex++;
+
     };
 
     function stop() {
-        $(ids[i-1]).popover("destroy");
-        i = ids.length;
+        popoverIndex = selectors.length;
+        if (popover){
+            popover.dispose()
+        }
     };
 
-    let i = 0;
-    $("#intro").on("hidden.bs.modal", function (e) {
+    const hideModal = () =>{
+        introModal.hide()
+        next()
+    }
+
+     $("#intro").on("hidden.bs.modal", function (e) {
         next();
     });
 
-    $("#intro").modal({
-        show:true,
-        backdrop:'static'
-    });
+    //$(document).ready(function(){
+        console.log('show');
 
-    $(document).ready(function(){
-        $("#intro").modal("show");
-    });
+        introModal.show()
+    //});
 
     // expose handlers to the DOM
     window.next = next
     window.stop = stop
-
+    window.hideModal = hideModal
+})
 </script>

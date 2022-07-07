@@ -1,12 +1,12 @@
 <div id="map_<%= concept_map.id%>">
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <div class="card card-default">
+    <div class="card-header">
       <%= link_to concept_map.code, user_project_survey_concept_map_path(@user, @project, @survey, concept_map) %>
       <p class = "pull-right">
         <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json', versions: true) %>
       </p>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <div class="row">
         <div class = "col-md-6">
           <%= render partial: 'concept_maps/table', locals: {concept_map: concept_map}%>

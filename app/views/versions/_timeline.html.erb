@@ -1,8 +1,12 @@
 <div id="timeline_<%= concept_map.id %>" style="height: 160px"></div>
 
 <script type="module">
-  import "vis-network"
+
   import "vis-timeline"
+
+  import vis from "vis-network"
+  import { DataSet } from "vis-data/peer/umd/vis-data.js"
+
 
   const container = document.getElementById('timeline_<%= concept_map.id %>');
   const items = [
@@ -11,7 +15,7 @@
      <% end %>
   ];
 
-  const dataset = new vis.DataSet(items);
+  const dataset = new DataSet(items);
   const options = {
     start: '<%= concept_map.versions.first.timestamp %>',
     end: '<%= concept_map.versions.last.timestamp %>',

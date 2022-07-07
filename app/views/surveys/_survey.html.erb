@@ -1,6 +1,6 @@
 <div id="survey_<%= survey.id%>">
-  <div class="panel <%= if survey.available then "panel-success" else "panel-default" end %>">
-    <div class="panel-heading">
+  <div class="card <%= if survey.available then "card-success" else "card-default" end %>">
+    <div class="card-header">
       <%= link_to survey.name, user_project_survey_path(@user, @project, survey) %>
       <p class = "pull-right">
         <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_survey_path(@user, @project, survey), remote: true %>
@@ -8,7 +8,7 @@
         <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_path(@user, @project, survey, format: 'json', versions: true) %>
       </p>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p><%= survey.description.blank? ? raw("<i>#{t('no_description')}</i>") : survey.description %></p>
       <table class="table">
         <tr><td><%= t('maps') %>:</td><td><%= survey.concept_maps.count %></td></tr>

@@ -1,19 +1,19 @@
 <div class="row">
   <div class = "col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
+    <div class="card card-default">
+      <div class="card-header">
         <%= @survey.project.name %>
         <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
       </div>
 
-      <div class="panel-body">
-        <div class="panel panel-default">
-          <div class="panel-heading">
+      <div class="card-body">
+        <div class="card card-default">
+          <div class="card-header">
             <%= @survey.name %>
             <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @survey.project), class: "pull-right"%>
           </div>
 
-          <div class="panel-body">
+          <div class="card-body">
             <div class="container-fluid">
               <div class="row">
                 <div class = "col-md-12">

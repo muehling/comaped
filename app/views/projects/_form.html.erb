@@ -1,8 +1,8 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="card card-default">
+  <div class="card-header">
     <%= if @project.id.nil? then t('projects.new') else t('projects.edit') end %>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <%= form_for([@user, @project], class: "form", remote: true) do |f| %>
       <div class="form-group <%= "has-error" unless @project.errors[:name].blank? %>">
         <%= f.label :name, class: "control-label" %>

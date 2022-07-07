@@ -1,14 +1,14 @@
 <div class="row">
   <div class = "col-sm-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
+    <div class="card card-default">
+      <div class="card-header">
         <%= link_to raw("<span class='glyphicon glyphicon-plus'></span> ") + t('projects.new'), new_user_project_path(@user),  remote: true %>
       </div>
     </div>
   </div>
   <div class = "col-sm-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
+    <div class="card card-default">
+      <div class="card-header">
         <%= link_to raw("<span class='glyphicon glyphicon-import'></span> ") + t('projects.import'), new_user_project_path(@user, import: true), remote: true %>
       </div>
     </div>
