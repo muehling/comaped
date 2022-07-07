@@ -1,5 +1,5 @@
 import "@hotwired/turbo-rails"
-import "jquery"
+import $ from "jquery"
 
 import "popper"
 import "bootstrap"
@@ -8,12 +8,17 @@ import ConceptMap from "./ConceptMap"
 
 export let cm
 
+window.$ = $
+window.bootstrap = bootstrap
+
 export const init = (edgeData, nodeData) => {
   cm = new ConceptMap(edgeData, nodeData)
 
   // expose handlers needed for DOM events
   window.hideForm = cm.hideForm
   window.validateForm = cm.validateForm
+  window.searchConcept = cm.searchConcept
+  window.sendMail = cm.sendMail
   window.destroy = cm.destroy
   window.submitChanges = (event) => {
     event.preventDefault()

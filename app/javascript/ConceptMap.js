@@ -11,11 +11,12 @@ class ConceptMap {
   static editEdge = 4
   static dragNode = 5
 
-  constructor({ edgeData, nodeData, conceptsPath, linksPath, dialogTexts }) {
+  constructor({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts }) {
 
     this.edges = new DataSet(edgeData)
     this.nodes = new DataSet(nodeData)
     this.conceptsPath = conceptsPath
+    this.conceptMapsPath = conceptMapsPath
     this.linksPath = linksPath
     this.dialogTexts = dialogTexts
 
@@ -355,12 +356,13 @@ class ConceptMap {
   }
 
   changeColor = (id) => {
-    $('#currentColor').css('background-color', $('#color' + id).css('background-color'))
-    var color = $('#currentColor').css('background-color')
+    var color = $('#color' + id).css('background-color')
+    $('#currentColor').css('background-color', color)
     $("#color").attr("value", this.standardizeColor(color))
-    for (var i = 1; i <= 6; ++i)
+    for (var i = 1; i <= 6; ++i) {
       $('#color' + i).html("<span></span>")
-    $('#color' + id).html("<span class='glyphicon glyphicon-ok'></span>")
+    }
+    $('#color' + id).html("<span class='bi-check-lg'></span>")
     $("#entry_concept").focus()
     $("#colorSelect").css("display", "none")
   }
@@ -404,7 +406,7 @@ class ConceptMap {
       }
     })
 
-    $("#panel")
+    $("#edit-dialog")
       .removeClass("d-none")
       .attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left + this.network.canvasToDOM({ x: canvasX, y: canvasY }).x - $("#form").width() / 2) + "px;top:" + ($("#map-canvas").offset().top + this.network.canvasToDOM({ x: canvasX, y: canvasY }).y - $("#form").height() / 2) + "px;")
     switch (this.mode) {
@@ -437,8 +439,8 @@ class ConceptMap {
 
   //Edit/Create Aktion beenden
   hideForm = () => {
-    $("#panel").addClass("d-none")
-    $("#panel").focusout()
+    $("#edit-dialog").addClass("d-none")
+    $("#edit-dialog").focusout()
     this.network.unselectAll()
     $('#context-help-text').html($('#ch_normal').html())
     //Zoom-Out by Mobilgeräten veranlassen
@@ -450,6 +452,43 @@ class ConceptMap {
     }
 
     this.mode = ConceptMap.none
+  }
+  sendMail = () => {
+    $('#emailgroup').removeClass('has-error')
+    $('#emailgroup').removeClass('has-success')
+    $('#submit').removeClass('btn-danger')
+    $('#submit').removeClass('btn-success')
+    if ($('#email').is(':valid') && $('#email').val() != '') {
+      $.ajax({ url: this.conceptMapsPath + '?email=' + $('#email').val() })
+      $('#submit').addClass('btn-success')
+      $('#emailgroup').addClass('has-success')
+    }
+    else {
+      $('#submit').addClass('btn-danger')
+      $('#emailgroup').addClass('has-error')
+    }
+  }
+
+  searchConcept = (searchTerm) => {
+    if (searchTerm === "") {
+      $('#searchGroup').removeClass('has-error')
+      $('#searchGroup').removeClass('has-success')
+      return
+    }
+    const node = this.nodes.get({
+      filter: (node) => {
+        return (node.label.slice(0, searchTerm.length).toLocaleLowerCase() === searchTerm.toLocaleLowerCase())
+      }
+    })
+    if (node && node.length > 0) {
+      this.network.focus(node[0].id)
+      $('#searchGroup').removeClass('has-error')
+      $('#searchGroup').addClass('has-success')
+    }
+    else {
+      $('#searchGroup').removeClass('has-success')
+      $('#searchGroup').addClass('has-error')
+    }
   }
 }
 
