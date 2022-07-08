@@ -49,21 +49,19 @@ html, body {
 
 #submit-mail {
   background-color: #1b809e;
-}
-
-#submit-mail:hover {
-  background-color: #07668a;
+  &:hover {
+    background-color: #07668a;
+  }
 }
 
 .canvasButton {
   color: #1b809e;
   font-family: "bootstrap-icons";
   font-size: 32px;
-}
-
-.canvasButton:hover {
-  color: #07668a;
-  cursor: pointer;
+  &:hover {
+    color: #07668a;
+    cursor: pointer;
+  }
 }
 
 #context-help {
@@ -99,73 +97,71 @@ html, body {
   font-family: "bootstrap-icons";
   font-size: 32px;
   cursor: pointer;
-}
-
-.vis-button:hover {
-  box-shadow: none !important;
-  color: #07668a;
+  :hover {
+    box-shadow: none !important;
+    color: #07668a;
+  }
 }
 
 .vis-right {
   background-image: none !important;
   margin-left: 15px;
   margin-bottom: 15px;
-}
-
-.vis-right::after {
-  content: "\f133";
+  &:after {
+    content: "\f133";
+  }
 }
 
 .vis-left {
   background-image: none !important;
   margin-left: 15px;
   margin-bottom: 15px;
-}
-.vis-left::after {
-  content: "\f129";
+  &:after {
+    content: "\f129";
+  }
 }
 
 .vis-up {
   background-image: none !important;
   margin-left: 15px;
   margin-bottom: 15px;
-}
-.vis-up::after {
-  content: "\f139";
+  &:after {
+    content: "\f139";
+  }
 }
 
 .vis-down {
   background-image: none !important;
   margin-left: 15px;
   margin-bottom: 15px;
-}
-.vis-down::after {
-  content: "\f118";
+  &:after {
+    content: "\f118";
+  }
 }
 
 .vis-zoomIn {
   background-image: none !important;
   margin-right: 15px;
   margin-bottom: 15px;
-}
-.vis-zoomIn::after {
-  content: "\f4f9";
+  &:after {
+    content: "\f4f9";
+  }
 }
 
 .vis-zoomOut {
   background-image: none !important;
   margin-right: 15px;
   margin-bottom: 15px;
-}
-.vis-zoomOut::after {
-  content: "\f2e5";
+  &:after {
+    content: "\f2e5";
+  }  
 }
 
 .vis-zoomExtends {
   background-image: none !important;
   margin-right: 15px;
   margin-bottom: 15px;
-}
-.vis-zoomExtends::after {
-  content: "\f2dd";
+  &:after {
+    content: "\f2dd";
+  }
 }

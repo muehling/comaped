@@ -2,14 +2,14 @@
   <div class = "col-sm-6">
     <div class="card card-default">
       <div class="card-header">
-        <%= link_to raw("<span class='glyphicon glyphicon-plus'></span> ") + t('surveys.new'), new_user_project_survey_path(@user, @project), remote: true, data: {action: 'basic'} %>
+        <%= link_to raw("<span class='bi-plus'></span> ") + t('surveys.new'), new_user_project_survey_path(@user, @project), remote: true, data: {action: 'basic'} %>
       </div>
     </div>
   </div>
   <div class = "col-sm-6">
     <div class="card card-default">
       <div class="card-header">
-        <%= link_to raw("<span class='glyphicon glyphicon-import'></span> ") + t('surveys.import'), new_user_project_survey_path(@user, @project, import: true), remote: true %>
+        <%= link_to raw("<span class='bi-box-arrow-in-down-right'></span> ") + t('surveys.import'), new_user_project_survey_path(@user, @project, import: true), remote: true %>
       </div>
     </div>
   </div>

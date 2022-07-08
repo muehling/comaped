@@ -4,10 +4,30 @@
   }
 }
 
-.dropdown-menu {
-  box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.175)
+.dropdown-menu, .modal-dialog {
+  box-shadow: 0 0.2em 0.8em rgba(0, 0, 0, 0.175)
+}
+
+.popover-header {
+  display: flex;
+  justify-content: space-between;
+  .close {
+    span:before {
+      font-size: 1em !important;
+    }
+  }
 }
 
 #menuButton span:before {
   font-weight: bold !important;
+}
+
+button.close {
+  border: none;
+  background-color: transparent;
+  color: #999;
+  span:before {
+    font-weight: bold !important;
+    font-size: 1.5em !important;
+  }
 }

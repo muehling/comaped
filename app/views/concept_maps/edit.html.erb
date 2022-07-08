@@ -1,20 +1,19 @@
 <%= render 'concept_maps/editor/navigation_elements' %>
 
 <!-- Intro -->
-
+<% if @concept_map.first? %>
   <%= render 'concept_maps/editor/intro' %>
-
+<% end %>
 <!-- Flexible form for CRUD-actions -->
 <div id="edit-dialog" class="d-none card" style="z-index:1; position:absolute; left:0px; top:0px;">
   <div class="card-header d-flex justify-content-between">
     <em id="action"></em>
     <button type="button" class="close pull-right border-0" onclick="hideForm();" aria-label="Close">
-      <span class="bi-x-lg" aria-hidden="true" style="font-size: 12pt">
+      <span class="bi-x-lg" aria-hidden="true">
     </span>
     </button>
   </div>
   <div class="card-body">
-
     <form id="form" class="form-inline" onsubmit="submitChanges(event);return false;">
       <div class="form-group">
         <% if @concept_map.survey.association_labels.blank? %>

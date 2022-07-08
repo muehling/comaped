@@ -3,9 +3,9 @@
     <div class="card-header">
       <%= link_to survey.name, user_project_survey_path(@user, @project, survey) %>
       <p class = "pull-right">
-        <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_survey_path(@user, @project, survey), remote: true %>
+        <%= link_to raw("<span class='bi-pencil'></span>"), edit_user_project_survey_path(@user, @project, survey), remote: true %>
         &nbsp;
-        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_path(@user, @project, survey, format: 'json', versions: true) %>
+        <%= link_to raw("<span class='bi-download'></span>"), user_project_survey_path(@user, @project, survey, format: 'json', versions: true) %>
       </p>
     </div>
     <div class="card-body">

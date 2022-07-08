@@ -1,8 +1,8 @@
-<button class="btn btn-default" onclick="updatePreview(0);"><span class="glyphicon glyphicon-fast-backward"></span></button>
-<button id="prev" class="btn btn-default" onclick="updatePreview(Math.max(0, window.version-1));"><span class="glyphicon glyphicon-step-backward"></span></button>
-<button id="play" class="btn btn-default" onclick="play();"><span class="glyphicon glyphicon-play"></span></button>
-<button id="next" class="btn btn-default" disabled="disabled" onclick="updatePreview(Math.min(max_version, window.version+1));"><span class="glyphicon glyphicon-step-forward"></span></button>
-<button class="btn btn-default" onclick="updatePreview(max_version);"><span class="glyphicon glyphicon-fast-forward"></span></button>
+<button class="btn btn-default" onclick="updatePreview(0);"><span class="bi-chevron-double-left"></span></button>
+<button id="prev" class="btn btn-default" onclick="updatePreview(Math.max(0, window.version-1));"><span class="bi-step-backward"></span></button>
+<button id="play" class="btn btn-default" onclick="play();"><span class="bi-play"></span></button>
+<button id="next" class="btn btn-default" disabled="disabled" onclick="updatePreview(Math.min(max_version, window.version+1));"><span class="bi-step-forward"></span></button>
+<button class="btn btn-default" onclick="updatePreview(max_version);"><span class="bi-chevron-double-right"></span></button>
 
 <script type="module">
   import "jquery"
@@ -54,7 +54,7 @@
     playing = !playing
 
     if (playing) {
-      $('#play').html("<span class='glyphicon glyphicon-pause'></span>");
+      $('#play').html("<span class='bi-pause'></span>");
       timerId = window.setInterval(function() {
         if (window.version == max_version) {
           $('#play').click();
@@ -64,7 +64,7 @@
       }, 1500);
     }
     else {
-      $('#play').html("<span class='glyphicon glyphicon-play'></span>");
+      $('#play').html("<span class='bi-play'></span>");
       window.clearInterval(timerId);
     }
   };

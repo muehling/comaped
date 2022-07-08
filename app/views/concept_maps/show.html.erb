@@ -3,21 +3,21 @@
     <div class="card card-default">
       <div class="card-header concept_map_show">
         <%= @concept_map.survey.project.name %>
-        <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
+        <%= link_to raw("<span class='bi-x-lg'></span>"), user_projects_path(@user), class: "pull-right"%>
       </div>
 
       <div class="card-body">
         <div class="card card-default">
           <div class="card-header">
             <%= @concept_map.survey.name %>
-            <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @concept_map.survey.project), class: "pull-right"%>
+            <%= link_to raw("<span class='bi-x-lg'></span>"), user_project_path(@user, @concept_map.survey.project), class: "pull-right"%>
           </div>
 
           <div class="card-body">
             <div class="card card-default">
               <div class="card-header">
                 <%= @concept_map.code %>
-                <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_survey_path(@user, @concept_map.survey.project, @concept_map.survey), class: "pull-right"%>
+                <%= link_to raw("<span class='bi-x-lg'></span>"), user_project_survey_path(@user, @concept_map.survey.project, @concept_map.survey), class: "pull-right"%>
               </div>
 
               <div class="card-body">
