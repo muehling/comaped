@@ -1,13 +1,14 @@
 <%= render 'concept_maps/editor/explanation' %>
-
 <script >
+//TODO this should be declared inside DOMContentLoaded once it only runs once
+isInitialized = false
+let introModal
 
 document.addEventListener('DOMContentLoaded', () => {
     //TODO this is executed twice. Probably something to do with the way rails embeds partials, causing the script to run twice
 
     const selectors = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
     const placements = ["right", "bottom", "left", "top", "right", "left"];
-    const introModal = new bootstrap.Modal(document.getElementById("intro"), { backdrop: "static" })
 
     // will render the translated introtexts
     // declares these variables
@@ -19,13 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     const textHtml = texts.map((text, i)=>{
-        return ("<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'>" + (i === texts.length-1 ? btn_last : btn_standard) + "</button></p>")
+        return ("<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-secondary' onclick='next();'>" + (i === texts.length-1 ? btn_last : btn_standard) + "</button></p>")
     })
 
-    const titleHtml = title + " <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='bi-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
+    const titleHtml = title + " <button type='button' class='close end-0' onclick='stop();' aria-label='Close'><span class='bi-x-lg' aria-hidden='true' style='top: -2px;'></span></button>";
 
     let popover
-    let popoverIndex = 1
+    let popoverIndex = 0
 
     function next() {
         if (popover){
@@ -33,24 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const el = $(selectors[popoverIndex])[0]
-console.log('awghghghg', el);
-
-        popover = new bootstrap.Popover(
-            el,
-            {
-                viewport: {'selector': 'body', 'padding': 15},
-                placement: placements[popoverIndex],
-                title: titleHtml,
-                content: textHtml[popoverIndex],
-                html: true,
-                sanitize: false,
-            }
-        )
-        popover.show()
-        console.log('next', popoverIndex);
-
-        popoverIndex++;
-
+        if (el) {
+            popover = new bootstrap.Popover(
+                el,
+                {
+                    viewport: {'selector': 'body', 'padding': 15},
+                    placement: placements[popoverIndex],
+                    title: titleHtml,
+                    content: textHtml[popoverIndex],
+                    html: true,
+                    sanitize: false, // allow buttons with click handlers and all in the html content
+                }
+            )
+            popover.show()
+            popoverIndex++;
+        }
     };
 
     function stop() {
@@ -64,17 +62,16 @@ console.log('awghghghg', el);
         introModal.hide()
         next()
     }
-
      $("#intro").on("hidden.bs.modal", function (e) {
         next();
     });
 
-    //$(document).ready(function(){
-        console.log('show');
-
+    if (!isInitialized) {
+        introModal = new bootstrap.Modal(document.getElementById("intro"), { backdrop: "static" })
         introModal.show()
-    //});
-
+        isInitialized = true
+    }
+    
     // expose handlers to the DOM
     window.next = next
     window.stop = stop
