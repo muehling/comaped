@@ -1,8 +1,8 @@
-<button class="btn btn-default" onclick="updatePreview(0);"><span class="bi-chevron-double-left"></span></button>
-<button id="prev" class="btn btn-default" onclick="updatePreview(Math.max(0, window.version-1));"><span class="bi-step-backward"></span></button>
-<button id="play" class="btn btn-default" onclick="play();"><span class="bi-play"></span></button>
-<button id="next" class="btn btn-default" disabled="disabled" onclick="updatePreview(Math.min(max_version, window.version+1));"><span class="bi-step-forward"></span></button>
-<button class="btn btn-default" onclick="updatePreview(max_version);"><span class="bi-chevron-double-right"></span></button>
+<button class="btn btn-light" onclick="updatePreview(1);"><span class="bi-chevron-double-left"></span></button>
+<button id="prev" class="btn btn-light" onclick="updatePreview(Math.max(1, window.version-1));"><span class="bi-chevron-left"></span></button>
+<button id="play" class="btn btn-light" onclick="play();"><span class="bi-play"></span></button>
+<button id="next" class="btn btn-light" disabled="disabled" onclick="updatePreview(Math.min(max_version, window.version+1));"><span class="bi-chevron-right"></span></button>
+<button class="btn btn-light" onclick="updatePreview(max_version);"><span class="bi-chevron-double-right"></span></button>
 
 <script type="module">
   import "jquery"
@@ -14,7 +14,7 @@
   let timerId
 
   async function updatePreview(desiredVersion) {
-    window.version = version = desiredVersion
+    window.version = desiredVersion
     const url = "<%= concept_map_versions_path(concept_map) %>/" + desiredVersion + "/"
     const res = await fetch(url, {
       "method": "GET",
@@ -29,8 +29,6 @@
     window.edges_<%= @concept_map.id%>.clear();
     window.nodes_<%= @concept_map.id%>.update(body.nodes)
     window.edges_<%= @concept_map.id%>.update(body.edges.map(node=>({id: node.id, from: node.start_id, to: node.end_id, ...node})))
-    //TODO for weird reasons, in the preview, the nodes have a border, and the edges are colored in the node color
-    //TODO despite the settings being equal to the editor
 
     network_<%= @concept_map.id%>.redraw();
 
@@ -56,10 +54,10 @@
     if (playing) {
       $('#play').html("<span class='bi-pause'></span>");
       timerId = window.setInterval(function() {
-        if (window.version == max_version) {
-          $('#play').click();
+        if (window.version === max_version) {
+          play()
         }else {
-          $('#next').click();
+          updatePreview(Math.min(max_version, window.version + 1))
         }
       }, 1500);
     }

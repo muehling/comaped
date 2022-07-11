@@ -19,4 +19,5 @@ pin "@rails/actioncable/src", to: "@rails--actioncable--src.js" # @7.0.3
 
 pin "popper", to: 'popper.js', preload: true
 pin "bootstrap", to: 'bootstrap.min.js', preload: true
+pin "moment", to: 'moment.js', preload: true
 
