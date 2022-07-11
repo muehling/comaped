@@ -61,7 +61,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4><%= t('concept_maps.edit.help_info') %></h4>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span class="bi-x-lg" aria-hidden="true"></span></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span></button>
       </div>
       <div class="modal-body">
         <%= render 'concept_maps/editor/info'%>
@@ -77,14 +77,14 @@
 <div id="context-help" role="alert" class="d-flex justify-content-between align-items-start alert <% unless @concept_map.first? %> d-none <% end %>">
   <p id="context-help-text">
   </p>
-  <button type="button" class="close" aria-label="Close" onclick="$('#context-help').addClass('d-none');return false;"><span class="bi-x" aria-hidden="true" style="color: white; opacity: 0.5"></span></button>
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="$('#context-help').addClass('d-none');return false;"></span></button>
   <%= render 'concept_maps/editor/context_help'%>
 </div>
 
 <!-- Survey introduction-->
 <% unless @concept_map.survey.introduction.blank? %>
   <div id="task" class="alert <% unless @concept_map.first? %> d-none <% end %>">
-    <button type="button" class="close" aria-label="Close" onclick="$('#task').addClass('d-none');return false;"><span class="bi-x-lg" aria-hidden="true"></span></button>
+    <button type="button" class="btn-close" aria-label="Close" onclick="$('#task').addClass('d-none');return false;"></span></button>
     <p>
       <%= @concept_map.survey.introduction %>
     </p>
