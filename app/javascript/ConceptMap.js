@@ -13,17 +13,13 @@ class ConceptMap {
 
   constructor({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts }) {
 
-    this.edges = new DataSet(edgeData)
-    this.nodes = new DataSet(nodeData)
+
     this.conceptsPath = conceptsPath
     this.conceptMapsPath = conceptMapsPath
     this.linksPath = linksPath
     this.dialogTexts = dialogTexts
 
-    this.data = {
-      nodes: this.nodes,
-      edges: this.edges
-    }
+    this.update({ edges: edgeData, nodes: nodeData })
 
     this.container = $('#map-canvas')[0]
 
@@ -117,7 +113,7 @@ class ConceptMap {
             type: "PUT",
             url: this.conceptsPath + "/" + this.id,
             headers: {
-              'Accept': 'text/javascript',
+              'Accept': 'text/plain',
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
@@ -235,33 +231,40 @@ class ConceptMap {
   /*********************************
   * delete nodes or edges
   ********************************/
-  destroy = () => {
+  destroy = async () => {
     switch (this.mode) {
       case ConceptMap.editNode:
-        $.ajax({
-          headers: {
-            'Accept': 'text/javascript',
+        await fetch(this.conceptsPath + "/" + this.id, {
+          "method": "delete",
+          "mode": "same-origin",
+          "headers": {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          },
-          type: "DELETE", url: this.conceptsPath + "/" + this.id
-        }).always(() => {
-          this.mode = ConceptMap.none
-          this.id = undefined
+          }
         })
+        this.nodes.remove(this.id)
+        this.network.setData({ nodes: this.nodes, edges: this.edges })
+        this.network.redraw()
+
+        this.mode = ConceptMap.none
+        this.id = undefined
+
         break
       case ConceptMap.editEdge:
-        $.ajax({
-          headers: {
-            'Accept': 'text/javascript',
+        await fetch(this.linksPath + "/" + this.id, {
+          "method": "delete",
+          "mode": "same-origin",
+          "headers": {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          },
-          type: "DELETE", url: this.linksPath + "/" + this.id
-        }).always(() => {
-          this.mode = ConceptMap.none
-          this.id = undefined
+          }
         })
+        this.edges.remove(this.id)
+        this.network.setData({ nodes: this.nodes, edges: this.edges })
+        this.network.redraw()
+
+        this.mode = ConceptMap.none
+        this.id = undefined
         break
     }
     this.hideForm()
@@ -303,7 +306,7 @@ class ConceptMap {
   /*********************************
   * put or post after editing/adding a node or an edge
   ********************************/
-  onSubmit = () => {
+  onSubmit = async () => {
     const postObj = {}
     let method = "put"
     let path
@@ -313,18 +316,18 @@ class ConceptMap {
       case ConceptMap.addNode:
         method = "post"
       case ConceptMap.editNode:
-        postObj["concept[x]"] = $("#x").val()
-        postObj["concept[y]"] = $("#y").val()
-        postObj["concept[label]"] = $("#entry_concept").val()
-        postObj["concept[color]"] = $("#color").val()
+        postObj["x"] = $("#x").val()
+        postObj["y"] = $("#y").val()
+        postObj["label"] = $("#entry_concept").val()
+        postObj["color"] = $("#color").val()
         path = this.conceptsPath
         break
       case ConceptMap.addEdge:
         method = "post"
-        postObj["link[start]"] = $("#start").val()
-        postObj["link[end]"] = $("#end").val()
+        postObj["start_id"] = parseInt($("#start").val(), 10)
+        postObj["end_id"] = parseInt($("#end").val(), 10)
       case ConceptMap.editEdge:
-        postObj["link[label]"] = $("#entry_link").val()
+        postObj["label"] = $("#entry_link").val()
         path = this.linksPath
         break
       default:
@@ -332,18 +335,40 @@ class ConceptMap {
         return
     }
 
-    $.ajax({
-      headers: {
-        'Accept': 'text/javascript',
+    const res = await fetch(path + (method === "put" ? "/" + this.id : ""), {
+      "method": method,
+      "mode": "same-origin",
+      "headers": {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+
       },
-      type: method,
-      url: path + (method === "put" ? "/" + this.id : ""),
-      data: postObj
-    }).always(() => {
-      this.hideForm()
+      "body": JSON.stringify(postObj)
     })
+
+    const body = await res.json()
+    if (body.edge) {
+      this.edges.update(body.edge)
+    }
+    if (body.node) {
+      this.nodes.update(body.node)
+    }
+
+    this.network.setData({ nodes: this.nodes, edges: this.edges })
+    this.network.redraw()
+
+    this.hideForm()
+  }
+
+  update = ({ nodes, edges }) => {
+    if (edges) this.edges = new DataSet(edges)
+    if (nodes) this.nodes = new DataSet(nodes)
+    this.data = {
+      nodes: this.nodes,
+      edges: this.edges
+    }
   }
 
   /*********************************

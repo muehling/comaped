@@ -4,38 +4,27 @@ class LinksController < ApplicationController
   before_action :set_concept_map
   before_action :set_link, only: [:edit, :update, :destroy]
 
-  # POST /concept_maps/1/links.js
+  # POST /concept_maps/1/links
   def create
-    @link = @map.links.build(label: link_params[:label], start_id: link_params[:start].to_i, end_id: link_params[:end].to_i)
-    respond_to do |format|
-      if @link.save
-        @map.versionize(DateTime.now)
-        format.js {}
-      else
-        format.js {head :ok}
-      end
+    @link = @map.links.build(link_params)
+    if @link.save
+      @map.versionize(DateTime.now)
     end
   end
 
-  # PATCH/PUT /concept_maps/1/links/1.js
+  # PATCH/PUT /concept_maps/1/links/1
   def update
-    respond_to do |format|
-      if @link.update(link_params.permit(:label))
-        @map.versionize(DateTime.now)
-        format.js {}
-      else
-        format.js { head :ok }
-      end
+    if @link.update(link_params.permit(:label))
+      @map.versionize(DateTime.now)
     end
+    render :create
   end
 
-  # DELETE /concept_maps/1/links/1.js
+  # DELETE /concept_maps/1/links/1
   def destroy
     @link.destroy
     @map.versionize(DateTime.now)
-    respond_to do |format|
-      format.js {}
-    end
+    head :ok
   end
 
   private
@@ -56,7 +45,7 @@ class LinksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def link_params
-    params.fetch(:link, {}).permit([:label, :start, :end])
+    params.require(:link).permit([:label, :start_id, :end_id])
   end
 
 end
