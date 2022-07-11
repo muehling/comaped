@@ -10,9 +10,9 @@
       <div class="row">
         <div class = "col-md-6">
           <%= render partial: 'concept_maps/table', locals: {concept_map: concept_map}%>
-          <%= link_to t('show'), user_project_survey_concept_map_path(@user, @project, @survey, concept_map), class: "btn btn-default" %>
+          <%= link_to t('show'), user_project_survey_concept_map_path(@user, @project, @survey, concept_map), class: "btn btn-secondary" %>
           <div class="dropdown float-end">
-            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               <%= t('export') %>
               <span class="caret"></span>
             </button>

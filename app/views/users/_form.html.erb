@@ -22,7 +22,7 @@
       <% end %>
       <div class="form-group">
         <%= f.submit :class => "btn btn-primary" %>
-        <%= link_to t('cancel'), if (@user.id.nil? || (@user.id != @user.id)) then users_path else user_path(@user) end, class: "btn btn-default"%>
+        <%= link_to t('cancel'), if (@user.id.nil? || (@user.id != @user.id)) then users_path else user_path(@user) end, class: "btn btn-secondary"%>
      </div>
     <% end %>
   </div>

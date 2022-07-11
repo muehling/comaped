@@ -15,8 +15,8 @@
     <%= f.label :initial_map, class: "control-label" %>
     <%= f.text_area :initial_map, rows: 7, class: "form-control", placeholder: t('.example_initial_map')%>
   </div>
-  <div class="form-group">
+  <div class="form-group mt-4">
     <%= f.submit :class => "btn btn-primary" %>
-    <%= link_to t('cancel'), user_project_survey_path(@user, @project, @survey), class: "btn btn-default" %>
+    <%= link_to t('cancel'), user_project_survey_path(@user, @project, @survey), class: "btn btn-secondary" %>
   </div>
 <% end %>
