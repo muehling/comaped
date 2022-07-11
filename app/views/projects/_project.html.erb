@@ -2,7 +2,7 @@
   <div class="card <%= if project.available then "card-success" else "card-default" end %>">
     <div class="card-header">
       <%= link_to project.name, user_project_path(@user, project) %>
-      <p class = "pull-right">
+      <p class = "float-end">
         <%= link_to raw("<span class='bi-pencil'></span>"), edit_user_project_path(@user, project), remote: true %>
         &nbsp;
         <%= link_to raw("<span class='bi-download'></span>"), user_project_path(@user, project, format: 'json', versions: true)%>
@@ -16,7 +16,7 @@
       </table>
       <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-default" %>
       <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-default", remote: true %>
-      <div class="dropdown pull-right">
+      <div class="dropdown float-end">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= t('export') %>
           <span class="caret"></span>
