@@ -74,10 +74,10 @@
 <%= render 'legal'%>
 
 <!-- Context help bottom center -->
-<div id="context-help" role="alert" class="alert <% unless @concept_map.first? %> d-none <% end %>">
-  <button type="button" class="close" aria-label="Close" onclick="$('#context-help').addClass('d-none');return false;"><span class="bi-x-lg" aria-hidden="true" style="color: white;"></span></button>
+<div id="context-help" role="alert" class="d-flex justify-content-between align-items-start alert <% unless @concept_map.first? %> d-none <% end %>">
   <p id="context-help-text">
   </p>
+  <button type="button" class="close" aria-label="Close" onclick="$('#context-help').addClass('d-none');return false;"><span class="bi-x" aria-hidden="true" style="color: white; opacity: 0.5"></span></button>
   <%= render 'concept_maps/editor/context_help'%>
 </div>
 
