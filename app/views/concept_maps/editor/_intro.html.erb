@@ -1,11 +1,11 @@
 <%= render 'concept_maps/editor/explanation' %>
-<script >
-//TODO this should be declared inside DOMContentLoaded once it only runs once
-isInitialized = false
-let introModal
+<script type="module">
+    import "jquery"
+    import "bootstrap"
 
-document.addEventListener('DOMContentLoaded', () => {
-    //TODO this is executed twice. Probably something to do with the way rails embeds partials, causing the script to run twice
+    let isInitialized = false
+    let introModal
+
 
     const selectors = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
     const placements = ["right", "bottom", "left", "top", "right", "left"];
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // - btn_standard
     // - title
     <%= render 'concept_maps/editor/intro_texts' %>
-
 
     const textHtml = texts.map((text, i)=>{
         return ("<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-secondary' onclick='next();'>" + (i === texts.length-1 ? btn_last : btn_standard) + "</button></p>")
@@ -71,10 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
         introModal.show()
         isInitialized = true
     }
-    
+
     // expose handlers to the DOM
     window.next = next
     window.stop = stop
     window.hideModal = hideModal
-})
 </script>
