@@ -97,7 +97,7 @@ html, body {
   font-family: "bootstrap-icons";
   font-size: 32px;
   cursor: pointer;
-  :hover {
+  &:hover {
     box-shadow: none !important;
     color: #07668a;
   }
@@ -154,7 +154,7 @@ html, body {
   margin-bottom: 15px;
   &:after {
     content: "\f2e5";
-  }  
+  }
 }
 
 .vis-zoomExtends {
