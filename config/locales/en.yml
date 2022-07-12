@@ -107,7 +107,7 @@ en:
     destroyed: "User was deleted"
     edit: "Edit user data"
     new: "New user"
-    updated: "User data  updated"
+    updated: "User data updated"
     _form:
       password_confirmation: "Confirm password"
     show:

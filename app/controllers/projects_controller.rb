@@ -90,16 +90,14 @@ class ProjectsController < ApplicationController
     if @project.update(project_params)
       redirect_to user_project_path(@user, @project)
     else
-      render :edit
+      render edit_user_project_path(@user, @project), notice: I18n.t('error')
     end
   end
 
   # DELETE /projects/1
   def destroy
     @project.destroy
-    respond_to do |format|
-      format.html { redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed'), status: :see_other}
-    end
+    redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed'), status: :see_other
   end
 
   private

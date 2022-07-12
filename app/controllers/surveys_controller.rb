@@ -93,14 +93,14 @@ class SurveysController < ApplicationController
     if @survey.update(survey_params)
       redirect_to user_project_survey_path(@user, @project, @survey)
     else
-      render :edit, notice: I18n.t('error_import') #TODO error handling
+      redirect_to edit_user_project_survey_path(@user, @project, @survey), notice: I18n.t('error')
     end
   end
 
   # DELETE /surveys/1
   def destroy
     @survey.destroy
-    redirect_to user_project_path(@user, @project), notice: I18n.t('surveys.destroyed'), status: :see_other
+    redirect_to user_project_surpath(@user, @project), notice: I18n.t('surveys.destroyed'), status: :see_other
   end
 
   private
