@@ -108,8 +108,6 @@ class ConceptMap < ApplicationRecord
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
     save
-    logger.info "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-    logger.info vals["concepts"].inspect
     vals["concepts"].each do |c|
       t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
       t.save
@@ -202,7 +200,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
+    as_json(include: {concepts: {only: [:id, :label, :x, :y, :color]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
   end
 
   #Creates a TGF representation of the map
