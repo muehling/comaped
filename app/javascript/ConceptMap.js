@@ -19,7 +19,9 @@ class ConceptMap {
     this.linksPath = linksPath
     this.dialogTexts = dialogTexts
 
-    this.update({ edges: edgeData, nodes: nodeData })
+    this.edges = new DataSet(edgeData)
+    this.nodes = new DataSet(nodeData)
+
 
     this.container = $('#map-canvas')[0]
 
@@ -53,7 +55,13 @@ class ConceptMap {
 
     }
 
-    this.network = new vis.Network(this.container, this.data, this.options)
+    this.network = new vis.Network(
+      this.container,
+      {
+        nodes: this.nodes,
+        edges: this.edges
+      },
+      this.options)
 
     $('#context-help-text').html($('#ch_normal').html())
 
@@ -106,22 +114,25 @@ class ConceptMap {
       }
     })
 
-    this.network.on("dragEnd", (params) => {
+    this.network.on("dragEnd", async (params) => {
       switch (this.mode) {
         case ConceptMap.dragNode:
-          $.ajax({
-            type: "PUT",
-            url: this.conceptsPath + "/" + this.id,
-            headers: {
-              'Accept': 'text/plain',
+          const res = await fetch(this.conceptsPath + "/" + this.id, {
+            "method": "put",
+            "mode": "same-origin",
+            "headers": {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
-            data: { "concept": { 'label': this.nodes.get(this.id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } }
-          }).always(() => {
-            this.mode = ConceptMap.none
-            this.id = undefined
+            "body": JSON.stringify({ "concept": { 'label': this.nodes.get(this.id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } })
           })
+          const body = await res.json()
+
+          this.nodes.update(body.node)
+          this.mode = ConceptMap.none
+          this.id = undefined
           this.hideForm()
       }
     })
@@ -243,8 +254,6 @@ class ConceptMap {
           }
         })
         this.nodes.remove(this.id)
-        this.network.setData({ nodes: this.nodes, edges: this.edges })
-        this.network.redraw()
 
         this.mode = ConceptMap.none
         this.id = undefined
@@ -260,8 +269,6 @@ class ConceptMap {
           }
         })
         this.edges.remove(this.id)
-        this.network.setData({ nodes: this.nodes, edges: this.edges })
-        this.network.redraw()
 
         this.mode = ConceptMap.none
         this.id = undefined
@@ -343,7 +350,6 @@ class ConceptMap {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-
       },
       "body": JSON.stringify(postObj)
     })
@@ -356,20 +362,9 @@ class ConceptMap {
       this.nodes.update(body.node)
     }
 
-    this.network.setData({ nodes: this.nodes, edges: this.edges })
-    this.network.redraw()
-
     this.hideForm()
   }
 
-  update = ({ nodes, edges }) => {
-    if (edges) this.edges = new DataSet(edges)
-    if (nodes) this.nodes = new DataSet(nodes)
-    this.data = {
-      nodes: this.nodes,
-      edges: this.edges
-    }
-  }
 
   /*********************************
   * color picker stuff
