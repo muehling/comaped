@@ -9,11 +9,11 @@ json.node do
     json.face "georgia"
   end
   json.borderWidth 1
-  json.boderWidthSelected: 3
-  json.labelHighlightBold: false
-  json.widthConstraint:{
-    maximum: 120
-  },
+  json.boderWidthSelected 3
+  json.labelHighlightBold false
+  json.widthConstraint do
+    json.maximum 120
+  end
   json.color do
     json.background @concept.color || default_color
     json.border @concept.color || default_color

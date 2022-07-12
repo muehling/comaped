@@ -3,7 +3,7 @@ json.edge do
   json.from @link.start_id
   json.to @link.end_id
   json.label @link.label
-  json.labelHighlightBold: false
+  json.labelHighlightBold false
   json.font do
     json.align @link.start_id < @link.end_id ? 'bottom' : 'top'
   end
