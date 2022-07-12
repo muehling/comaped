@@ -17,17 +17,17 @@
       <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-secondary" %>
       <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-secondary", remote: true %>
       <div class="dropdown float-end">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= t('export') %>
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
           <li class="dropdown-header"><%= t('export.current')%></li>
-          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json')%></li>
-          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text')%></li>
+          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json'), class: "dropdown-item"%></li>
+          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text'), class: "dropdown-item"%></li>
           <li class="dropdown-header"><%= t('export.all')%></li>
-          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json', versions: true)%></li>
-          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text', versions: true)%></li>
+          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json', versions: true), class: "dropdown-item"%></li>
+          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text', versions: true), class: "dropdown-item"%></li>
         </ul>
       </div>
     </div>
