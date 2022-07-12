@@ -42,11 +42,11 @@
                   <div class="col-md-2">
                     <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
 
-                    <%= button_to concept_map_version_path(@concept_map, 0), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-block btn-danger" do %>
+                    <%= button_to concept_map_version_path(@concept_map, 0), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-block btn-danger mb-2" do %>
                       <%= t('versions.delete') %>
                     <% end %>
 
-                    <%= button_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-block btn-danger" do %>
+                    <%= button_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-block btn-danger mb-2" do %>
                       <%= t('concept_maps.delete') %>
                     <% end %>
                   </div>
