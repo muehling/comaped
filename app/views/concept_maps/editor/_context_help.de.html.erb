@@ -1,23 +1,23 @@
-<p id="ch_normal" class="hidden">
+<p id="ch_normal" class="d-none">
   <% if @concept_map.survey.concept_labels.blank? %>Neues Konzept: Langer Klick auf Zeichenfläche.<% end %> Ausschnitt verändern: Klicken und ziehen, scrollen (oder Knöpfe auf der Zeichenfläche)
 </p>
 
-<p id="ch_hovernode" class="hidden">
+<p id="ch_hovernode" class="d-none">
 Klicken und ziehen um Konzept zu verschieben, <% if @concept_map.survey.concept_labels.blank? %>klicken um Konzept zu bearbeiten oder zu löschen,<% end %> langer Klick um Verbindung anzulegen
 </p>
 
-<p id="ch_hoveredge" class="hidden">
+<p id="ch_hoveredge" class="d-none">
   Klicken um Verbindung zu bearbeiten oder zu löschen
 </p>
 
-<p id="ch_edit" class="hidden">
-  Neuen Bezeichner eingeben, dann <span class="glyphicon glyphicon-ok"></span> oder Enter. Abbrechen mit <span class="glyphicon glyphicon-remove"></span> oder Esc oder Klick auf Zeichenfläche. Löschen mit <span class="glyphicon glyphicon-trash"></span> (<strong>Achtung:</strong> Kein Rückgängig!)
+<p id="ch_edit" class="d-none">
+  Neuen Bezeichner eingeben, dann <span class="bi-check-lg"></span> oder Enter. Abbrechen mit <span class="bi-x-lg"></span> oder Esc oder Klick auf Zeichenfläche. Löschen mit <span class="bi-trash"></span> (<strong>Achtung:</strong> Kein Rückgängig!)
 </p>
 
-<p id="ch_new" class="hidden">
-  Bezeichner eingeben und <span class="glyphicon glyphicon-ok"></span> oder Enter, abbrechen mit <span class="glyphicon glyphicon-remove"></span> oder Esc oder Klick auf Zeichenfläche
+<p id="ch_new" class="d-none">
+  Bezeichner eingeben und <span class="bi-check-lg"></span> oder Enter, abbrechen mit <span class="bi-x-lg"></span> oder Esc oder Klick auf Zeichenfläche
 </p>
 
-<p id="ch_addedge" class="hidden">
+<p id="ch_addedge" class="d-none">
   Klick auf Zielkonzept um Verbindung anzulegen oder auf Zeichenfläche um abzubrechen
 </p>

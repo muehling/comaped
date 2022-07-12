@@ -9,12 +9,9 @@ end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.2'
 # Use postgres as the database for Active Record
-gem 'pg', '>= 0.18', '< 2.0'
+gem 'pg', '~> 1.3'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbo-rails', '~> 1'
@@ -39,16 +36,19 @@ group :development do
   gem 'listen', '~> 3.0.5'
 end
 
-group :production do
-  gem 'pg', '>= 0.18', '< 2.0'
-end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 #Additional gems:
 gem 'rubyzip'
-gem 'bootstrap-sass', '~> 3.3.7'
 gem "importmap-rails", "~> 1.1"
 gem "js-routes"
 gem 'mime-types', '~> 3.1'
+
+# use bootstrap gem to avoid hassle of managing the js part through importmap and css part by hand
+gem "bootstrap", "~> 5.1"
+gem "sassc-rails"
+
+# js runtime for sass compilation
+gem "mini_racer"

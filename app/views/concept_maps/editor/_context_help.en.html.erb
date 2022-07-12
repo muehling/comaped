@@ -1,22 +1,22 @@
-<p id="ch_normal" class="hidden">
+<p id="ch_normal" class="d-none">
   <% if @concept_map.survey.concept_labels.blank? %>New concept: click and hold.<% end %> Change view: click and drag, scroll (or use buttons on canvas)
 </p>
 
-<p id="ch_hovernode" class="hidden">
+<p id="ch_hovernode" class="d-none">
 Click and drag to move concept around, <% if @concept_map.survey.concept_labels.blank? %>click to edit or delete concept,<% end %> click and hold to create new connection
 
-<p id="ch_hoveredge" class="hidden">
+<p id="ch_hoveredge" class="d-none">
   Click to edit or delete connection
 </p>
 
-<p id="ch_edit" class="hidden">
-  Enter new label, then <span class="glyphicon glyphicon-ok"></span> or return. Cancel with <span class="glyphicon glyphicon-remove"></span> or Esc or click on canvas. Delete with <span class="glyphicon glyphicon-trash"></span> (<strong>Caution:</strong> No undo!)
+<p id="ch_edit" class="d-none">
+  Enter new label, then <span class="bi-check-lg"></span> or return. Cancel with <span class="bi-x-lg"></span> or Esc or click on canvas. Delete with <span class="bi-trash"></span> (<strong>Caution:</strong> No undo!)
 </p>
 
-<p id="ch_new" class="hidden">
-  Enter label, then <span class="glyphicon glyphicon-ok"></span> or return. Cancel with <span class="glyphicon glyphicon-remove"></span> or Esc or click on canvas
+<p id="ch_new" class="d-none">
+  Enter label, then <span class="bi-check-lg"></span> or return. Cancel with <span class="bi-x-lg"></span> or Esc or click on canvas
 </p>
 
-<p id="ch_addedge" class="hidden">
+<p id="ch_addedge" class="d-none">
   Click on target concept to create connection or on canvas to cancel
 </p>

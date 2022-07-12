@@ -1,8 +1,8 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="card card-default">
+  <div class="card-header">
     <%= t('concept_maps.import') %>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <%= form_for([@user, @project, @survey, @concept_map], class: "form", multipart: true) do |f| %>
         <div class="form-group">
           <%= f.label t('file'), class: "control-label" %>
@@ -10,7 +10,7 @@
         </div>
         <div class="form-group">
           <%= f.submit t('import'), class: "btn btn-primary disabled", id: "submit" %>
-          <button type="button" class="btn btn-default" onclick="history.back()"><%= t('cancel') %></button>
+          <button type="button" class="btn btn-secondary" onclick="history.back()"><%= t('cancel') %></button>
         </div>
     <% end %>
   </div>

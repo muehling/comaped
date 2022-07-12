@@ -108,15 +108,19 @@ class ConceptMap < ApplicationRecord
     dict = Hash.new
     self.code = code_prefix + (vals["code"] || '')
     save
-    vals["concepts"].each do |c|
-      t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
-      t.save
-      t.reload
-      dict[c["id"]] = t
+    unless vals["concepts"].nil?
+      vals["concepts"].each do |c|
+        t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
+        t.save
+        t.reload
+        dict[c["id"]] = t
+      end
     end
-    vals["links"].each do |l|
-      t = self.links.build(label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
-      t.save
+    unless vals["links"].nil?
+      vals["links"].each do |l|
+        t = self.links.build(label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
+        t.save
+      end
     end
     return save
   end
@@ -200,7 +204,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
+    as_json(include: {concepts: {only: [:id, :label, :x, :y, :color]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
   end
 
   #Creates a TGF representation of the map
@@ -248,7 +252,7 @@ class ConceptMap < ApplicationRecord
         zip.print v.to_tgf
       else
         zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
-        zip.print v.data
+        zip.print v.to_json
       end
     end
   end

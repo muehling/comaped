@@ -1,8 +1,8 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="card card-default">
+  <div class="card-header">
     <%= if @user.id.nil? then t('users.new') else t('users.edit') end %>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <%= form_for(@user, class: "form") do |f| %>
       <div class="form-group <%= "has-error" unless @user.errors[:email].blank? %>">
         <%= f.label t('email'), class: "control-label" %>
@@ -22,7 +22,7 @@
       <% end %>
       <div class="form-group">
         <%= f.submit :class => "btn btn-primary" %>
-        <%= link_to t('cancel'), if (@user.id.nil? || (@user.id != @user.id)) then users_path else user_path(@user) end, class: "btn btn-default"%>
+        <%= link_to t('cancel'), if (@user.id.nil? || (@user.id != @user.id)) then users_path else user_path(@user) end, class: "btn btn-secondary"%>
      </div>
     <% end %>
   </div>

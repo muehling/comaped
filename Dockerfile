@@ -5,8 +5,10 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends \
   gnupg2 \
   git \
   libmariadb-dev \
-  sqlite3 \  
-  libsqlite3-dev \  
+  sqlite3 \
+  libsqlite3-dev \
+  libpq-dev \
+  postgresql-client \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 

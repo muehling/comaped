@@ -4,41 +4,30 @@ class ConceptsController < ApplicationController
   before_action :set_concept_map
   before_action :set_concept, only: [:edit, :update, :destroy]
 
-  # POST /concept_maps/1/concepts.js
+  # POST /concept_maps/1/concepts
   def create
     @concept = @map.concepts.build(concept_params)
-    respond_to do |format|
-      if @concept.save
-        @map.versionize(DateTime.now)
-        format.js {}
-      else
-        format.js {head :ok}
-      end
+    if @concept.save
+      @map.versionize(DateTime.now)
     end
   end
 
-  # PATCH/PUT /concept_maps/1/concepts/1.js
+  # PATCH/PUT /concept_maps/1/concepts/1
   def update
-    respond_to do |format|
-      old = @concept.label
-      if @concept.update(concept_params)
-        unless concept_params[:label] == old
-          @map.versionize(DateTime.now)
-        end
-        format.js { }
-      else
-        format.js { head :ok }
+    old = @concept.label
+    if @concept.update(concept_params)
+      unless concept_params[:label] == old
+        @map.versionize(DateTime.now)
       end
     end
+    render :create
   end
 
   # DELETE /concept_maps/1/concepts/1.js
   def destroy
     @concept.destroy
     @map.versionize(DateTime.now)
-    respond_to do |format|
-      format.js {}
-    end
+    head :ok
   end
 
   private
@@ -59,7 +48,7 @@ class ConceptsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_params
-    params.fetch(:concept, {}).permit([:label, :x, :y, :color, :shape])
+    params.require(:concept).permit([:label, :x, :y, :color, :shape])
   end
 
 end

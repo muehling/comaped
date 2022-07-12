@@ -1,23 +1,23 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="card card-default">
+  <div class="card-header">
     <%= if @project.id.nil? then t('projects.new') else t('projects.edit') end %>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <%= form_for([@user, @project], class: "form", remote: true) do |f| %>
-      <div class="form-group <%= "has-error" unless @project.errors[:name].blank? %>">
+      <div class="form-group mb-2 <%= "has-error" unless @project.errors[:name].blank? %>">
         <%= f.label :name, class: "control-label" %>
         <%= f.text_field :name, class: "form-control" %>
       </div>
-      <div class="form-group">
+      <div class="form-group mb-4">
         <%= f.label :description, class: "control-label" %>
         <%= f.text_field :description, class: "form-control" %>
       </div>
       <div class="form-group">
         <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>"/>
         <%= f.submit :class => "btn btn-primary" %>
-        <button type="button" class="btn btn-default" onclick="history.back()"><%= t('cancel') %></button>
+        <button type="button" class="btn btn-secondary" onclick="history.back()"><%= t('cancel') %></button>
         <% unless @project.id.nil? %>
-            <%= link_to t('projects.delete'), user_project_path(@user, @project), data: {turbo_method: :delete, turbo_confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
+            <%= link_to t('projects.delete'), user_project_path(@user, @project), data: {turbo_method: :delete, turbo_confirm: t('are_you_sure')}, class: "btn btn-danger float-end"%>
         <% end %>
       </div>
     <% end %>

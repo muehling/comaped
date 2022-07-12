@@ -11,18 +11,22 @@
   <div class="container-fluid">
 
     <div class="row">
-      <div class="well" id="login">
-        <legend>CoMapEd 2</legend>
-        <p>
-          <%= yield %>
-        </p>
-        <p class="text-center">
-          <mark>
-            <%= link_to t('privacy'), '#', data: {toggle: "modal", target: "#privacy"}%>
-            -
-            <%= link_to t('imprint'), '#',  data: {toggle: "modal", target: "#imprint"}%>
-          </mark>
-        </p>
+      <div class="col">
+          <div class="card m-4" id="login">
+            <div class="card-header">CoMapEd 2</div>
+          <div class="card-content p-4">
+            <p>
+              <%= yield %>
+            </p>
+            <p class="text-center">
+              <mark>
+                <%= link_to t('privacy'), '#', data: {"bs-toggle": "modal", "bs-target": "#privacy"}%>
+              -
+              <%= link_to t('imprint'), '#',  data: {"bs-toggle": "modal", "bs-target": "#imprint"}%>
+              </mark>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -30,8 +34,8 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="privacyLabel"><%= t('privacy') %></h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span></button>
           </div>
           <div class="modal-body">
             <%= render 'privacy_' + action_name%>
@@ -44,8 +48,8 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="imprintLabel"><%= t('imprint') %></h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></span></button>
           </div>
           <div class="modal-body">
             <%= render 'imprint'%>
@@ -59,7 +63,6 @@
 <%= render template: "layouts/application" %>
 
 <script type="module">
-  // needed for the modals
-  import "jquery"
-  import "bootstrap"
+//  import $ from "jquery";
+//  import "bootstrap";
 </script>

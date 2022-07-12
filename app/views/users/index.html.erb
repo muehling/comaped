@@ -1,8 +1,8 @@
 <div class="row">
   <div class = "col-md-2"></div>
   <div class = "col-md-8">
-    <div class="panel panel-default">
-      <div class="panel-body">
+    <div class="card card-default">
+      <div class="card-body">
 
         <table class = "table table-hover">
           <thead>
@@ -13,15 +13,15 @@
             <tr>
               <td><%= link_to user.email, user %></td><td><%= user.capabilities %></td><td><%= link_to user.projects.count, user_projects_path(user) %></td><td><%= user.concept_map_count %></td>
               <td>
-                <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_path(user) %>
+                <%= link_to raw("<span class='bi-pencil'></span>"), edit_user_path(user) %>
               &nbsp;
-                <%= link_to_unless @user == user, raw("<span class='glyphicon glyphicon-trash'></span>"), user_path(user), data: {turbo_method: :delete, turbo_confirm: t('are_you_sure')}%>
+                <%= link_to_unless @user == user, raw("<span class='bi-trash'></span>"), user_path(user), data: {turbo_method: :delete, turbo_confirm: t('are_you_sure')}%>
               </td>
             </tr>
           <% end %>
           </tbody>
         </table>
-        <%= link_to t('users.new'), new_user_path, class: 'btn btn-default'%>
+        <%= link_to t('users.new'), new_user_path, class: 'btn btn-secondary'%>
 
       </div>
     </div>

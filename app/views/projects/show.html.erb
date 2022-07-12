@@ -1,11 +1,11 @@
 <div class="row">
   <div class = "col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
+    <div class="card card-default">
+      <div class="card-header">
         <%= @project.name %>
-        <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
+        <%= link_to raw("<span class='bi-x-lg'></span>"), user_projects_path(@user), class: "float-end"%>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
         <div class="container-fluid">
           <div class="row">
             <div class = "col-md-12">
