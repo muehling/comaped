@@ -24,7 +24,18 @@
         'Accept': 'application/json'
       },
     })
+
+    // concept map was not found, or user has no privileges to see it -> redirect to login page
+    if (res.status === 401) {
+      location.replace("/backend")
+    }
+    // no versions found. This can happen if a concept map was imported without versions
+    if (res.status === 404) {
+      //TODO display message to user?
+      return
+    }
     const body = await res.json()
+
     window.nodes_<%= @concept_map.id%>.clear();
     window.edges_<%= @concept_map.id%>.clear();
     window.nodes_<%= @concept_map.id%>.update(body.nodes)
