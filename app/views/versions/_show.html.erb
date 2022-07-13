@@ -1,5 +1,5 @@
-<button class="btn btn-light" onclick="updatePreview(1);"><span class="bi-chevron-double-left"></span></button>
-<button id="prev" class="btn btn-light" onclick="updatePreview(Math.max(1, window.version-1));"><span class="bi-chevron-left"></span></button>
+<button class="btn btn-light" onclick="updatePreview(0);"><span class="bi-chevron-double-left"></span></button>
+<button id="prev" class="btn btn-light" onclick="updatePreview(Math.max(0, window.version-1));"><span class="bi-chevron-left"></span></button>
 <button id="play" class="btn btn-light" onclick="play();"><span class="bi-play"></span></button>
 <button id="next" class="btn btn-light" disabled="disabled" onclick="updatePreview(Math.min(max_version, window.version+1));"><span class="bi-chevron-right"></span></button>
 <button class="btn btn-light" onclick="updatePreview(max_version);"><span class="bi-chevron-double-right"></span></button>
