@@ -41,12 +41,12 @@
                 <div class="row">
                   <div class="col-md-2">
                     <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
-
-                    <%= button_to concept_map_version_path(@concept_map, 0), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-block btn-danger mb-2" do %>
+                    <a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());" class="btn btn-secondary mb-2 w-100">PNG</a>
+                    <%= button_to concept_map_version_path(@concept_map, 0), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-danger mb-2 w-100" do %>
                       <%= t('versions.delete') %>
                     <% end %>
 
-                    <%= button_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-block btn-danger mb-2" do %>
+                    <%= button_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-danger mb-2 w-100" do %>
                       <%= t('concept_maps.delete') %>
                     <% end %>
                   </div>
