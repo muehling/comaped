@@ -143,26 +143,26 @@ class ConceptMap {
 
 
     this.network.on("hoverNode", () => {
-      if (mode == ConceptMap.none) {
+      if (this.mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_hovernode').html())
       }
       this.network.canvas.body.container.style.cursor = 'pointer'
     })
     this.network.on("hoverEdge", () => {
-      if (mode == ConceptMap.none) {
+      if (this.mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_hoveredge').html())
       }
       this.network.canvas.body.container.style.cursor = 'pointer'
     })
 
     this.network.on("blurNode", () => {
-      if (mode == ConceptMap.none) {
+      if (this.mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_normal').html())
       }
       this.network.canvas.body.container.style.cursor = 'default'
     })
     this.network.on("blurEdge", () => {
-      if (mode == ConceptMap.none) {
+      if (this.mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_normal').html())
       }
       this.network.canvas.body.container.style.cursor = 'default'
@@ -188,7 +188,7 @@ class ConceptMap {
 
     this.network.on("dragEnd", (params) => {
       console.log("DRAGEND")
-      switch (mode) {
+      switch (this.mode) {
         case ConceptMap.dragNode:
           const oldX = nodes.get(this.ids[this.ids.length - 1]).x
           const oldY = nodes.get(this.ids[this.ids.length - 1]).y
@@ -202,13 +202,13 @@ class ConceptMap {
             },
             data: { "concept": { 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } }
           }).always(() => {
-            mode = ConceptMap.none
+            this.mode = ConceptMap.none
           })
           for (let i = this.ids.length - 2; i > -1; i--) {
             const diffX = oldX - nodes.get(this.ids[i]).x
             const diffY = oldY - nodes.get(this.ids[i]).y
 
-            jQuery.ajax({
+            $.ajax({
               type: "PUT",
               url: this.conceptsPath + "/" + this.ids[i],
               headers: {
@@ -232,7 +232,7 @@ class ConceptMap {
       console.log("node add")
       const canvasX = params.pointer.canvas.x
       const canvasY = params.pointer.canvas.y
-      mode = ConceptMap.addNode
+      this.mode = ConceptMap.addNode
       this.showForm(canvasX, canvasY)
     })
 
@@ -267,7 +267,7 @@ class ConceptMap {
         console.log("MULTI -EDIT")
         switch (buttonMode) {
           case ConceptMap.cursorButton:                                                ///CURSOR BUTTON ACTIVE
-            mode = ConceptMap.editMultiNode
+            this.mode = ConceptMap.editMultiNode
             this.id = params.nodes[0]
             for (let i = 0; i < params.nodes.length; i++) {
               this.ids[i] = params.nodes[i]
@@ -348,7 +348,7 @@ class ConceptMap {
   createNode = (params) => {
     const canvasX = params.pointer.canvas.x
     const canvasY = params.pointer.canvas.y
-    mode = ConceptMap.addNode
+    this.mode = ConceptMap.addNode
     this.showForm(canvasX, canvasY)
   }
 
@@ -359,7 +359,7 @@ class ConceptMap {
     this.id = params.nodes[0]
     const canvasX = nodes.get(this.id).x
     const canvasY = nodes.get(this.id).y
-    mode = ConceptMap.editNode
+    this.mode = ConceptMap.editNode
     this.showForm(canvasX, canvasY)
   }
 
@@ -375,7 +375,7 @@ class ConceptMap {
     const endNode = this.nodes.get(params.to)
     const canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
     const canvasY = Math.min(startNode.y, endNode.y) + Math.abs(startNode.y - endNode.y) / 2
-    mode = ConceptMap.addEdge
+    this.mode = ConceptMap.addEdge
     this.showForm(canvasX, canvasY)
   }
 
@@ -384,9 +384,10 @@ class ConceptMap {
   ********************************/
   editEdge = (params) => {
     this.id = params.edges[0]
+    console.log("editEdge: " + params.edges)
     const canvasX = params.pointer.canvas.x
     const canvasY = params.pointer.canvas.y
-    mode = ConceptMap.editEdge
+    this.mode = ConceptMap.editEdge
     this.showForm(canvasX, canvasY)
   }
 
@@ -394,6 +395,7 @@ class ConceptMap {
   * delete nodes or edges
   ********************************/
   destroy = async () => {
+    console.log("destroy" + this.mode)
     switch (this.mode) {
       case ConceptMap.editNode:
         await fetch(this.conceptsPath + "/" + this.id, {
@@ -434,7 +436,7 @@ class ConceptMap {
             },
             type: "DELETE", url: this.conceptsPath + "/" + this.ids[i]
           }).always(() => {
-            mode = ConceptMap.none
+            this.mode = ConceptMap.none
           })
         }
         this.ids = []
@@ -448,7 +450,7 @@ class ConceptMap {
   ********************************/
   validateForm = () => {
     console.log("-----------------validate-------------------")
-    if (mode == ConceptMap.addNode || mode == ConceptMap.editNode) {
+    if (this.mode == ConceptMap.addNode || this.mode == ConceptMap.editNode) {
       var t = $('#entry_concept').val()
 
       const node = this.nodes.get({
@@ -508,7 +510,7 @@ class ConceptMap {
     let method = "put"
     let path
 
-    switch (mode) {
+    switch (this.mode) {
 
       case ConceptMap.addNode:
         method = "post"
@@ -527,6 +529,7 @@ class ConceptMap {
         postObj["arrows"] = $("#edge").val()
       case ConceptMap.editEdge:
         postObj["label"] = $("#entry_link").val()
+        postObj["arrows"] = $("#edge").val()
         path = this.linksPath
         break
       case ConceptMap.editMultiNode:
@@ -616,8 +619,9 @@ class ConceptMap {
     $("#shape").attr("value", shape)
     for (var j = 1; j <= 6; ++j)
       $('#shape' + j).html("<span></span>")
-    $('#shape' + i).html("<span class='glyphicon glyphicon-ok'></span>")
+    $('#shape' + i).html("<span class='bi-check-lg'></span>")
     $("#entry_concept").focus()
+    $("#shapeSelect").css("display", "none")
     return false
   }
 
@@ -710,7 +714,7 @@ class ConceptMap {
     $("#edit-dialog")
       .removeClass("d-none")
       .attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left + this.network.canvasToDOM({ x: canvasX, y: canvasY }).x - $("#form").width() / 2) + "px;top:" + ($("#map-canvas").offset().top + this.network.canvasToDOM({ x: canvasX, y: canvasY }).y - $("#form").height() / 2) + "px;")
-    switch (mode) {
+    switch (this.mode) {
       case ConceptMap.addNode:
         console.log("------addNode Mode---------")
         $('#context-help-text').html($('#ch_new').html())

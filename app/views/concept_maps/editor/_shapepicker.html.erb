@@ -1,7 +1,7 @@
 <span id="shapepicker">
   <input id="shape" type="hidden" name="concept[shape]" value= ""/>
   <div class="dropdown" style="display: inline-block;">
-    <div id="currentShape" class="shapes shape btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%= default_color %>;"><span class="caret"></span></div>
+    <div id="currentShape" class="shapes shape btn dropdown-toggle me-1" data-toggle="dropdown" style="width: 50px;height:36px;background-color: <%= default_color %>;"></div>
     <div id= "shapeSelect" class="dropdown-menu">
       <table>
         <tr>
@@ -16,3 +16,11 @@
 
 
 
+<script type="module">
+  import $ from "jquery"
+  // colorpicker open/close handler
+  $("#currentShape").on("click", () => {
+    const isShapePickerOpen = $("#shapeSelect").css("display") === "block"
+    $("#shapeSelect").css("display", isShapePickerOpen ? "none" : "block")
+  })
+</script>
