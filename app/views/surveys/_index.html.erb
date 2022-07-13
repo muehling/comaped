@@ -5,20 +5,10 @@
     </div>
   </div>
 </div>
-
-<% count = 0 %>
+<div class="row">
 <% @surveys.each do |s| %>
-    <% if count == 0 then %>
-        <div class = "row">
-    <% end %>
-    <div class = "col-md-4">
-      <%= render s %>
-    </div>
-    <% if count == 2 then %>
-        </div>
-    <% end %>
-    <% count = (count+1) % 3 %>
+  <div class = "col-md-6 col-xl-4 mb-4">
+    <%= render s %>
+  </div>
 <% end %>
-<% if count != 0 then %>
-    </div>
-<% end %>
+</div>
