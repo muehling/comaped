@@ -7,8 +7,6 @@ class ConceptMap < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
 
-  accepts_nested_attributes_for :concepts
-
   #Use slug instead of id for routing
   #Return: Code of concept map
   def to_param
