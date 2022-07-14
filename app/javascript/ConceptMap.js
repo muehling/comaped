@@ -40,6 +40,9 @@ class ConceptMap {
     this.ids = []
     this.data
 
+    this.event_lock = false
+    this.params
+
     this.options = {
       autoResize: true,
       height: '100%',
@@ -82,6 +85,8 @@ class ConceptMap {
           // mode = ConceptMap.addEdge
           // const canvasX = nodes.get(this.id).x
           // const canvasY = nodes.get(this.id).y
+          $("#snackbar").fadeOut(500)
+          //$("#snackbar").removeClass("show")
           const connected_edges = [network.getConnectedEdges(data.from)]
           ///Checks for double edge in same direction
           for (let i = 0, len = connected_edges[0].length; i < len; i++) {
@@ -109,6 +114,12 @@ class ConceptMap {
 
     $('#context-help-text').html($('#ch_normal').html())
 
+    function toast(){
+      $("#snackbar").fadeIn(500);
+      // After 10 seconds, remove the show class from DIV
+      // setTimeout(function(){ $("#snackbar").removeClass("show"); }, 3000);
+    } 
+
     // close dialog on escape
     $("#entry_concept").on('keyup', function (e) {
       if (e.keyCode == 27)
@@ -132,6 +143,7 @@ class ConceptMap {
     $('#edge-button').click(function () {
       console.log("edge-event triggered")
       buttonMode = ConceptMap.edgeButton
+      toast()
       network.addEdgeMode()
       activeButton(3)
       $("#misc-button").attr("hidden",true);
@@ -139,41 +151,52 @@ class ConceptMap {
 
     $('#misc-button').click(function () {
       console.log("misc-event triggered")
-      //ConceptMap.mode = ConceptMap.editNode
-      //showForm(this.canvasX, this.canvasY)
+      mode = ConceptMap.editNode
+      showForm(canvasX, canvasY)
+      $("#misc-button").attr("hidden",true); 
+    })
+
+    this.network.on("zoom", () => {
       $("#misc-button").attr("hidden",true);
     })
 
-
-
-
     this.network.on("hoverNode", (params) => {
-      if (this.mode == ConceptMap.none) {
+      if (mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_hovernode').html())
       }
-      console.log(nodes.get(params.node).y)
+      if (mode == ConceptMap.addEdge) {
+        return
+      }
+      this.params = params
       $("#misc-button").removeAttr("hidden");
-      this.canvasX = $("#map-canvas").offset().left + this.network.canvasToDOM({x: nodes.get(params.node).x, y: nodes.get(params.node).y }).x
-      this.canvasY = $("#map-canvas").offset().top+this.network.canvasToDOM({x: nodes.get(params.node).x, y: nodes.get(params.node).y}).y -40
-      $("#misc-button").attr("style", "z-index: 1; position:absolute; left:" + this.canvasX + "px;top:" + this.canvasY + "px;");
+      this.id = params.node
+      canvasX = nodes.get(this.id).x
+      canvasY = nodes.get(this.id).y
+      console.log(canvasX,canvasY)
+      $("#misc-button").attr("style", "z-index: 1; position:absolute; left:" + this.network.canvasToDOM({x: canvasX, y: canvasY}).x + "px;top:" + (this.network.canvasToDOM({x: canvasX, y: canvasY}).y -40)  + "px;");
       this.network.canvas.body.container.style.cursor = 'pointer'
+      console.log("hover CX,CY: " + canvasX,canvasY);
+      console.log("innerHeight: " + window.innerHeight);
 
     })
     this.network.on("hoverEdge", () => {
-      if (this.mode == ConceptMap.none) {
+      if (mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_hoveredge').html())
       }
+      // if (mode == ConceptMap.addEdge) {
+      //   return
+      // }
       this.network.canvas.body.container.style.cursor = 'pointer'
     })
 
     this.network.on("blurNode", () => {
-      if (this.mode == ConceptMap.none) {
+      if (mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_normal').html())
       }
       this.network.canvas.body.container.style.cursor = 'default'
     })
     this.network.on("blurEdge", () => {
-      if (this.mode == ConceptMap.none) {
+      if (mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_normal').html())
       }
       this.network.canvas.body.container.style.cursor = 'default'
@@ -189,49 +212,95 @@ class ConceptMap {
       console.log("DRAG")
       $("#misc-button").attr("hidden",true);
       if (params.nodes.length == 0) {
-        this.mode = ConceptMap.none
+        mode = ConceptMap.none
         return
       }
       if (params.nodes.length > 0) {
         this.ids[0] = params.nodes[0]
-        this.mode = ConceptMap.dragNode
+        mode = ConceptMap.dragNode
       }
       $("#panel").addClass("hidden")
       $("#panel").focusout()
     })
 
-    this.network.on("dragEnd", (params) => {
+    this.network.on("dragEnd", async (params) => {
       console.log("DRAGEND")
-      switch (this.mode) {
+      const postObj = {}
+      switch (mode) {
         case ConceptMap.dragNode:
           const oldX = nodes.get(this.ids[this.ids.length - 1]).x
           const oldY = nodes.get(this.ids[this.ids.length - 1]).y
-          $.ajax({
-            type: "PUT",
-            url: this.conceptsPath + "/" + this.ids[this.ids.length - 1],
-            headers: {
+          // $.ajax({
+          //   type: "PUT",
+          //   url: this.conceptsPath + "/" + this.ids[this.ids.length - 1],
+          //   headers: {
+          //     'Accept': 'application/json',
+          //     'X-Requested-With': 'XMLHttpRequest',
+          //     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          //   },
+          //   data: { "concept": { 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } }
+          // }).always(() => {
+          //   mode = ConceptMap.none
+          // })
+
+          postObj["x"] = params.pointer.canvas.x
+          postObj["y"] = params.pointer.canvas.y
+          const res = await fetch(this.conceptsPath + "/" + this.ids[this.ids.length - 1] , {
+            "method": "put",
+            "mode": "same-origin",
+            "headers": {
               'Accept': 'application/json',
+              'Content-Type': 'application/json',
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
-            data: { "concept": { 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } }
-          }).always(() => {
-            this.mode = ConceptMap.none
+            "body": JSON.stringify(postObj)
           })
+          var body = await res.json()
+          if (body.edge) {
+            this.edges.update(body.edge)
+          }
+          if (body.node) {
+            this.nodes.update(body.node)
+          }
+
           for (let i = this.ids.length - 2; i > -1; i--) {
             const diffX = oldX - nodes.get(this.ids[i]).x
             const diffY = oldY - nodes.get(this.ids[i]).y
 
-            $.ajax({
-              type: "PUT",
-              url: this.conceptsPath + "/" + this.ids[i],
-              headers: {
+            // $.ajax({
+            //   type: "PUT",
+            //   url: this.conceptsPath + "/" + this.ids[i],
+            //   headers: {
+            //     'Accept': 'application/json',
+            //     'X-Requested-With': 'XMLHttpRequest',
+            //     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            //   },
+            //   data: { "concept": { 'x': params.pointer.canvas.x - diffX, 'y': params.pointer.canvas.y - diffY } }
+            // })
+
+            postObj["x"] = params.pointer.canvas.x - diffX
+            postObj["y"] = params.pointer.canvas.y - diffY
+            const res = await fetch(this.conceptsPath + "/" + this.ids[i] , {
+              "method": "put",
+              "mode": "same-origin",
+              "headers": {
                 'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
               },
-              data: { "concept": { 'x': params.pointer.canvas.x - diffX, 'y': params.pointer.canvas.y - diffY } }
+              "body": JSON.stringify(postObj)
             })
+            
+            body = await res.json()
+            if (body.edge) {
+              this.edges.update(body.edge)
+            }
+            if (body.node) {
+              this.nodes.update(body.node)
+            }
+
             console.log(this.ids[i])
             this.id = this.ids[i]
           }
@@ -247,7 +316,7 @@ class ConceptMap {
       $("#misc-button").attr("hidden",true);
       var canvasX = params.pointer.canvas.x
       var canvasY = params.pointer.canvas.y
-      this.mode = ConceptMap.addNode
+      mode = ConceptMap.addNode
       this.showForm(canvasX, canvasY)
     })
 
@@ -284,7 +353,7 @@ class ConceptMap {
         console.log("MULTI -EDIT")
         switch (buttonMode) {
           case ConceptMap.cursorButton:                                                ///CURSOR BUTTON ACTIVE
-            this.mode = ConceptMap.editMultiNode
+            mode = ConceptMap.editMultiNode
             this.id = params.nodes[0]
             for (let i = 0; i < params.nodes.length; i++) {
               this.ids[i] = params.nodes[i]
@@ -306,6 +375,7 @@ class ConceptMap {
         switch (buttonMode) {
           case ConceptMap.cursorButton:                                              ///CURSOR BUTTON ACTIVE
             console.log("node edit")
+            console.log(this.nodes.get(params.nodes[0]));
             this.editNode(params)
             break
           case ConceptMap.nodeButton:                                                  ///NODE BUTTON ACTIVE
@@ -342,17 +412,17 @@ class ConceptMap {
     console.log("button: " + button)
     switch (button) {
       case 1: {
-        $('#cursor-button').css("border", "2px solid rgb(104, 104, 104);")
+        $('#cursor-button').css("border-color: rgb(0, 142, 185);border-width: 2px;")
         console.log("1")
         break
       }
       case 2: {
-        $('#node-button').css("border", "2px solid rgb(104, 104, 104);")
+        $('#node-button').css("border-color: rgb(0, 142, 185);border-width: 2px;")
         console.log("2")
         break
       }
       case 3: {
-        $('#edge-button').css("border", "2px solid rgb(104, 104, 104);")
+        $('#edge-button').css("border-color: rgb(0, 142, 185);border-width: 2px;")
         console.log("3")
       }
     }
@@ -365,7 +435,7 @@ class ConceptMap {
   createNode = (params) => {
     var canvasX = params.pointer.canvas.x
     var canvasY = params.pointer.canvas.y
-    this.mode = ConceptMap.addNode
+    mode = ConceptMap.addNode
     this.showForm(canvasX, canvasY)
   }
 
@@ -375,9 +445,9 @@ class ConceptMap {
   editNode = (params) => {
     this.id = params.nodes[0]
     console.log("nodes.get: " +nodes.get(this.id).x, nodes.get(this.id).y);
-    var canvasX = nodes.get(this.id).x
-    var canvasY = nodes.get(this.id).y
-    this.mode = ConceptMap.editNode
+    canvasX = nodes.get(this.id).x
+    canvasY = nodes.get(this.id).y
+    mode = ConceptMap.editNode
     this.showForm(canvasX, canvasY)
   }
 
@@ -393,7 +463,7 @@ class ConceptMap {
     var endNode = this.nodes.get(params.to)
     var canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
     var canvasY = Math.min(startNode.y, endNode.y) + Math.abs(startNode.y - endNode.y) / 2
-    this.mode = ConceptMap.addEdge
+    mode = ConceptMap.addEdge
     this.showForm(canvasX, canvasY)
   }
 
@@ -405,7 +475,7 @@ class ConceptMap {
     console.log("editEdge: " + params.edges)
     var canvasX = params.pointer.canvas.x
     var canvasY = params.pointer.canvas.y
-    this.mode = ConceptMap.editEdge
+    mode = ConceptMap.editEdge
     this.showForm(canvasX, canvasY)
   }
 
@@ -413,8 +483,8 @@ class ConceptMap {
   * delete nodes or edges
   ********************************/
   destroy = async () => {
-    console.log("destroy" + this.mode)
-    switch (this.mode) {
+    console.log("destroy" + mode)
+    switch (mode) {
       case ConceptMap.editNode:
         await fetch(this.conceptsPath + "/" + this.id, {
           "method": "delete",
@@ -426,7 +496,7 @@ class ConceptMap {
         })
         this.nodes.remove(this.id)
 
-        this.mode = ConceptMap.none
+        mode = ConceptMap.none
         this.id = undefined
 
         break
@@ -441,7 +511,7 @@ class ConceptMap {
         })
         this.edges.remove(this.id)
 
-        this.mode = ConceptMap.none
+        mode = ConceptMap.none
         this.id = undefined
         break
       case ConceptMap.editMultiNode:
@@ -454,7 +524,7 @@ class ConceptMap {
             },
             type: "DELETE", url: this.conceptsPath + "/" + this.ids[i]
           }).always(() => {
-            this.mode = ConceptMap.none
+            mode = ConceptMap.none
           })
         }
         this.ids = []
@@ -468,7 +538,7 @@ class ConceptMap {
   ********************************/
   validateForm = () => {
     console.log("-----------------validate-------------------")
-    if (this.mode == ConceptMap.addNode || this.mode == ConceptMap.editNode) {
+    if (mode == ConceptMap.addNode || mode == ConceptMap.editNode) {
       var t = $('#entry_concept').val()
 
       const node = this.nodes.get({
@@ -524,12 +594,12 @@ class ConceptMap {
   * put or post after editing/adding a node or an edge
   ********************************/
   onSubmit = async () => {
-    console.log("-----------onSubmit----------" + this.mode)
+    console.log("-----------onSubmit----------" + mode)
     const postObj = {}
     let method = "put"
     let path
 
-    switch (this.mode) {
+    switch (mode) {
 
       case ConceptMap.addNode:
         method = "post"
@@ -555,18 +625,41 @@ class ConceptMap {
         for (let i = 0; i < this.ids.length; i++) {
           console.log(this.ids[i])
           //this.id = this.ids[i]
-          postObj["concept[shape]"] = $("#shape").val()
-          postObj["concept[color]"] = $("#color").val()
-          $.ajax({
-            headers: {
+
+          postObj["shape"] = $("#shape").val()
+          postObj["color"] = $("#color").val()
+          var res = await fetch(this.conceptsPath + "/" + this.ids[i] , {
+            "method": "put",
+            "mode": "same-origin",
+            "headers": {
               'Accept': 'application/json',
+              'Content-Type': 'application/json',
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
-            type: "put",
-            url: this.conceptsPath + "/" + this.ids[i],
-            data: postObj
+            "body": JSON.stringify(postObj)
           })
+      
+          var body = await res.json()
+          if (body.edge) {
+            this.edges.update(body.edge)
+          }
+          if (body.node) {
+            this.nodes.update(body.node)
+          }
+
+        //   postObj["shape"] = $("#shape").val()
+        //   postObj["color"] = $("#color").val()
+        //   $.ajax({
+        //     headers: {
+        //       'Accept': 'application/json',
+        //       'X-Requested-With': 'XMLHttpRequest',
+        //       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        //     },
+        //     type: "put",
+        //     url: this.conceptsPath + "/" + this.ids[i],
+        //     data: postObj
+        //   })
         }
         this.ids = []
         this.hideForm()
@@ -577,7 +670,7 @@ class ConceptMap {
         return
     }
 
-    const res = await fetch(path + (method === "put" ? "/" + this.id : ""), {
+    var res = await fetch(path + (method === "put" ? "/" + this.id : ""), {
       "method": method,
       "mode": "same-origin",
       "headers": {
@@ -589,7 +682,7 @@ class ConceptMap {
       "body": JSON.stringify(postObj)
     })
 
-    const body = await res.json()
+    var body = await res.json()
     if (body.edge) {
       this.edges.update(body.edge)
     }
@@ -602,7 +695,7 @@ class ConceptMap {
 
 
   /*********************************
-  * color picker stuff
+  * colorpicker stuff
   ********************************/
   standardizeColor = (color) => {
     var ctx = document.createElement('canvas').getContext('2d')
@@ -631,7 +724,7 @@ class ConceptMap {
   }
 
   /*********************************
-  * shape picker stuff
+  * shapepicker stuff
   ********************************/
   changeShape(i) {
     var shape = $('#shape' + i).attr("value")
@@ -651,7 +744,7 @@ class ConceptMap {
   }
 
   /*********************************
-  * edge picker stuff
+  * edgepicker stuff
   ********************************/
   changeEdgeShape() {
     $('.arrow-direction').removeClass("from-arrow to-arrow")
@@ -689,8 +782,8 @@ class ConceptMap {
     $("#colorpicker").removeClass("d-none")
     $("#shapepicker").removeClass("d-none")
     $("#edgepicker").addClass("d-none")
-    this.mode === ConceptMap.addNode && $("#delete").addClass("d-none")
-    this.mode === ConceptMap.editNode && $("#delete").removeClass("d-none")
+    mode === ConceptMap.addNode && $("#delete").addClass("d-none")
+    mode === ConceptMap.editNode && $("#delete").removeClass("d-none")
     $("#x").attr("value", canvasX)
     $("#y").attr("value", canvasY)
     this.focus("#entry_concept")
@@ -702,8 +795,8 @@ class ConceptMap {
     $("#colorpicker").addClass("d-none")
     $("#shapepicker").addClass("d-none")
     $("#edgepicker").removeClass("d-none")
-    this.mode === ConceptMap.addEdge && $("#delete").addClass("d-none")
-    this.mode === ConceptMap.editEdge && $("#delete").removeClass("d-none")
+    mode === ConceptMap.addEdge && $("#delete").addClass("d-none")
+    mode === ConceptMap.editEdge && $("#delete").removeClass("d-none")
     $("#x").attr("value", canvasX)
     $("#y").attr("value", canvasY)
     this.focus("#entry_link")
@@ -723,31 +816,39 @@ class ConceptMap {
   }
 
   showForm = (canvasX, canvasY) => {
-    console.log("showForm mode: " + this.mode)
+    console.log("showForm CX,CY: " + canvasX,canvasY)
+
     const form_width = 312
     const form_height = 165
     var x_pos = $("#map-canvas").offset().left + this.network.canvasToDOM({x: canvasX, y: canvasY}).x
     var y_pos = $("#map-canvas").offset().top + this.network.canvasToDOM({x: canvasX, y: canvasY}).y
-    console.log(canvasX,canvasY);
-    console.log(x_pos,y_pos);
-    if (form_width/2 < x_pos) var left= (x_pos - form_width/2)                                                 // Form is in bounds
-    else if (form_width/2 > window.innerWidth - x_pos ) var left = window.innerWidth - form_width/2 - 10       // Form is out of bounds right side
-    else {
-      console.log("left out of bounds");
-      var left= 10      
-    }                                                                                                  
-    if ( y_pos + form_height < window.innerHeight){                                                         // Form is out of bounds left side
-      var top = y_pos - (form_height / 2)                         // Form is in bounds
+    console.log("canvasX,canvasY: " + canvasX,canvasY);
+    // console.log("x,y: " + x_pos,y_pos);
+    // console.log("innerWidth: " + window.innerWidth)
+    var left = (x_pos - form_width/2)                                                 // Form is in bounds
+    if (form_width/2 > window.innerWidth - x_pos ) {                            // Form is out of bounds right side
+      left = window.innerWidth - form_width - 20       
+      console.log("out of bounds right");
     }
-    else {
-      var top= (window.innerHeight - form_height - 50)                                                              //Form is out of bounds bottom
+    else if ( x_pos - form_width/2 < 0) {                                            // Form is out of bounds left side
+      console.log("left out of bounds");
+      left = 20      
+    }                                                                                                                                                           
+    var top = y_pos - (form_height / 2)                         // Form is in bounds
+    if (form_height > window.innerHeight - y_pos) {
+      var top= (window.innerHeight - form_height - 20)                                                              //Form is out of bounds bottom
       console.log("bottom out of bounds");
     }
-    console.log("----------------MODE: " +this.mode);
+    else if (y_pos - form_height/2 < 0) {
+      var top=  20                                                              //Form is out of bounds top
+      console.log("top out of bounds");
+    }
+
+    console.log("----------------MODE: " +mode);
     $("#edit-dialog")
       .removeClass("d-none")
       .attr("style", "z-index: 1; position:absolute;left:" + left + "px;top:" + top + "px;")
-    switch (this.mode) {
+    switch (mode) {
       case ConceptMap.addNode:
         console.log("------addNode Mode---------")
         $('#context-help-text').html($('#ch_new').html())
@@ -761,6 +862,7 @@ class ConceptMap {
         $("#entry_concept").val(this.nodes.get(this.id).label)
         this.initNodeInputs(canvasX, canvasY)
         this.selectColor(this.nodes.get(this.id).color.background)
+        this.selectShape(this.nodes.get(this.id).shape)
         break
       case ConceptMap.editEdge:
         $('#context-help-text').html($('#ch_edit').html())
@@ -800,7 +902,7 @@ class ConceptMap {
     //   viewport.content = 'maximum-scale=1'
     // }
 
-    this.mode = ConceptMap.none
+    mode = ConceptMap.none
     buttonMode = ConceptMap.cursorButton
   }
   sendMail = () => {

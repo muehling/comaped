@@ -28,8 +28,11 @@ export const init = (edgeData, nodeData) => {
     cm.onSubmit()
     return false
   }
+  window.toast = cm.toast
   window.edges = cm.edges
   window.nodes = cm.nodes
+  window.canvasX = cm.canvasX
+  window.canvasY = cm.canvasY
   window.changeColor = cm.changeColor
   window.changeShape = cm.changeShape
   window.changeEdgeShape = cm.changeEdgeShape
