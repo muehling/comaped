@@ -140,8 +140,28 @@ class ConceptMap {
     /*********************************
      * Network release: edit node or edge
      ********************************/
-    this.network.on("release", (params) => {
-      if (this.mode === ConceptMap.none) {
+    this.network.on("release", async (params) => {
+
+      const post = this.network.getSelectedNodes()?.map((node) => {
+        return { id: node, label: "test" + Math.random() }
+      })
+
+      const selectedNodes = this.network.getSelectedNodes()
+      if (selectedNodes.length) {
+        const res = await fetch(this.conceptMapsPath.slice(0, -5), {
+          "method": "put",
+          "mode": "same-origin",
+          "headers": {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+          "body": JSON.stringify({ concepts_attributes: post })
+        })
+
+        const body = await res.json()
+      } else if (this.mode === ConceptMap.none) {
         if (params.edges.length) {
           this.editEdge(params)
         } else if (params.nodes.length) {
