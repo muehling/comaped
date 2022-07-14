@@ -6,7 +6,7 @@
 <% end %>
 <!-- Flexible form for CRUD-actions -->
 <div id="edit-dialog" class="d-none card" style="z-index:1; position:absolute; left:0px; top:0px;">
-  <div class="card-header d-flex justify-content-between">
+  <div id="edit-dialog-header" class="card-header d-flex justify-content-between">
     <em id="action"></em>
     <button type="button" class="btn-close" onclick="hideForm();" aria-label="Close"></button>
   </div>
@@ -55,7 +55,9 @@
   <button id="misc-button" class="btn info" hidden ></button>
 </div>
 
-<div id="snackbar" style="display:none">Drag from StartConcept</div>
+<div id="addEdgeToast" class="toast" style="display:none">Drag from StartConcept</div>
+
+<div id="doubleEdgeToast" class="toast error_toast" style="display:none">You can't create more than one edge per direction!</div>
 
 
 <!-- Dummy element for Vis-canvas -->

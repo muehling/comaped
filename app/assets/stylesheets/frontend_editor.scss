@@ -351,7 +351,7 @@ button span {
 
 
  /* The snackbar - position it at the bottom and in the middle of the screen */
- #snackbar {
+ .toast {
   //visibility: hidden; /* Hidden by default. Visible on click */
   min-width: 220px; /* Set a default minimum width */
   margin-left: -110px; /* Divide value of min-width by 2 */
@@ -366,14 +366,10 @@ button span {
   bottom: 30px; /* 30px from the bottom */
 }
 
-/* Show the snackbar when clicking on a button (class added with JavaScript) */
-// #snackbar.show {
-//   visibility: visible; /* Show the snackbar */
-//   /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
-//   However, delay the fade out process for 2.5 seconds */
-//   // -webkit-animation: fadein 0.5s;
-//   // animation: fadein 0.5s;
-// }
+.error_toast {
+  background-color: rgb(214, 16, 16) !important;
+}
+
 
 /* Animations to fade the snackbar in and out */
 @-webkit-keyframes fadein {
@@ -395,3 +391,14 @@ button span {
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 } 
+
+// #mydiv {
+//   position: absolute;
+//   z-index: 9;
+//   background-color: #f1f1f1;
+//   border: 1px solid #d3d3d3;
+//   text-align: center;
+// }
+#edit-dialog-header {
+   cursor: move;
+ }

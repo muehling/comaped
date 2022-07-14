@@ -85,14 +85,21 @@ class ConceptMap {
           // mode = ConceptMap.addEdge
           // const canvasX = nodes.get(this.id).x
           // const canvasY = nodes.get(this.id).y
-          $("#snackbar").fadeOut(500)
-          //$("#snackbar").removeClass("show")
+          $("#addEdgeToast").fadeOut(500)
+          
           const connected_edges = [network.getConnectedEdges(data.from)]
           ///Checks for double edge in same direction
           for (let i = 0, len = connected_edges[0].length; i < len; i++) {
             // console.log ( nodes.get(edges.get(connected_edges[0][i]).from).label + " --> "
             //             + nodes.get(edges.get(connected_edges[0][i]).to).label)
-            if (nodes.get(edges.get(connected_edges[0][i]).to).id == data.to) return console.log("double edge")
+            if (nodes.get(edges.get(connected_edges[0][i]).to).id == data.to) {
+              console.log("double edge")
+              network.disableEditMode()
+              $("#doubleEdgeToast").fadeIn(500)
+              setTimeout(function(){ $("#doubleEdgeToast").fadeOut(500) }, 6000);
+              mode = ConceptMap.none
+              return
+            }
           }
 
           createEdge(data)
@@ -114,11 +121,55 @@ class ConceptMap {
 
     $('#context-help-text').html($('#ch_normal').html())
 
-    function toast(){
-      $("#snackbar").fadeIn(500);
-      // After 10 seconds, remove the show class from DIV
-      // setTimeout(function(){ $("#snackbar").removeClass("show"); }, 3000);
-    } 
+    
+
+
+
+    dragElement(document.getElementById("edit-dialog"));
+
+    function dragElement(elmnt) {
+      var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      if (document.getElementById(elmnt.id + "-header" )) {
+        // if present, the header is where you move the DIV from:
+        document.getElementById(elmnt.id + "-header" ).onmousedown = dragMouseDown;
+      } else {
+        // otherwise, move the DIV from anywhere inside the DIV:
+        elmnt.onmousedown = dragMouseDown;
+      }
+
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+      }
+
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      }
+
+      function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+
+
+
 
     // close dialog on escape
     $("#entry_concept").on('keyup', function (e) {
@@ -143,10 +194,10 @@ class ConceptMap {
     $('#edge-button').click(function () {
       console.log("edge-event triggered")
       buttonMode = ConceptMap.edgeButton
-      toast()
+      $("#addEdgeToast").fadeIn(500);
+      $("#misc-button").attr("hidden",true);
       network.addEdgeMode()
       activeButton(3)
-      $("#misc-button").attr("hidden",true);
     })
 
     $('#misc-button').click(function () {
