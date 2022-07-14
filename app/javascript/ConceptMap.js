@@ -126,6 +126,7 @@ class ConceptMap {
       console.log("node-event triggered")
       buttonMode = ConceptMap.nodeButton
       activeButton(2)
+      $("#misc-button").attr("hidden",true);
     })
 
     $('#edge-button').click(function () {
@@ -133,20 +134,30 @@ class ConceptMap {
       buttonMode = ConceptMap.edgeButton
       network.addEdgeMode()
       activeButton(3)
+      $("#misc-button").attr("hidden",true);
     })
 
     $('#misc-button').click(function () {
       console.log("misc-event triggered")
+      //ConceptMap.mode = ConceptMap.editNode
+      //showForm(this.canvasX, this.canvasY)
+      $("#misc-button").attr("hidden",true);
     })
 
 
 
 
-    this.network.on("hoverNode", () => {
+    this.network.on("hoverNode", (params) => {
       if (this.mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_hovernode').html())
       }
+      console.log(nodes.get(params.node).y)
+      $("#misc-button").removeAttr("hidden");
+      this.canvasX = $("#map-canvas").offset().left + this.network.canvasToDOM({x: nodes.get(params.node).x, y: nodes.get(params.node).y }).x
+      this.canvasY = $("#map-canvas").offset().top+this.network.canvasToDOM({x: nodes.get(params.node).x, y: nodes.get(params.node).y}).y -40
+      $("#misc-button").attr("style", "z-index: 1; position:absolute; left:" + this.canvasX + "px;top:" + this.canvasY + "px;");
       this.network.canvas.body.container.style.cursor = 'pointer'
+
     })
     this.network.on("hoverEdge", () => {
       if (this.mode == ConceptMap.none) {
@@ -173,7 +184,10 @@ class ConceptMap {
      * Network drag: save new node position
      ********************************/
     this.network.on("dragStart", (params) => {
+      $("#edit-dialog").addClass("d-none")
+      
       console.log("DRAG")
+      $("#misc-button").attr("hidden",true);
       if (params.nodes.length == 0) {
         this.mode = ConceptMap.none
         return
@@ -230,14 +244,16 @@ class ConceptMap {
 
     this.network.on("doubleClick", params => {
       console.log("node add")
-      const canvasX = params.pointer.canvas.x
-      const canvasY = params.pointer.canvas.y
+      $("#misc-button").attr("hidden",true);
+      var canvasX = params.pointer.canvas.x
+      var canvasY = params.pointer.canvas.y
       this.mode = ConceptMap.addNode
       this.showForm(canvasX, canvasY)
     })
 
 
     this.network.on("click", params => {
+      $("#misc-button").attr("hidden",true);
       if (params.nodes.length == 0 && params.edges.length == 0) {   ///STAGE CLICKED///
         console.log("stage clicked")
         switch (buttonMode) {
@@ -260,8 +276,9 @@ class ConceptMap {
      * Network click: create an edge if a node was previously held, or cancel edge creation
      ********************************/
     this.network.on("select", params => {
+      $("#misc-button").attr("hidden",true);
       console.log("buttonMode after Click: " + buttonMode)
-      console.log("click Event:", params)
+      console.log("select Event:", params)
 
       if (params.nodes.length > 1) {                                       ///MULTI-NODES CLICKED///
         console.log("MULTI -EDIT")
@@ -346,8 +363,8 @@ class ConceptMap {
   * create node
   ********************************/
   createNode = (params) => {
-    const canvasX = params.pointer.canvas.x
-    const canvasY = params.pointer.canvas.y
+    var canvasX = params.pointer.canvas.x
+    var canvasY = params.pointer.canvas.y
     this.mode = ConceptMap.addNode
     this.showForm(canvasX, canvasY)
   }
@@ -357,8 +374,9 @@ class ConceptMap {
   ********************************/
   editNode = (params) => {
     this.id = params.nodes[0]
-    const canvasX = nodes.get(this.id).x
-    const canvasY = nodes.get(this.id).y
+    console.log("nodes.get: " +nodes.get(this.id).x, nodes.get(this.id).y);
+    var canvasX = nodes.get(this.id).x
+    var canvasY = nodes.get(this.id).y
     this.mode = ConceptMap.editNode
     this.showForm(canvasX, canvasY)
   }
@@ -371,10 +389,10 @@ class ConceptMap {
     $('#start').val(params.from)
     $('#end').val(params.to)
     $('#context-help-text').html($('#ch_addedge').html()).removeClass("d-none")
-    const startNode = this.nodes.get(params.from)
-    const endNode = this.nodes.get(params.to)
-    const canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
-    const canvasY = Math.min(startNode.y, endNode.y) + Math.abs(startNode.y - endNode.y) / 2
+    var startNode = this.nodes.get(params.from)
+    var endNode = this.nodes.get(params.to)
+    var canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
+    var canvasY = Math.min(startNode.y, endNode.y) + Math.abs(startNode.y - endNode.y) / 2
     this.mode = ConceptMap.addEdge
     this.showForm(canvasX, canvasY)
   }
@@ -385,8 +403,8 @@ class ConceptMap {
   editEdge = (params) => {
     this.id = params.edges[0]
     console.log("editEdge: " + params.edges)
-    const canvasX = params.pointer.canvas.x
-    const canvasY = params.pointer.canvas.y
+    var canvasX = params.pointer.canvas.x
+    var canvasY = params.pointer.canvas.y
     this.mode = ConceptMap.editEdge
     this.showForm(canvasX, canvasY)
   }
@@ -482,7 +500,8 @@ class ConceptMap {
       }
     })
     if (node != null && node.length > 0) {
-      network.focus(node[0].id, { animation: { duration: 800 } })
+      network.focus(node[0].id, { animation: { duration: 1500, easingFunction: "easeInQuad"} })
+      console.log("search complete");
       $('#searchGroup').removeClass('has-error')
       $('#searchGroup').addClass('has-success')
     }
@@ -699,19 +718,35 @@ class ConceptMap {
     $("#delete").removeClass("d-none")
   }
 
+  inBounds = (canvasX,canvasY) => {
+    
+  }
 
   showForm = (canvasX, canvasY) => {
-    // attach close handler for clicks elsewhere
-    // this.network.on("click", (params) => {
-    //   if (!params.nodes.length && !params.edges.length) {
-    //     this.hideForm()
-    //   }
-    // })
     console.log("showForm mode: " + this.mode)
-
+    const form_width = 312
+    const form_height = 165
+    var x_pos = $("#map-canvas").offset().left + this.network.canvasToDOM({x: canvasX, y: canvasY}).x
+    var y_pos = $("#map-canvas").offset().top + this.network.canvasToDOM({x: canvasX, y: canvasY}).y
+    console.log(canvasX,canvasY);
+    console.log(x_pos,y_pos);
+    if (form_width/2 < x_pos) var left= (x_pos - form_width/2)                                                 // Form is in bounds
+    else if (form_width/2 > window.innerWidth - x_pos ) var left = window.innerWidth - form_width/2 - 10       // Form is out of bounds right side
+    else {
+      console.log("left out of bounds");
+      var left= 10      
+    }                                                                                                  
+    if ( y_pos + form_height < window.innerHeight){                                                         // Form is out of bounds left side
+      var top = y_pos - (form_height / 2)                         // Form is in bounds
+    }
+    else {
+      var top= (window.innerHeight - form_height - 50)                                                              //Form is out of bounds bottom
+      console.log("bottom out of bounds");
+    }
+    console.log("----------------MODE: " +this.mode);
     $("#edit-dialog")
       .removeClass("d-none")
-      .attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left + this.network.canvasToDOM({ x: canvasX, y: canvasY }).x - $("#form").width() / 2) + "px;top:" + ($("#map-canvas").offset().top + this.network.canvasToDOM({ x: canvasX, y: canvasY }).y - $("#form").height() / 2) + "px;")
+      .attr("style", "z-index: 1; position:absolute;left:" + left + "px;top:" + top + "px;")
     switch (this.mode) {
       case ConceptMap.addNode:
         console.log("------addNode Mode---------")

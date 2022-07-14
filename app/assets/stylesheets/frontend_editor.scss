@@ -72,9 +72,9 @@ html, body {
 }
 
 .info:hover {
-  background-color: white;
+  background-color: rgb(104, 184, 0);
   background: #2196F3;
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 .info:focus {
@@ -103,7 +103,7 @@ html, body {
   padding: 0 12px;
   position: absolute;
   left: 70px;
-  top: 20px;
+  top: 30px;
   z-index: 1;
   display: block;
 }
@@ -131,7 +131,7 @@ button span {
   padding: 0 12px;
   position: absolute;
   left:150px;
-  top: 20px;
+  top: 30px;
   z-index: 1;
   display: block;
 }
@@ -154,7 +154,7 @@ button span {
   padding: 0 12px;
   position: absolute;
   left: 260px;
-  top: 20px;
+  top: 30px;
   z-index: 1;
   display: block;
 }
