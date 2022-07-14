@@ -196,7 +196,7 @@ class ConceptMap {
             type: "PUT",
             url: this.conceptsPath + "/" + this.ids[this.ids.length - 1],
             headers: {
-              'Accept': 'text/javascript',
+              'Accept': 'application/json',
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
@@ -212,7 +212,7 @@ class ConceptMap {
               type: "PUT",
               url: this.conceptsPath + "/" + this.ids[i],
               headers: {
-                'Accept': 'text/javascript',
+                'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
               },
@@ -430,7 +430,7 @@ class ConceptMap {
         for (let i = 0; i < this.ids.length; i++) {
           $.ajax({
             headers: {
-              'Accept': 'text/javascript',
+              'Accept': 'application/json',
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
@@ -540,7 +540,7 @@ class ConceptMap {
           postObj["concept[color]"] = $("#color").val()
           $.ajax({
             headers: {
-              'Accept': 'text/javascript',
+              'Accept': 'application/json',
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
@@ -666,10 +666,10 @@ class ConceptMap {
 
   initNodeInputs = (canvasX, canvasY) => {
     $("#entry_concept").removeClass("d-none")
+    $("#entry_link").addClass("d-none")
     $("#colorpicker").removeClass("d-none")
     $("#shapepicker").removeClass("d-none")
     $("#edgepicker").addClass("d-none")
-    $("#entry_link").addClass("d-none")
     this.mode === ConceptMap.addNode && $("#delete").addClass("d-none")
     this.mode === ConceptMap.editNode && $("#delete").removeClass("d-none")
     $("#x").attr("value", canvasX)
@@ -678,11 +678,11 @@ class ConceptMap {
   }
 
   initEdgeInputs = (canvasX, canvasY) => {
-    $("#entry_link").removeClass("d-none")
     $("#entry_concept").addClass("d-none")
+    $("#entry_link").removeClass("d-none")
     $("#colorpicker").addClass("d-none")
     $("#shapepicker").addClass("d-none")
-    $("#colorpicker").addClass("d-none")
+    $("#edgepicker").removeClass("d-none")
     this.mode === ConceptMap.addEdge && $("#delete").addClass("d-none")
     this.mode === ConceptMap.editEdge && $("#delete").removeClass("d-none")
     $("#x").attr("value", canvasX)
@@ -691,14 +691,12 @@ class ConceptMap {
   }
 
   initMultiNodeInputs = () => {
-    $("#entry_concept").addClass("hidden")
-    $("#colorpicker").removeClass("hidden")
-    $("#shapepicker").removeClass("hidden")
-    $("#edgepicker").addClass("hidden")
-    $("#entry_link").addClass("hidden")
-    $("#delete").removeClass("hidden")
-    this.mode === ConceptMap.addNode && $("#delete").addClass("hidden")
-    this.mode === ConceptMap.editNode && $("#delete").removeClass("hidden")
+    $("#entry_concept").addClass("d-none")
+    $("#entry_link").addClass("d-none")
+    $("#colorpicker").removeClass("d-none")
+    $("#shapepicker").removeClass("d-none")
+    $("#edgepicker").addClass("d-none")
+    $("#delete").removeClass("d-none")
   }
 
 
