@@ -27,7 +27,7 @@ html, body {
 }
 
 .ellipse{
-  background-image:url("https://img.icons8.com/fluency-systems-filled/30/000000/ellipse.png") !important;
+  background-image: $ellipse !important;
   background-position:4px -2px;
 }
 
@@ -47,12 +47,12 @@ html, body {
 
 
 .to-arrow{
-  background-image:url("https://img.icons8.com/ios-glyphs/30/000000/long-arrow-right.png") !important;
+  background-image: $right-arrow !important;
   background-position:8px 1px;
 }
 
 .from-arrow{
-  background-image:url("https://img.icons8.com/ios-glyphs/30/000000//arrow-pointing-left--v2.png") !important;
+  background-image: $left-arrow !important;
   background-position:8px 1px;
 }
 
