@@ -14,6 +14,7 @@ class ConceptMap {
   static edgeButton = 7
   static cursorButton = 8
   static editMultiNode = 9
+  static dragForm = 10
 
 
 
@@ -138,6 +139,7 @@ class ConceptMap {
       }
 
       function dragMouseDown(e) {
+        mode = ConceptMap.dragForm
         e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
@@ -163,37 +165,56 @@ class ConceptMap {
 
       function closeDragElement() {
         // stop moving when mouse button is released:
+        mode = ConceptMap.none
         document.onmouseup = null;
         document.onmousemove = null;
       }
     }
 
-
-
-
-    // close dialog on escape
-    $("#entry_concept").on('keyup', function (e) {
-      if (e.keyCode == 27)
-        hideForm()
+    document.addEventListener('keyup', (e) => {
+      console.log(e);
+      console.log($("#edit-dialog").hasClass("d-none"))
+      if (e.code == "Escape") {
+        if ($("#edit-dialog").hasClass("d-none")) { //If ESC pressed AND Form is not visible
+          console.log("1");
+          network.disableEditMode()
+          this.network.unselectAll()
+          buttonMode = ConceptMap.cursorButton
+          $("#addEdgeToast").fadeOut(500);
+        } 
+        else {
+          console.log("2");
+          hideForm()
+        }
+        $("#misc-button").attr("hidden",true);
+      }
     })
 
 
     $('#cursor-button').click(function () {
       console.log("cursor-event triggered")
       buttonMode = ConceptMap.cursorButton
+      network.disableEditMode()
+      network.unselectAll()
+      $("#addEdgeToast").fadeOut(500);
       activeButton(1)
     })
 
     $('#node-button').click(function () {
       console.log("node-event triggered")
       buttonMode = ConceptMap.nodeButton
+      network.disableEditMode()
+      $("#addEdgeToast").fadeOut(500);
       activeButton(2)
       $("#misc-button").attr("hidden",true);
     })
 
     $('#edge-button').click(function () {
       console.log("edge-event triggered")
+      $('#context-help-text').html($('#ch_addedge').html())
+      //$('#context-help-text').html($('#ch_addedge').html(fadeOut(500)))
       buttonMode = ConceptMap.edgeButton
+      network.unselectAll()
       $("#addEdgeToast").fadeIn(500);
       $("#misc-button").attr("hidden",true);
       network.addEdgeMode()
@@ -218,16 +239,20 @@ class ConceptMap {
       if (mode == ConceptMap.addEdge) {
         return
       }
+      if (buttonMode == ConceptMap.nodeButton || buttonMode == ConceptMap.edgeButton || mode == ConceptMap.dragNode || mode == ConceptMap.dragForm){
+        console.log("disable Edit Button");
+        return
+      } 
       this.params = params
       $("#misc-button").removeAttr("hidden");
       this.id = params.node
       canvasX = nodes.get(this.id).x
       canvasY = nodes.get(this.id).y
-      console.log(canvasX,canvasY)
+      //console.log(canvasX,canvasY)
       $("#misc-button").attr("style", "z-index: 1; position:absolute; left:" + this.network.canvasToDOM({x: canvasX, y: canvasY}).x + "px;top:" + (this.network.canvasToDOM({x: canvasX, y: canvasY}).y -40)  + "px;");
       this.network.canvas.body.container.style.cursor = 'pointer'
-      console.log("hover CX,CY: " + canvasX,canvasY);
-      console.log("innerHeight: " + window.innerHeight);
+      //console.log("hover CX,CY: " + canvasX,canvasY);
+      //console.log("innerHeight: " + window.innerHeight);
 
     })
     this.network.on("hoverEdge", () => {
@@ -426,7 +451,7 @@ class ConceptMap {
         switch (buttonMode) {
           case ConceptMap.cursorButton:                                              ///CURSOR BUTTON ACTIVE
             console.log("node edit")
-            console.log(this.nodes.get(params.nodes[0]));
+            //console.log(this.nodes.get(params.nodes[0]));
             this.editNode(params)
             break
           case ConceptMap.nodeButton:                                                  ///NODE BUTTON ACTIVE
@@ -867,13 +892,13 @@ class ConceptMap {
   }
 
   showForm = (canvasX, canvasY) => {
-    console.log("showForm CX,CY: " + canvasX,canvasY)
+    //console.log("showForm CX,CY: " + canvasX,canvasY)
 
     const form_width = 312
     const form_height = 165
     var x_pos = $("#map-canvas").offset().left + this.network.canvasToDOM({x: canvasX, y: canvasY}).x
     var y_pos = $("#map-canvas").offset().top + this.network.canvasToDOM({x: canvasX, y: canvasY}).y
-    console.log("canvasX,canvasY: " + canvasX,canvasY);
+    //console.log("canvasX,canvasY: " + canvasX,canvasY);
     // console.log("x,y: " + x_pos,y_pos);
     // console.log("innerWidth: " + window.innerWidth)
     var left = (x_pos - form_width/2)                                                 // Form is in bounds
@@ -920,6 +945,7 @@ class ConceptMap {
         $('#action').html(this.dialogTexts.editEdge)
         $("#entry_link").val(this.edges.get(this.id).label)
         this.selectEdgeShape(this.edges.get(this.id).arrows)
+        console.log("currentEdgeShape: " + this.id);
         this.initEdgeInputs(canvasX, canvasY)
         break
       case ConceptMap.addEdge:
