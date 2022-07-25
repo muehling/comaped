@@ -1,5 +1,5 @@
 <span id="shapepicker">
-  <input id="shape" type="hidden" name="concept[shape]" value= ""/>
+  <input id="shape" type="hidden" name="concept[shape]" value= "ellipse"/>
   <div class="dropdown" style="display: inline-block;">
     <div id="currentShape" class="shapes shape btn dropdown-toggle me-1" data-toggle="dropdown" style="width: 50px;height:36px;background-color: <%= default_color %>;"></div>
     <div id= "shapeSelect" class="dropdown-menu">
@@ -18,9 +18,11 @@
 
 <script type="module">
   import $ from "jquery"
-  // colorpicker open/close handler
+  // shapepicker open/close handler
   $("#currentShape").on("click", () => {
     const isShapePickerOpen = $("#shapeSelect").css("display") === "block"
+    const isColorPickerOpen = $("#colorSelect").css("display") === "block"
     $("#shapeSelect").css("display", isShapePickerOpen ? "none" : "block")
+    if (!isShapePickerOpen) $("#colorSelect").css("display", "none")  // ShapePicker is about to be opened
   })
 </script>

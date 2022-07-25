@@ -35,6 +35,7 @@ class ConceptMap {
 
     this.mode = ConceptMap.none
     this.buttonMode = ConceptMap.cursorButton
+    this.activeButton(1)
     this.canvasX = 0
     this.canvasY = 0
     this.id = 0
@@ -172,14 +173,15 @@ class ConceptMap {
     }
 
     document.addEventListener('keyup', (e) => {
-      console.log(e);
-      console.log($("#edit-dialog").hasClass("d-none"))
+      // console.log(e);
+      // console.log($("#edit-dialog").hasClass("d-none"))
       if (e.code == "Escape") {
         if ($("#edit-dialog").hasClass("d-none")) { //If ESC pressed AND Form is not visible
           console.log("1");
           network.disableEditMode()
           this.network.unselectAll()
           buttonMode = ConceptMap.cursorButton
+          this.activeButton(1)
           $("#addEdgeToast").fadeOut(500);
         } 
         else {
@@ -482,23 +484,25 @@ class ConceptMap {
   }
 
   activeButton = (button) => {
-    $('#cursor-button').css("border", "1px solid #ccc;")
-    $('#node-button').css("border", "1px solid #ccc;")
-    $('#edge-button').css("border", "1px solid #ccc;")
+    $('#cursor-button').removeClass("active-button")
+    $('#node-button').removeClass("active-button")
+    $('#edge-button').removeClass("active-button")
     console.log("button: " + button)
     switch (button) {
       case 1: {
-        $('#cursor-button').css("border-color: rgb(0, 142, 185);border-width: 2px;")
+        $('#cursor-button').addClass("active-button")
+        //$('#cursor-button').css("border", "2px solid #008eb9;")
+        //$('#cursor-button').css("border-color: #008eb9;border-width: 2px;")
         console.log("1")
         break
       }
       case 2: {
-        $('#node-button').css("border-color: rgb(0, 142, 185);border-width: 2px;")
+        $('#node-button').addClass("active-button")
         console.log("2")
         break
       }
       case 3: {
-        $('#edge-button').css("border-color: rgb(0, 142, 185);border-width: 2px;")
+        $('#edge-button').addClass("active-button")
         console.log("3")
       }
     }
@@ -804,8 +808,9 @@ class ConceptMap {
   ********************************/
   changeShape(i) {
     var shape = $('#shape' + i).attr("value")
+    console.log("new shape: ", shape);
     $("#shape").attr("value", shape)
-    for (var j = 1; j <= 6; ++j)
+    for (var j = 1; j <= 3; ++j)
       $('#shape' + j).html("<span></span>")
     $('#shape' + i).html("<span class='bi-check-lg'></span>")
     $("#entry_concept").focus()
@@ -814,9 +819,15 @@ class ConceptMap {
   }
 
   selectShape(shape) {
-    for (var i = 1; i <= 6; ++i)
-      if ($('#shape' + i).attr("value") == shape)
+    console.log("original shape: ", shape);
+    for (var i = 1; i <= 3; ++i){
+      console.log($('#shape' + i).attr("value"), i);
+      console.log($('#shape' + i).attr("value") == shape);
+      if ($('#shape' + i).attr("value") == shape) {
+        console.log("success", shape);
         changeShape(i)
+      }
+    }
   }
 
   /*********************************
@@ -840,7 +851,7 @@ class ConceptMap {
   selectEdgeShape(shape) {
     $('.arrow-direction').removeClass("from-arrow to-arrow")
     if (shape == "from") {
-      console.log("success")
+      // console.log("success")
       $("#edge").attr("value", "from")
       $('.arrow-direction').addClass("from-arrow")
     }
@@ -968,8 +979,8 @@ class ConceptMap {
     console.log("--------------hideForm----------------------")
     $("#edit-dialog").addClass("d-none")
     $("#edit-dialog").focusout()
-    this.network.unselectAll()
     this.network.disableEditMode()
+    this.network.unselectAll()
     $('#context-help-text').html($('#ch_normal').html())
     //Zoom-Out by Mobilgeräten veranlassen
     const viewport = document.querySelector('meta[name="viewport"]')
@@ -981,6 +992,7 @@ class ConceptMap {
 
     mode = ConceptMap.none
     buttonMode = ConceptMap.cursorButton
+    this.activeButton(1)
   }
   sendMail = () => {
     $('#emailgroup').removeClass('has-error')
