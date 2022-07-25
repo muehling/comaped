@@ -16,7 +16,7 @@ class ConceptMap {
   static editMultiNode = 9
   static dragForm = 10
 
-
+  static touchDevice = window.matchMedia('(hover: hover)').matches ? false : true
 
 
   constructor({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts }) {
@@ -43,6 +43,9 @@ class ConceptMap {
     this.id = 0
     this.ids = []
     this.data
+
+    // if (!ConceptMap.touchDevice)
+    //   console.log("no touch device");
 
     this.event_lock = false
     this.params
@@ -232,6 +235,11 @@ class ConceptMap {
       $("#misc-button").attr("hidden",true); 
     })
 
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    
+    
+
     this.network.on("zoom", () => {
       $("#misc-button").attr("hidden",true);
     })
@@ -240,7 +248,7 @@ class ConceptMap {
       if (mode == ConceptMap.none) {
         $('#context-help-text').html($('#ch_hovernode').html())
       }
-      if (mode == ConceptMap.addEdge) {
+      if (mode == ConceptMap.addEdge || ConceptMap.touchDevice) {
         return
       }
       if (buttonMode == ConceptMap.nodeButton || buttonMode == ConceptMap.edgeButton || mode == ConceptMap.dragNode || mode == ConceptMap.dragForm){
@@ -287,7 +295,7 @@ class ConceptMap {
      * Network drag: save new node position
      ********************************/
     this.network.on("dragStart", (params) => {
-      // console.log("DRAG")
+      //console.log("DRAG")
       // if (params.nodes.length == 0) {
         //   mode = ConceptMap.none
         //   return
@@ -357,8 +365,8 @@ class ConceptMap {
 
 
     this.network.on("click", params => {
-      $("#misc-button").attr("hidden",true);
       if (params.nodes.length == 0 && params.edges.length == 0) {   ///STAGE CLICKED///
+        $("#misc-button").attr("hidden",true);
         console.log("stage clicked")
         switch (buttonMode) {
           case ConceptMap.cursorButton:                                            ///CURSOR BUTTON ACTIVE
@@ -380,7 +388,7 @@ class ConceptMap {
      * Network click: create an edge if a node was previously held, or cancel edge creation
      ********************************/
     this.network.on("select", params => {
-      $("#misc-button").attr("hidden",true);
+      
       console.log("buttonMode after Click: " + buttonMode)
       console.log("select Event:", params)
 
@@ -388,6 +396,7 @@ class ConceptMap {
         console.log("MULTI -EDIT")
         switch (buttonMode) {
           case ConceptMap.cursorButton:                                                ///CURSOR BUTTON ACTIVE
+            $("#misc-button").attr("hidden",true);                                               
             mode = ConceptMap.editMultiNode
             this.id = params.nodes[0]
             for (let i = 0; i < params.nodes.length; i++) {
@@ -411,7 +420,13 @@ class ConceptMap {
           case ConceptMap.cursorButton:                                              ///CURSOR BUTTON ACTIVE
             console.log("node edit")
             //console.log(this.nodes.get(params.nodes[0]));
-            this.editNode(params)
+            if (ConceptMap.touchDevice){
+              $("#misc-button").attr("hidden",true); 
+              this.editNode(params)
+            }
+            else {
+              console.log("no touch device");
+            }
             break
           case ConceptMap.nodeButton:                                                  ///NODE BUTTON ACTIVE
             console.log("NodeButton active - do nothing")
