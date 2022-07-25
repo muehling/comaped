@@ -86,22 +86,17 @@ class ConceptMap {
         initiallyActive: false,
         addNode: true,
         addEdge: function (data, callback) {
-          // this.id = data.to
-          // $('#start').val(data.from)
-          // $('#end').val(data.to)
-          // mode = ConceptMap.addEdge
-          // const canvasX = nodes.get(this.id).x
-          // const canvasY = nodes.get(this.id).y
+          
           $("#addEdgeToast").fadeOut(500)
           
-          const connected_edges = [network.getConnectedEdges(data.from)]
-          ///Checks for double edge in same direction
-          for (let i = 0, len = connected_edges[0].length; i < len; i++) {
-            // console.log ( nodes.get(edges.get(connected_edges[0][i]).from).label + " --> "
-            //             + nodes.get(edges.get(connected_edges[0][i]).to).label)
-            if (nodes.get(edges.get(connected_edges[0][i]).to).id == data.to) {
-              console.log("double edge")
+          var connected_edges = [network.getConnectedEdges(data.from)]
+
+          for (let i = 0, len = connected_edges[0].length; i < len; i++) { 
+            if (nodes.get(edges.get(connected_edges[0][i]).to).id == data.to && nodes.get(edges.get(connected_edges[0][i]).from).id == data.from ) {
+              console.log("Edge already exists")
               network.disableEditMode()
+              activeButton(1)
+              buttonMode = ConceptMap.cursorButton
               $("#doubleEdgeToast").fadeIn(500)
               setTimeout(function(){ $("#doubleEdgeToast").fadeOut(500) }, 6000);
               mode = ConceptMap.none
@@ -110,7 +105,6 @@ class ConceptMap {
           }
 
           createEdge(data)
-          //showForm(canvasX,canvasY)
         },
         editEdge: true,
         deleteNode: true,
@@ -235,7 +229,8 @@ class ConceptMap {
       $("#misc-button").attr("hidden",true); 
     })
 
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    if (ConceptMap.touchDevice)
+      document.addEventListener('contextmenu', event => event.preventDefault());
 
     
     
