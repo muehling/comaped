@@ -38,6 +38,8 @@ class ConceptMap {
     this.activeButton(1)
     this.canvasX = 0
     this.canvasY = 0
+    this.oldPointerX = 0
+    this.oldPointerY = 0
     this.id = 0
     this.ids = []
     this.data
@@ -285,80 +287,35 @@ class ConceptMap {
      * Network drag: save new node position
      ********************************/
     this.network.on("dragStart", (params) => {
-      $("#edit-dialog").addClass("d-none")
-      
-      console.log("DRAG")
-      $("#misc-button").attr("hidden",true);
-      if (params.nodes.length == 0) {
-        mode = ConceptMap.none
-        return
-      }
-      if (params.nodes.length > 0) {
-        this.ids[0] = params.nodes[0]
-        mode = ConceptMap.dragNode
-      }
-      $("#panel").addClass("hidden")
-      $("#panel").focusout()
+      // console.log("DRAG")
+      // if (params.nodes.length == 0) {
+        //   mode = ConceptMap.none
+        //   return
+        // }
+        if (params.nodes.length > 0) {
+          this.ids[0] = params.nodes[0]
+          mode = ConceptMap.dragNode
+        }
+        this.oldPointerX = params.pointer.canvas.x 
+        this.oldPointerY = params.pointer.canvas.y
+        $("#edit-dialog").addClass("d-none")
+        $("#misc-button").attr("hidden",true);
+      // $("#panel").focusout()
     })
 
     this.network.on("dragEnd", async (params) => {
-      console.log("DRAGEND")
+      // console.log("DRAGEND")
       const postObj = {}
       switch (mode) {
         case ConceptMap.dragNode:
-          const oldX = nodes.get(this.ids[this.ids.length - 1]).x
-          const oldY = nodes.get(this.ids[this.ids.length - 1]).y
-          // $.ajax({
-          //   type: "PUT",
-          //   url: this.conceptsPath + "/" + this.ids[this.ids.length - 1],
-          //   headers: {
-          //     'Accept': 'application/json',
-          //     'X-Requested-With': 'XMLHttpRequest',
-          //     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          //   },
-          //   data: { "concept": { 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } }
-          // }).always(() => {
-          //   mode = ConceptMap.none
-          // })
+          const newPointerX = params.pointer.canvas.x
+          const newPointerY = params.pointer.canvas.y
+          const diffX = this.oldPointerX - newPointerX
+          const diffY = this.oldPointerY - newPointerY
 
-          postObj["x"] = params.pointer.canvas.x
-          postObj["y"] = params.pointer.canvas.y
-          const res = await fetch(this.conceptsPath + "/" + this.ids[this.ids.length - 1] , {
-            "method": "put",
-            "mode": "same-origin",
-            "headers": {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            },
-            "body": JSON.stringify(postObj)
-          })
-          var body = await res.json()
-          if (body.edge) {
-            this.edges.update(body.edge)
-          }
-          if (body.node) {
-            this.nodes.update(body.node)
-          }
-
-          for (let i = this.ids.length - 2; i > -1; i--) {
-            const diffX = oldX - nodes.get(this.ids[i]).x
-            const diffY = oldY - nodes.get(this.ids[i]).y
-
-            // $.ajax({
-            //   type: "PUT",
-            //   url: this.conceptsPath + "/" + this.ids[i],
-            //   headers: {
-            //     'Accept': 'application/json',
-            //     'X-Requested-With': 'XMLHttpRequest',
-            //     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            //   },
-            //   data: { "concept": { 'x': params.pointer.canvas.x - diffX, 'y': params.pointer.canvas.y - diffY } }
-            // })
-
-            postObj["x"] = params.pointer.canvas.x - diffX
-            postObj["y"] = params.pointer.canvas.y - diffY
+          for (let i = this.ids.length - 1; i >= 0; i--) {
+            postObj["x"] = nodes.get(this.ids[i]).x - diffX
+            postObj["y"] = nodes.get(this.ids[i]).y - diffY
             const res = await fetch(this.conceptsPath + "/" + this.ids[i] , {
               "method": "put",
               "mode": "same-origin",
@@ -371,7 +328,7 @@ class ConceptMap {
               "body": JSON.stringify(postObj)
             })
             
-            body = await res.json()
+            var body = await res.json()
             if (body.edge) {
               this.edges.update(body.edge)
             }
@@ -379,7 +336,7 @@ class ConceptMap {
               this.nodes.update(body.node)
             }
 
-            console.log(this.ids[i])
+            // console.log(this.ids[i])
             this.id = this.ids[i]
           }
           this.ids = []
@@ -596,17 +553,17 @@ class ConceptMap {
         break
       case ConceptMap.editMultiNode:
         for (let i = 0; i < this.ids.length; i++) {
-          $.ajax({
-            headers: {
-              'Accept': 'application/json',
+          await fetch(this.conceptsPath + "/" + this.ids[i], {
+            "method": "delete",
+            "mode": "same-origin",
+            "headers": {
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: "DELETE", url: this.conceptsPath + "/" + this.ids[i]
-          }).always(() => {
-            mode = ConceptMap.none
+            }
           })
+          this.nodes.remove(this.ids[i])
         }
+        mode = ConceptMap.none
         this.ids = []
         break
     }
