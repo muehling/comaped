@@ -716,6 +716,12 @@ class ConceptMap {
         // Nothing to submit, really. Shouldn't happen, but you never know.
         return
     }
+    console.log('label', postObj.label)
+
+    if (!postObj.label) {
+      alert("Der Name muss aufgefüllt sein!")
+      return
+    }
 
     var res = await fetch(path + (method === "put" ? "/" + this.id : ""), {
       "method": method,

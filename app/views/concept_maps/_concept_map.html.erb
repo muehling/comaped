@@ -12,17 +12,17 @@
           <%= render partial: 'concept_maps/table', locals: {concept_map: concept_map}%>
           <%= link_to t('show'), user_project_survey_concept_map_path(@user, @project, @survey, concept_map), class: "btn btn-secondary" %>
           <div class="dropdown float-end">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               <%= t('export') %>
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
               <li class="dropdown-header"><%= t('export.current')%></li>
-              <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json')%></li>
-              <li><%= link_to 'TGF', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'text')%></li>
+              <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json'), class: "dropdown-item"%></li>
+              <li><%= link_to 'TGF', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'text'), class: "dropdown-item"%></li>
               <li class="dropdown-header"><%= t('export.all')%></li>
-              <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json', versions: true)%></li>
-              <li><%= link_to 'TGF', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'text', versions: true)%></li>
+              <li><%= link_to 'JSON', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'json', versions: true), class: "dropdown-item"%></li>
+              <li><%= link_to 'TGF', user_project_survey_concept_map_path(@user, @project, @survey, concept_map, format: 'text', versions: true), class: "dropdown-item"%></li>
             </ul>
           </div>
         </div>

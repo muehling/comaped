@@ -64,10 +64,10 @@ class ConceptMapsController < ApplicationController
   # GET /concept_maps/new
   def new
     if params['import'].nil?
-      render "create_concept_map"
+      render "create_concept_map", layout: 'backend'
     else
       @concept_map = ConceptMap.create
-      render "import_concept_map"
+      render "import_concept_map", layout: 'backend'
     end
   end
 
