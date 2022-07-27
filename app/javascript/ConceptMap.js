@@ -584,7 +584,7 @@ class ConceptMap {
   * validate inputs: check for duplicated node names
   ********************************/
   validateForm = () => {
-    console.log("-----------------validate-------------------")
+    console.log("-----------------validate-------------------", mode)
     if (mode == ConceptMap.addNode || mode == ConceptMap.editNode) {
       var t = $('#entry_concept').val()
 
@@ -775,7 +775,7 @@ class ConceptMap {
   ********************************/
   changeShape(i) {
     var shape = $('#shape' + i).attr("value")
-    console.log("new shape: ", shape);
+    //console.log("new shape: ", shape);
     $("#shape").attr("value", shape)
     for (var j = 1; j <= 3; ++j)
       $('#shape' + j).html("<span></span>")
@@ -788,10 +788,10 @@ class ConceptMap {
   selectShape(shape) {
     console.log("original shape: ", shape);
     for (var i = 1; i <= 3; ++i){
-      console.log($('#shape' + i).attr("value"), i);
-      console.log($('#shape' + i).attr("value") == shape);
+      //console.log($('#shape' + i).attr("value"), i);
+      //console.log($('#shape' + i).attr("value") == shape);
       if ($('#shape' + i).attr("value") == shape) {
-        console.log("success", shape);
+        //console.log("success", shape);
         changeShape(i)
       }
     }
@@ -874,6 +874,7 @@ class ConceptMap {
 
     const form_width = 312
     const form_height = 165
+    console.log("Form width: ",$('#edit-dialog').width());
     var x_pos = $("#map-canvas").offset().left + this.network.canvasToDOM({x: canvasX, y: canvasY}).x
     var y_pos = $("#map-canvas").offset().top + this.network.canvasToDOM({x: canvasX, y: canvasY}).y
     //console.log("canvasX,canvasY: " + canvasX,canvasY);
@@ -923,7 +924,7 @@ class ConceptMap {
         $('#action').html(this.dialogTexts.editEdge)
         $("#entry_link").val(this.edges.get(this.id).label)
         this.selectEdgeShape(this.edges.get(this.id).arrows)
-        console.log("currentEdgeShape: " + this.id);
+        //console.log("currentEdgeShape: " + this.id);
         this.initEdgeInputs(canvasX, canvasY)
         break
       case ConceptMap.addEdge:

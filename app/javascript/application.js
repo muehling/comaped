@@ -40,5 +40,5 @@ export const init = (edgeData, nodeData) => {
   window.buttonMode = cm.buttonMode
   window.activeButton = cm.activeButton
   window.createEdge = cm.createEdge
-  window.searchConcept = cm.searchConcept
+  
 }

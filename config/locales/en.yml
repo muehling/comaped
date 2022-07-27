@@ -71,7 +71,7 @@ en:
       action_edit_node: "Edit or delete concept"
       action_new_link: "Create new link"
       action_new_node: "Create new concept"
-      code: "This concept map has the code"
+      code: "Concept Map Code"
       help: "Help"
       help_info: "Short manual"
       help_short: "Show hints"

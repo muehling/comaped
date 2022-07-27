@@ -266,7 +266,7 @@ de:
       action_edit_node: "Konzept bearbeiten/löschen"
       action_new_link: "Neue Verbindung anlegen"
       action_new_node: "Neues Konzept anlegen"
-      code: "Dieses Begriffsnetz hat den Code"
+      code: "Begriffsnetz-Code"
       help: "Hilfe"
       help_info: "Kurzanleitung"
       help_short: "Hinweise anzeigen"
