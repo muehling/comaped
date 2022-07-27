@@ -1,6 +1,6 @@
-import "@hotwired/turbo-rails"
-import $ from "jquery"
 
+import './add_jquery'
+import "@hotwired/turbo-rails"
 import "popper"
 import "bootstrap"
 
@@ -8,7 +8,6 @@ import ConceptMap from "./ConceptMap"
 
 export let cm
 
-window.$ = $
 window.bootstrap = bootstrap
 
 export const init = (edgeData, nodeData) => {
