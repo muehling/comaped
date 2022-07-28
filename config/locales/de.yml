@@ -328,6 +328,8 @@ de:
       first: "Erste"
       last: "Letzte"
       versions: "Versionen"
+  addEdge: "Neue Kante"
+  addNode: "Neuer Knoten"
   are_you_sure: "Sind Sie sicher?"
   cancel: "Abbrechen"
   color: "Farbe"

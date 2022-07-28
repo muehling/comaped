@@ -120,7 +120,7 @@ class ConceptMap {
       },
       this.options)
 
-    $('#context-help-text').html($('#ch_normal').html())
+    $('#context-help-text').html($('#ch_editMode').html())
 
     
 
@@ -175,8 +175,10 @@ class ConceptMap {
       // console.log(e);
       // console.log($("#edit-dialog").hasClass("d-none"))
       if (e.code == "Escape") {
+
         if ($("#edit-dialog").hasClass("d-none")) { //If ESC pressed AND Form is not visible
           console.log("1");
+          $('#context-help-text').html($('#ch_editMode').html())
           network.disableEditMode()
           this.network.unselectAll()
           buttonMode = ConceptMap.cursorButton
@@ -194,6 +196,7 @@ class ConceptMap {
 
     $('#cursor-button').click(function () {
       console.log("cursor-event triggered")
+      $('#context-help-text').html($('#ch_editMode').html())
       buttonMode = ConceptMap.cursorButton
       network.disableEditMode()
       network.unselectAll()
@@ -203,8 +206,10 @@ class ConceptMap {
 
     $('#node-button').click(function () {
       console.log("node-event triggered")
+      $('#context-help-text').html($('#ch_addNodeMode').html())
       buttonMode = ConceptMap.nodeButton
       network.disableEditMode()
+      network.unselectAll()
       $("#addEdgeToast").fadeOut(500);
       activeButton(2)
       $("#misc-button").attr("hidden",true);
@@ -212,14 +217,13 @@ class ConceptMap {
 
     $('#edge-button').click(function () {
       console.log("edge-event triggered")
-      $('#context-help-text').html($('#ch_addedge').html())
-      //$('#context-help-text').html($('#ch_addedge').html(fadeOut(500)))
+      $('#context-help-text').html($('#ch_addEdgeMode').html())
       buttonMode = ConceptMap.edgeButton
       network.unselectAll()
-      $("#addEdgeToast").fadeIn(500);
+      //$("#addEdgeToast").fadeIn(500);
+      activeButton(3)
       $("#misc-button").attr("hidden",true);
       network.addEdgeMode()
-      activeButton(3)
     })
 
     $('#misc-button').click(function () {
@@ -240,12 +244,10 @@ class ConceptMap {
     })
 
     this.network.on("hoverNode", (params) => {
-      if (mode == ConceptMap.none) {
-        $('#context-help-text').html($('#ch_hovernode').html())
-      }
-      if (mode == ConceptMap.addEdge || ConceptMap.touchDevice) {
+      if (buttonMode == ConceptMap.edgeButton || ConceptMap.touchDevice) {
         return
       }
+      $('#context-help-text').html($('#ch_hovernode').html())
       if (buttonMode == ConceptMap.nodeButton || buttonMode == ConceptMap.edgeButton || mode == ConceptMap.dragNode || mode == ConceptMap.dragForm){
         console.log("disable Edit Button");
         return
@@ -263,24 +265,38 @@ class ConceptMap {
 
     })
     this.network.on("hoverEdge", () => {
-      if (mode == ConceptMap.none) {
-        $('#context-help-text').html($('#ch_hoveredge').html())
+      if (mode == ConceptMap.addEdge) {
+        return
       }
-      // if (mode == ConceptMap.addEdge) {
-      //   return
-      // }
+      $('#context-help-text').html($('#ch_hoveredge').html())
       this.network.canvas.body.container.style.cursor = 'pointer'
     })
 
     this.network.on("blurNode", () => {
-      if (mode == ConceptMap.none) {
-        $('#context-help-text').html($('#ch_normal').html())
+      switch (buttonMode) {
+        case ConceptMap.cursorButton:
+          $('#context-help-text').html($('#ch_editMode').html())
+          break;
+        case ConceptMap.addNode:
+          $('#context-help-text').html($('#ch_addNodeMode').html())
+          break
+        case ConceptMap.addEdge:
+          $('#context-help-text').html($('#ch_addEdgeMode').html())
+          break;
       }
       this.network.canvas.body.container.style.cursor = 'default'
     })
     this.network.on("blurEdge", () => {
-      if (mode == ConceptMap.none) {
-        $('#context-help-text').html($('#ch_normal').html())
+      switch (buttonMode) {
+        case ConceptMap.cursorButton:
+          $('#context-help-text').html($('#ch_editMode').html())
+          break;
+        case ConceptMap.addNode:
+          $('#context-help-text').html($('#ch_addNodeMode').html())
+          break
+        case ConceptMap.addEdge:
+          $('#context-help-text').html($('#ch_addEdgeMode').html())
+          break;
       }
       this.network.canvas.body.container.style.cursor = 'default'
     })
@@ -290,7 +306,7 @@ class ConceptMap {
      * Network drag: save new node position
      ********************************/
     this.network.on("dragStart", (params) => {
-      //console.log("DRAG")
+      console.log("DRAG")
       // if (params.nodes.length == 0) {
         //   mode = ConceptMap.none
         //   return
@@ -307,7 +323,7 @@ class ConceptMap {
     })
 
     this.network.on("dragEnd", async (params) => {
-      // console.log("DRAGEND")
+      console.log("DRAGEND")
       const postObj = {}
       switch (mode) {
         case ConceptMap.dragNode:
@@ -437,6 +453,7 @@ class ConceptMap {
         switch (buttonMode) {
           case ConceptMap.cursorButton:                                            ///CURSOR BUTTON ACTIVE
             console.log("edge edit")
+            $("#misc-button").attr("hidden",true);
             this.editEdge(params)
             break
           case ConceptMap.nodeButton:                                              ///NODE BUTTON ACTIVE
@@ -505,7 +522,7 @@ class ConceptMap {
   createEdge = (params) => {
     $('#start').val(params.from)
     $('#end').val(params.to)
-    $('#context-help-text').html($('#ch_addedge').html()).removeClass("d-none")
+    $('#context-help-text').html($('#ch_addEdgeMode').html()).removeClass("d-none")
     var startNode = this.nodes.get(params.from)
     var endNode = this.nodes.get(params.to)
     var canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
@@ -912,13 +929,13 @@ class ConceptMap {
     switch (mode) {
       case ConceptMap.addNode:
         console.log("------addNode Mode---------")
-        $('#context-help-text').html($('#ch_new').html())
+        $('#context-help-text').html($('#ch_newNode').html())
         $('#action').html(this.dialogTexts.addNode)
         $("#entry_concept").val("")
         this.initNodeInputs(canvasX, canvasY)
         break
       case ConceptMap.editNode:
-        $('#context-help-text').html($('#ch_edit').html())
+        $('#context-help-text').html($('#ch_editNode').html())
         $('#action').html(this.dialogTexts.editNode)
         $("#entry_concept").val(this.nodes.get(this.id).label)
         this.initNodeInputs(canvasX, canvasY)
@@ -926,7 +943,7 @@ class ConceptMap {
         this.selectShape(this.nodes.get(this.id).shape)
         break
       case ConceptMap.editEdge:
-        $('#context-help-text').html($('#ch_edit').html())
+        $('#context-help-text').html($('#ch_editEdge').html())
         $('#action').html(this.dialogTexts.editEdge)
         $("#entry_link").val(this.edges.get(this.id).label)
         this.selectEdgeShape(this.edges.get(this.id).arrows)
@@ -934,7 +951,7 @@ class ConceptMap {
         this.initEdgeInputs(canvasX, canvasY)
         break
       case ConceptMap.addEdge:
-        $('#context-help-text').html($('#ch_new').html())
+        $('#context-help-text').html($('#ch_newEdge').html())
         $('#action').html(this.dialogTexts.addEdge)
         $("#entry_link").val("")
         this.initEdgeInputs(canvasX, canvasY)
@@ -955,7 +972,7 @@ class ConceptMap {
     $("#edit-dialog").focusout()
     this.network.disableEditMode()
     this.network.unselectAll()
-    $('#context-help-text').html($('#ch_normal').html())
+    $('#context-help-text').html($('#ch_editMode').html())
     //Zoom-Out by Mobilgeräten veranlassen
     const viewport = document.querySelector('meta[name="viewport"]')
     // if (viewport) {

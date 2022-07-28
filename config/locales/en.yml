@@ -133,6 +133,8 @@ en:
       first: "First"
       last: "Last"
       versions: "Versions"
+  addEdge: "Add Edge"
+  addNode: "Add Node"
   are_you_sure: "Are you sure?"
   cancel: "Cancel"
   color: "Color"

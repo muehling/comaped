@@ -1,5 +1,13 @@
 <%= render 'concept_maps/editor/navigation_elements' %>
 
+
+
+
+<!-- Misc Function Button -->
+<div id="header-misc" class= "hidden">
+  <button id="misc-button" class="btn info" hidden ></button>
+</div>
+
 <!-- Intro -->
 <% if @concept_map.first? %>
   <%= render 'concept_maps/editor/intro' %>
@@ -35,25 +43,7 @@
     </form>
   </div>
 </div>
-<!-- Cursor Function Button -->
-<div id="header-cursor">
-  <button id="cursor-button" class="btn info"><span>Edit</span></button>
-</div>
 
-<!-- Node Function Button -->
-<div id="header-node">
-  <button id="node-button" class="btn info"><span>Add Node</span></button>
-</div>
-
-<!-- Edge Function Button -->
-<div id="header-edge">
-  <button id="edge-button" class="btn info"><span>Add Edge</span></button>
-</div>
-
-<!-- Misc Function Button -->
-<div id="header-misc" class= "hidden">
-  <button id="misc-button" class="btn info" hidden ></button>
-</div>
 
 <div id="addEdgeToast" class="toast" style="display:none">Drag from StartConcept</div>
 
