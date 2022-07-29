@@ -5,7 +5,7 @@ json.edge do
   json.label @link.label
   json.labelHighlightBold false
   json.font do
-    json.align @link.start_id < @link.end_id ? 'bottom' : 'top'
+    json.align 'top'
   end
   json.arrows @link.arrows
   json.arrowStrikethrough false

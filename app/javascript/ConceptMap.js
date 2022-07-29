@@ -368,10 +368,7 @@ class ConceptMap {
     this.network.on("doubleClick", params => {
       console.log("node add")
       $("#misc-button").attr("hidden",true);
-      var canvasX = params.pointer.canvas.x
-      var canvasY = params.pointer.canvas.y
-      mode = ConceptMap.addNode
-      this.showForm(canvasX, canvasY)
+      this.createNode(params)
     })
 
 
