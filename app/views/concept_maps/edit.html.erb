@@ -1,3 +1,4 @@
+
 <%= render 'concept_maps/editor/navigation_elements' %>
 
 
@@ -7,13 +8,13 @@
 <div id="header-hover" class= "hidden">
   <button id="hoverButton" class="btn info" hidden ></button>
 </div>
-
 <!-- Intro -->
-<% if @concept_map.first? %>
+
   <%= render 'concept_maps/editor/intro' %>
-<% end %>
+
 <!-- Flexible form for CRUD-actions -->
 <div id="edit-dialog" class="d-none card" style="z-index:1; position:absolute; left:0px; top:0px;">
+  <meta meta name="viewport" content="width=device-width, user-scalable=no" />
   <div id="edit-dialog-header" class="card-header d-flex justify-content-between">
     <em id="action"></em>
     <button type="button" class="btn-close" onclick="hideForm();" aria-label="Close"></button>

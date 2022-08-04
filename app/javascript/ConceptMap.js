@@ -110,6 +110,17 @@ class ConceptMap {
      /********************************
      * Make EditForm movable
      ********************************/
+
+      // document.getElementById("edit-dialog").ontouchmove = preventZoom;
+  
+    
+
+      // function preventZoom(e) {
+      //   e = e || window.event
+      //   e.preventDefault()
+      // }
+
+
     dragElement(document.getElementById("edit-dialog"));
 
     function dragElement(elmnt) {
@@ -200,6 +211,11 @@ class ConceptMap {
     /*************
      * MISC Stuff
      *************/
+    
+  //   // Prevent Zoom on DoubleClick on mobile devices
+  //    document.addEventListener('dblclick', (event) => {
+  //     event.preventDefault()
+  // }, { passive: false });
 
     // Default Infotext
     $('#context-help-text').html($('#ch_editMode').html())
@@ -770,11 +786,15 @@ class ConceptMap {
     $('#context-help-text').html($('#ch_editMode').html())
     //Zoom-Out by Mobilgeräten veranlassen
     const viewport = document.querySelector('meta[name="viewport"]')
-    // if (viewport) {
-    //   viewport.content = 'initial-scale=1'
-    //   viewport.content = 'width=device-width'
-    //   viewport.content = 'maximum-scale=1'
-    // }
+    if (viewport) {
+      viewport.content = 'initial-scale=1.0'
+      viewport.content = 'width=device-width'
+      viewport.content = 'minimum-scale=1.0'
+      viewport.content = 'maximum-scale=1.0'
+      // viewport.content = 'user-scalable=no'
+      // viewport.content = 'height=device-height'
+      // viewport.content = 'target-densitydpi=device-dpi'
+    }
     mode = ConceptMap.none
     buttonMode = ConceptMap.editButton
     this.activeButton(1)
@@ -824,6 +844,8 @@ class ConceptMap {
       $('#searchGroup').addClass('has-error')
     }
   }
+
+  
 
 }
 
