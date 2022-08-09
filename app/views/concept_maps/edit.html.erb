@@ -1,7 +1,7 @@
 <%= render 'concept_maps/editor/navigation_elements' %>
 
 <!-- Intro -->
-<% if @concept_map.first? %>
+<% if !@concept_map.first? %>
   <%= render 'concept_maps/editor/intro' %>
 <% end %>
 <!-- Flexible form for CRUD-actions -->
@@ -39,9 +39,19 @@
 
 <!-- Scripts -->
 <script type="module">
-  import { init } from "application"
 
-  init({
+  const edgeData = [
+        <% @concept_map.links.each do |l| %>
+        <%= render l %>,
+        <% end %>
+    ]
+  const nodeData = [
+        <% @concept_map.concepts.each do |c| %>
+        <%= render c %>,
+        <% end %>
+    ]
+
+  initEditor({
     edgeData: [
         <% @concept_map.links.each do |l| %>
         <%= render l %>,
@@ -61,6 +71,5 @@
       editEdge: "<%= t('.action_edit_link')%>",
       addEdge: "<%= t('.action_new_link')%>"
     }
-  }
-  )
+  })
 </script>
