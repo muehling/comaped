@@ -72,6 +72,8 @@ en:
       action_new_link: "Create new link"
       action_new_node: "Create new concept"
       code: "Concept Map Code"
+      double_edge: "You can't create more than one edge per direction!"
+      double_node: "A Node with this label already exists! Choose another name."
       help: "Help"
       help_info: "Short manual"
       help_short: "Show hints"

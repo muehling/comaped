@@ -9,9 +9,9 @@
   <button id="hoverButton" class="btn info" hidden ></button>
 </div>
 <!-- Intro -->
-
+<% if @concept_map.first? %>
   <%= render 'concept_maps/editor/intro' %>
-
+<% end %>
 <!-- Flexible form for CRUD-actions -->
 <div id="edit-dialog" class="d-none card" style="z-index:1; position:absolute; left:0px; top:0px;">
   <meta meta name="viewport" content="width=device-width, user-scalable=no" />
@@ -46,9 +46,9 @@
 </div>
 
 
-<div id="addEdgeToast" class="toast" style="display:none">Drag from StartConcept</div>
+<div id="doubleNodeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_node') %></div>
 
-<div id="doubleEdgeToast" class="toast error_toast" style="display:none">You can't create more than one edge per direction!</div>
+<div id="doubleEdgeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_edge') %></div>
 
 
 <!-- Dummy element for Vis-canvas -->

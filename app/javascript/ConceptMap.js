@@ -84,8 +84,22 @@ class ConceptMap {
               network.disableEditMode()
               activeButton(1)
               buttonMode = ConceptMap.editButton
-              $("#doubleEdgeToast").fadeIn(500)
-              setTimeout(function(){ $("#doubleEdgeToast").fadeOut(500) }, 6000);
+              // if context_help is displayed show doubleEdgeToast instead for 6s then display context_help again
+              if(!$('#context-help').hasClass('d-none')){  
+                $('#context-help').addClass('d-none')
+                $("#doubleEdgeToast").fadeIn(500)
+                setTimeout(function(){ 
+                  $("#doubleEdgeToast").fadeOut(500)
+                  $('#context-help').removeClass('d-none')
+                  $('#context-help-text').html($('#ch_editMode').html())
+                }, 6000)
+              }
+              else{
+                $("#doubleEdgeToast").fadeIn(500)
+                setTimeout(function(){ 
+                  $("#doubleEdgeToast").fadeOut(500)
+                }, 6000)
+              }
               mode = ConceptMap.none
               return
             }
@@ -175,7 +189,6 @@ class ConceptMap {
       activeButton(1)
       network.disableEditMode()
       network.unselectAll()
-      $("#addEdgeToast").fadeOut(500);
     })
     // nodeButton pressed
     $('#nodeButton').click(function () {
@@ -184,7 +197,6 @@ class ConceptMap {
       activeButton(2)
       network.disableEditMode()
       network.unselectAll()
-      $("#addEdgeToast").fadeOut(500);
       $("#hoverButton").attr("hidden",true);
     })
     // edgeButton pressed
@@ -194,7 +206,6 @@ class ConceptMap {
       activeButton(3)
       network.unselectAll()
       $("#hoverButton").attr("hidden",true);
-      //$("#addEdgeToast").fadeIn(500);
       network.addEdgeMode()
     })
 
@@ -497,8 +508,23 @@ class ConceptMap {
       })
       if (node == null || node.length == 0 || node[0].id == this.ids[0]) 
         return true
-      else {
+      else { // Node with this label already exists
         this.network.focus(node[0].id)
+        // if context_help is displayed show doubleNodeToast instead for 6s then display context_help again
+        if(!$('#context-help').hasClass('d-none')){  
+          $('#context-help').addClass('d-none')
+          $("#doubleNodeToast").fadeIn(500)
+          setTimeout(function(){ 
+            $("#doubleNodeToast").fadeOut(500)
+            $('#context-help').removeClass('d-none')
+          }, 6000)
+        }
+        else{
+          $("#doubleNodeToast").fadeIn(500)
+          setTimeout(function(){ 
+            $("#doubleNodeToast").fadeOut(500)
+          }, 6000)
+        }
         return false
       }
     } 

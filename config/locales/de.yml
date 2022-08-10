@@ -262,6 +262,8 @@ de:
     imported: "Begriffsnetze importiert"
     new: "Begriffsnetze erzeugen"
     edit:
+      double_edge: "Mehr als eine Verbindung pro Richtung nicht möglich!"
+      double_node: "Ein Knoten mit dieser Beschriftung existiert bereits! Wähle einen anderen Namen."
       action_edit_link: "Verbindung bearbeiten/löschen"
       action_edit_node: "Konzept bearbeiten/löschen"
       action_new_link: "Neue Verbindung anlegen"
