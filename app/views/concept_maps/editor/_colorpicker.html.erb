@@ -26,6 +26,6 @@
     const isColorPickerOpen = $("#colorSelect").css("display") === "block"
     const isShapePickerOpen = $("#shapeSelect").css("display") === "block"
     $("#colorSelect").css("display", isColorPickerOpen ? "none" : "block")
-    if (!isColorPickerOpen) $("#shapeSelect").css("display", "none")  // ColorPicker is about to be opened
+    if (!isColorPickerOpen) $("#shapeSelect").css("display", "none")  // ColorPicker is about to be opened -> close ShapePicker
   })
 </script>

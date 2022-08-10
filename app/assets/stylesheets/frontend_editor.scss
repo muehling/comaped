@@ -45,15 +45,8 @@ html, body {
 
 
 
-
-
-.to-arrow{
-  background-image: $right-arrow !important;
-  background-position:8px 1px;
-}
-
-.from-arrow{
-  background-image: $left-arrow !important;
+.arrow{
+  background-image: $arrow !important;
   background-position:8px 1px;
 }
 

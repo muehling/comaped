@@ -11,7 +11,6 @@ class ConceptMap {
   static editEdge = 4
   static dragNode = 5
   static editMultiNode = 6
-  static dragForm = 7
   
   static nodeButton = 8
   static edgeButton = 9
@@ -147,7 +146,6 @@ class ConceptMap {
         elmnt.onmousedown = dragMouseDown;
       }
       function dragMouseDown(e) {
-        mode = ConceptMap.dragForm
         e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
@@ -171,7 +169,6 @@ class ConceptMap {
       }
       function closeDragElement() {
         // stop moving when mouse button is released:
-        mode = ConceptMap.none
         document.onmouseup = null;
         document.onmousemove = null;
       }
@@ -348,9 +345,9 @@ class ConceptMap {
     * CLICK STAGE EVENT: If NodeButton active, create a Node
     ***********************************************************/
     this.network.on("click", params => {
-      if(buttonMode == ConceptMap.nodeButton){
-        if (params.nodes.length == 0 && params.edges.length == 0) { ///STAGE selected   
-          $("#hoverButton").attr("hidden",true);
+      if (params.nodes.length == 0 && params.edges.length == 0) { ///STAGE selected   
+        $("#hoverButton").attr("hidden",true)
+        if(buttonMode == ConceptMap.nodeButton){
           this.createNode(params)
         }
       }
@@ -668,26 +665,16 @@ class ConceptMap {
   /*********************************
   * edgepicker stuff
   ********************************/
-  selectEdgeShape(shape) {
-    $('.arrow-direction').removeClass("from-arrow to-arrow")
-    if (shape == "from") {
-      $("#edge").attr("value", "from")
-      $('.arrow-direction').addClass("from-arrow")
-    }
-    if (shape == "to") {
-      $("#edge").attr("value", "to")
-      $('.arrow-direction').addClass("to-arrow")
-    }
-  }
+ 
   changeEdgeShape() {
-    $('.arrow-direction').removeClass("from-arrow to-arrow")
+  
     if ($('#edge').attr("value") == "to") {
       $("#edge").attr("value", "from")
-      $('.arrow-direction').addClass("from-arrow")
+      
     }
     else {
       $("#edge").attr("value", "to")
-      $('.arrow-direction').addClass("to-arrow")
+      
     }
     $("#entry_link").focus()
     return false
@@ -783,7 +770,7 @@ class ConceptMap {
         $('#action').html(this.dialogTexts.editEdge)
         $("#entry_link").val(this.edges.get(this.ids[0]).label)
         this.initEdgeInputs(canvasX, canvasY)                           //controls buttons to display
-        this.selectEdgeShape(this.edges.get(this.ids[0]).arrows)        //determines current direction
+        //this.selectEdgeShape(this.edges.get(this.ids[0]).arrows)        //determines current direction
         break
       case ConceptMap.addEdge:
         $('#context-help-text').html($('#ch_newEdge').html())
@@ -796,7 +783,7 @@ class ConceptMap {
         $('#action').html(this.dialogTexts.editNode)
         this.initMultiNodeInputs()                                      //controls buttons to display
         this.selectColor(this.nodes.get(this.ids[0]).color.background)  //determines current color
-        this.selectShape(this.nodes.get(this.ids[0]).shape)             //determines current shape
+        //this.selectShape(this.nodes.get(this.ids[0]).shape)             //determines current shape
     }
   }
 
@@ -809,7 +796,12 @@ class ConceptMap {
     //$("#edit-dialog").focusout()
     this.network.disableEditMode()
     this.network.unselectAll()
+    $("#colorSelect").css("display", "none") // close colorDropdown
+    $("#shapeSelect").css("display", "none") // close shapeDropdown
     $('#context-help-text').html($('#ch_editMode').html())
+    mode = ConceptMap.none
+    buttonMode = ConceptMap.editButton
+    this.activeButton(1)
     //Zoom-Out by Mobilgeräten veranlassen
     const viewport = document.querySelector('meta[name="viewport"]')
     if (viewport) {
@@ -821,9 +813,6 @@ class ConceptMap {
       // viewport.content = 'height=device-height'
       // viewport.content = 'target-densitydpi=device-dpi'
     }
-    mode = ConceptMap.none
-    buttonMode = ConceptMap.editButton
-    this.activeButton(1)
   }
 
   /*********************************
