@@ -134,8 +134,7 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.8-x86_64-linux)
       racc (~> 1.4)
-    pg (1.4.1)
-    popper_js (2.9.3)
+    pg (1.4.3)
     puma (3.12.6)
     racc (1.6.0)
     rack (2.2.4)
@@ -181,6 +180,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    sqlite3 (1.4.4)
     sshkit (1.21.2)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
@@ -226,7 +226,6 @@ DEPENDENCIES
   puma (~> 3.0)
   rails (~> 7.0.2)
   rubyzip
-  sassc-rails
   sprockets-rails (~> 3.4)
   sqlite3 (~> 1.4.2)
   turbo-rails (~> 1)
@@ -235,4 +234,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   2.3.18
+   2.3.20
