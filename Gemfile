@@ -42,13 +42,12 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 #Additional gems:
 gem 'rubyzip'
-gem "importmap-rails", "~> 1.1"
 gem "js-routes"
-gem 'mime-types', '~> 3.1'
 
-# use bootstrap gem to avoid hassle of managing the js part through importmap and css part by hand
-gem "bootstrap", "~> 5.1"
-gem "sassc-rails"
+gem 'vite_rails'
 
 # js runtime for sass compilation
 gem "mini_racer"
+
+
+gem "sprockets-rails", "~> 3.4"

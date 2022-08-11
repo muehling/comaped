@@ -1,11 +1,8 @@
 <%= render 'concept_maps/editor/explanation' %>
 <script type="module">
-    import "jquery"
-    import "bootstrap"
 
     let isInitialized = false
     let introModal
-
 
     const selectors = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
     const placements = ["right", "bottom", "left", "top", "right", "left"];
@@ -59,8 +56,8 @@
 
     const hideModal = () =>{
         introModal.hide()
-        next()
     }
+
      $("#intro").on("hidden.bs.modal", function (e) {
         next();
     });

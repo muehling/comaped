@@ -1,5 +1,9 @@
 FROM ruby:3.1.2-slim
 
+RUN apt-get update && apt-get install -y curl
+
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -y nodejs
+
 RUN apt-get update -qq && apt-get install -yq --no-install-recommends \
   build-essential \
   gnupg2 \

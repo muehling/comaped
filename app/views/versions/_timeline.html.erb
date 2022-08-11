@@ -1,11 +1,13 @@
 <div id="timeline_<%= concept_map.id %>" style="height: 160px"></div>
+<div class="d-flex justify-content-center mt-4">
+  <button id="first" class="btn btn-light"><span class="bi-chevron-double-left"></span></button>
+  <button id="prev" class="btn btn-light"><span class="bi-chevron-left"></span></button>
+  <button id="play" class="btn btn-light"><span class="bi-play"></span></button>
+  <button id="next" class="btn btn-light" disabled="disabled"><span class="bi-chevron-right"></span></button>
+  <button id="last" class="btn btn-light"><span class="bi-chevron-double-right"></span></button>
+</div>
 
 <script type="module">
-
-  import vis from "vis-network"
-  import tl from "vis-timeline"
-
-  import { DataSet } from "vis-data/peer/umd/vis-data.js"
 
 
   const container = document.getElementById('timeline_<%= concept_map.id %>');
@@ -15,24 +17,18 @@
      <% end %>
   ];
 
-  const dataset = new DataSet(items);
-  const options = {
-    start: '<%= concept_map.versions.first.timestamp %>',
-    end: '<%= concept_map.versions.last.timestamp %>',
-    height: '100%',
-    width: '100%'
-  };
+  const fetchUrl = '<%= concept_map_versions_path(concept_map) %>'
+  const firstTimestamp = '<%= concept_map.versions.first.timestamp %>'
+  const lastTimestamp = '<%= concept_map.versions.last.timestamp %>'
+  const id = <%= concept_map.id %>
+  const maxVersion = <%= concept_map.versions.count-1%>;
 
-  function timeChanged(properties) {
-    // find version next left from dropped cursor
-    const versionNextToCursor = items.reduce((acc, item, index)=>Date.parse(items[index]['x']) <= Date.parse(properties.time)?index:acc, 0)
+  const viewer = initBackend({fetchUrl, firstTimestamp, lastTimestamp, items, id, maxVersion})
 
-    window.version = Math.max(0, versionNextToCursor);
-    window.updatePreview(versionNextToCursor);
-  };
+  $("#first").on("click", ()=>viewer.updatePreview(0))
+  $("#prev").on("click", ()=>viewer.previous())
+  $("#play").on("click", ()=>viewer.play())
+  $("#next").on("click", ()=>viewer.next())
+  $("#last").on("click", ()=>viewer.updatePreview(maxVersion))
 
-  window.timeline = new tl.Graph2d(container, dataset, options);
-  window.timeline.on("timechanged", timeChanged);
-
-  window.timeBar = timeline.addCustomTime("<%= concept_map.versions.last.timestamp%>");
 </script>

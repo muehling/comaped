@@ -29,15 +29,7 @@
                     <%= render partial: 'versions/timeline', locals: {concept_map: @concept_map}%>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-md-2">
-                  </div>
-                  <div class="col-md-10">
-                    <p class="text-center">
-                      <%= render partial: "versions/show", locals: {concept_map: @concept_map}%>
-                    </p>
-                  </div>
-                </div>
+
                 <div class="row">
                   <div class="col-md-2">
                     <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
@@ -62,3 +54,4 @@
     </div>
   </div>
 </div>
+
