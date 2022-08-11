@@ -16,7 +16,7 @@
     <%= render 'concept_maps/editor/intro_texts' %>
 
     const textHtml = texts.map((text, i)=>{
-        return ("<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-secondary' onclick='next();'>" + (i === texts.length-1 ? btn_last : btn_standard) + "</button></p>")
+        return ("<p class='text-justify' style='overflow:scrollable'>" + texts[i] + "<p class='text-center'><button class='btn btn-secondary' onclick='next();'>" + (i === texts.length-1 ? btn_last : btn_standard) + "</button></p>")
     })
 
     const titleHtml = title + " <button type='button' class='btn-close' onclick='stop();' aria-label='Close'><span aria-hidden='true' style='top: -2px;'></span></button>";
