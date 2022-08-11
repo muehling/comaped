@@ -18,7 +18,7 @@
         <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text'), class: "dropdown-item"%></li>
         <li><a id="png_link"  class="dropdown-item" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
         <li role="separator" class="dropdown-divider"></li>
-        <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}, class: "dropdown-item"%></li>
+        <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {"bs-toggle": "modal", "bs-target": "#legal"}, class: "dropdown-item"%></li>
         <li><%= link_to t('logout'), logout_path(target: 'frontend'), class: "dropdown-item"%></li>
       </ul>
     </div>
