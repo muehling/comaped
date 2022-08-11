@@ -26,18 +26,18 @@
 
 
   <!-- Cursor Function Button -->
-  <button id="editButton" class="btn info"><span><%= t :edit %></span></button>
+  <button id="editButton" class="btn info "><span class='button-text'><%= t :edit %></span></button>
   <!-- Node Function Button -->
-  <button id="nodeButton" class="btn info"><span><%= t :addNode %></span></button>
+  <button id="nodeButton" class="btn info"><span class='button-text'><%= t :addNode %></span></button>
   <!-- Edge Function Button -->
-  <button id="edgeButton" class="btn info"><span><%= t :addEdge %></span></button>
+  <button id="edgeButton" class="btn info"><span class='button-text'><%= t :addEdge %></span></button>
 
 
   <!-- Code info + Mailform top center -->
   <div id="header-code" class="alert">
     <div class="dropdown">
       <div class="dropdown-toggle" id="mailButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <%= t('concept_maps.edit.code')%>: <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="bi-envelope" title="<%=t('concept_maps.edit.mail')%>"></span>
+        <span class="code-text"><%= t('concept_maps.edit.code')%>:</span> <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="bi-envelope" title="<%=t('concept_maps.edit.mail')%>"></span>
       </div>
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mailButton" style="padding: 3px">
         <form class="form form-inline">
@@ -50,6 +50,7 @@
     </div>
   </div>
 
+  
   <!-- Search button top right corner -->
   <div id="header-search">
     <div class="dropdown">

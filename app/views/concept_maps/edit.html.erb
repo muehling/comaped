@@ -9,7 +9,7 @@
   <button id="hoverButton" class="btn info" hidden ></button>
 </div>
 <!-- Intro -->
-<% if !@concept_map.first? %>
+<% if @concept_map.first? %>
   <%= render 'concept_maps/editor/intro' %>
 <% end %>
 <!-- Flexible form for CRUD-actions -->

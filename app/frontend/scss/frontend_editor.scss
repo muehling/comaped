@@ -7,6 +7,36 @@ body {
   touch-action: none;
 }
 
+.button-text {
+  display: none;
+}
+
+.code-text {
+  display: none;
+}
+
+@include media-breakpoint-up(sm) {
+  .button-text{
+    display: none;
+  }
+
+  .code-text {
+    display: inline-block;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .button-text{
+    display: block;
+  }
+
+  .code-text {
+    display: inline-block;
+  }
+}
+
+
+
 .color {
   background-image: $color !important;
   background-position: 8px 1px;
@@ -209,10 +239,10 @@ button span {
 }
 
 #header-search {
-  position: relative;
-  right: -200px;
-  top: -40px;
-  float: right;
+  position: absolute;
+  right: 30px;
+  top: 0px;
+  //float: right;
   z-index: 1;
   display: block;
 }
