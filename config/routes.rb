@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
 
-  resources :concept_maps, path: 'maps', param: :code, only: [:edit, :update, :show] do
+  resources :concept_maps, path: 'maps', param: :code, only: [:edit, :update, :update_multi_nodes, :show] do
+    put 'update_multi_nodes'
     resources :concepts
     resources :links
     resources :versions
-    resources :multi_edit
   end
 
   scope 'backend' do

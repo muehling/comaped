@@ -1,6 +1,6 @@
 class ConceptMapsController < ApplicationController
 
-  skip_before_action :check_login_frontend, except: [:edit, :multi_edit]
+  skip_before_action :check_login_frontend, except: [:edit, :update_multi_nodes]
   skip_before_action :check_login_backend, only: [:edit, :show]
   before_action :login_for_show, only: [:show]
   before_action :set_user_project_survey, only: [:new, :create, :destroy, :index, :page]
@@ -150,7 +150,16 @@ class ConceptMapsController < ApplicationController
     redirect_to user_project_survey_path(@user, @project, @survey)
   end
 
- 
+  def update_multi_nodes
+    logger.warn "update_multi_nodes"
+    if !@concept_map.update(concept_maps_params)
+      render error: {error: "unable to update"}, status: 400
+    end
+  end
+
+  def concept_maps_params
+    params.require(:concept_map).permit([concepts_attributes: [:id, :label]])
+  end
 
   private
     #Load concept maps and check whether user is allowed to access it (frontend or backend)

@@ -552,6 +552,7 @@ class ConceptMap {
   ********************************/
   onSubmit = async () => {
     console.log("-----------onSubmit----------" + mode)
+    console.log("conceptsMultiNodePath: ",this.conceptsMultiNodePath)
     const postObj = {}
     let method = "put"
     let path
@@ -578,7 +579,7 @@ class ConceptMap {
         path = this.linksPath
         break
       case ConceptMap.editMultiNode:
-        var res = await fetch(this.conceptMapsPath.slice(0, -5), {
+        var res = await fetch(this.conceptsMultiNodePath + "/update_multi_nodes", {
           "method": "put",
           "mode": "same-origin",
           "headers": {
