@@ -40,7 +40,7 @@ class ConceptMap {
     this.oldPointerX = 0                      //Saves Pointerlocation when drag starts
     this.oldPointerY = 0
     this.ids = []
-    this.data
+    this.post
 
     /**********************************
     * SETTINGS for Vis Network library
@@ -360,6 +360,14 @@ class ConceptMap {
     this.network.on("select", params => {
       if (buttonMode == ConceptMap.editButton) {
         if (params.nodes.length > 1) {        ///MULTI-NODES selected///
+          
+          this.post = this.network.getSelectedNodes()?.map((node) => {
+            return { id: node, label: this.nodes.get(node).label }
+          })
+          
+          console.log(this.post);
+
+
           $("#hoverButton").attr("hidden", true)
           mode = ConceptMap.editMultiNode
           for (let i = 0; i < params.nodes.length; i++)
@@ -547,7 +555,7 @@ class ConceptMap {
     const postObj = {}
     let method = "put"
     let path
-
+    console.log($("#entry_concept").val());
     switch (mode) {
       case ConceptMap.addNode:
         method = "post"
@@ -570,24 +578,35 @@ class ConceptMap {
         path = this.linksPath
         break
       case ConceptMap.editMultiNode:
-        for (let i = 0; i < this.ids.length; i++) {
-          postObj["shape"] = $("#shape").val()
-          postObj["color"] = $("#color").val()
-          var res = await fetch(this.conceptsPath + "/" + this.ids[i], {
-            "method": "put",
-            "mode": "same-origin",
-            "headers": {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            },
-            "body": JSON.stringify(postObj)
-          })
+        var res = await fetch(this.conceptMapsPath.slice(0, -5), {
+          "method": "put",
+          "mode": "same-origin",
+          "headers": {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+          "body": JSON.stringify({ concepts_attributes: this.post })
+        })
+        // for (let i = 0; i < this.ids.length; i++) {
+        //   postObj["shape"] = $("#shape").val()
+        //   postObj["color"] = $("#color").val()
+        //   var res = await fetch(this.conceptsPath + "/" + this.ids[i], {
+        //     "method": "put",
+        //     "mode": "same-origin",
+        //     "headers": {
+        //       'Accept': 'application/json',
+        //       'Content-Type': 'application/json',
+        //       'X-Requested-With': 'XMLHttpRequest',
+        //       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        //     },
+        //     "body": JSON.stringify(postObj)
+        //   })
           var body = await res.json()
           if (body.edge) this.edges.update(body.edge)
           if (body.node) this.nodes.update(body.node)
-        }
+        // }
         this.ids = []
         this.hideForm()
         return
@@ -614,7 +633,10 @@ class ConceptMap {
       "body": JSON.stringify(postObj)
     })
     var body = await res.json()
-    if (body.edge) this.edges.update(body.edge)
+    body.node.label= body.node.label.replace(/\\n/g, 'ooo')
+    console.log(body.node);
+      console.log(body.node.label);
+    // if (body.edge) this.edges.update(body.edge)
     if (body.node) this.nodes.update(body.node)
     this.ids = []
     this.hideForm()
@@ -814,16 +836,16 @@ class ConceptMap {
     buttonMode = ConceptMap.editButton
     this.activeButton(1)
     //Zoom-Out by Mobilgeräten veranlassen
-    const viewport = document.querySelector('meta[name="viewport"]')
-    if (viewport) {
-      viewport.content = 'initial-scale=1.0'
-      viewport.content = 'width=device-width'
-      viewport.content = 'minimum-scale=1.0'
-      viewport.content = 'maximum-scale=1.0'
+    // const viewport = document.querySelector('meta[name="viewport"]')
+    // if (viewport) {
+    //   viewport.content = 'initial-scale=1.0'
+    //   viewport.content = 'width=device-width'
+    //   viewport.content = 'minimum-scale=1.0'
+    //   viewport.content = 'maximum-scale=1.0'
       // viewport.content = 'user-scalable=no'
       // viewport.content = 'height=device-height'
       // viewport.content = 'target-densitydpi=device-dpi'
-    }
+    // }
   }
 
   /*********************************

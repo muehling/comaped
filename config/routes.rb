@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :concepts
     resources :links
     resources :versions
+    resources :multi_edit
   end
 
   scope 'backend' do

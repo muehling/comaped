@@ -1,6 +1,6 @@
 class ConceptMapsController < ApplicationController
 
-  skip_before_action :check_login_frontend, except: [:edit]
+  skip_before_action :check_login_frontend, except: [:edit, :multi_edit]
   skip_before_action :check_login_backend, only: [:edit, :show]
   before_action :login_for_show, only: [:show]
   before_action :set_user_project_survey, only: [:new, :create, :destroy, :index, :page]
@@ -150,6 +150,8 @@ class ConceptMapsController < ApplicationController
     redirect_to user_project_survey_path(@user, @project, @survey)
   end
 
+ 
+
   private
     #Load concept maps and check whether user is allowed to access it (frontend or backend)
     def set_concept_map
@@ -183,5 +185,7 @@ class ConceptMapsController < ApplicationController
       check_login_frontend
     end
   end
+
+
 
 end
