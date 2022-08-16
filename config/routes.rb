@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :concept_maps, path: 'maps', param: :code, only: [:edit, :update, :update_multi_nodes, :show] do
-    put 'concept_maps/:id/update_multi_nodes', to: 'concept_maps#update_multi_nodes'
+  resources :concept_maps, path: 'maps', param: :code, only: [:edit, :update, :show] do
     resources :concepts
     resources :links
     resources :versions
