@@ -6,7 +6,7 @@ class LinksController < ApplicationController
 
   # POST /concept_maps/1/links
   def create
-    @link = @map.links.build(label: link_params[:label], start_id: link_params[:start_id].to_i, end_id: link_params[:end_id].to_i, arrows: link_params[:arrows])
+    @link = @map.links.build(label: link_params[:label], start_id: link_params[:start_id].to_i, end_id: link_params[:end_id].to_i)
     if @link.save
       @map.versionize(DateTime.now)
     end
@@ -14,7 +14,7 @@ class LinksController < ApplicationController
 
   # PATCH/PUT /concept_maps/1/links/1
   def update
-    if @link.update(link_params.permit(:label, :arrows))
+    if @link.update(link_params.permit(:label))
       @map.versionize(DateTime.now)
     end
     render :create
@@ -45,7 +45,7 @@ class LinksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def link_params
-    params.require(:link).permit([:label, :start_id, :end_id, :arrows])
+    params.require(:link).permit([:label, :start_id, :end_id])
   end
 
 end

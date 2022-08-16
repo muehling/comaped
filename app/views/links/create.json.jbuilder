@@ -7,7 +7,7 @@ json.edge do
   json.font do
     json.align 'top'
   end
-  json.arrows @link.arrows
+  json.arrows 'to'
   json.arrowStrikethrough false
   json.color do
     json.color '#a0a0a0'

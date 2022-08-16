@@ -566,10 +566,8 @@ class ConceptMap {
         method = "post"
         postObj["start_id"] = parseInt($("#start").val(), 10)
         postObj["end_id"] = parseInt($("#end").val(), 10)
-        postObj["arrows"] = $("#edge").val()
       case ConceptMap.editEdge:
         postObj["label"] = $("#entry_link").val()
-        postObj["arrows"] = $("#edge").val()
         path = this.linksPath
         break
       case ConceptMap.editMultiNode:
@@ -676,24 +674,7 @@ class ConceptMap {
     }
   }
 
-  /*********************************
-  * edgepicker stuff
-  ********************************/
-
-  changeEdgeShape() {
-
-    if ($('#edge').attr("value") == "to") {
-      $("#edge").attr("value", "from")
-
-    }
-    else {
-      $("#edge").attr("value", "to")
-
-    }
-    $("#entry_link").focus()
-    return false
-  }
-
+ 
   /******************************************
   * controls buttons to display in EditForm
   *******************************************/
@@ -784,7 +765,6 @@ class ConceptMap {
         $('#action').html(this.dialogTexts.editEdge)
         $("#entry_link").val(this.edges.get(this.ids[0]).label)
         this.initEdgeInputs(canvasX, canvasY)                           //controls buttons to display
-        //this.selectEdgeShape(this.edges.get(this.ids[0]).arrows)        //determines current direction
         break
       case ConceptMap.addEdge:
         $('#context-help-text').html($('#ch_newEdge').html())
@@ -797,7 +777,6 @@ class ConceptMap {
         $('#action').html(this.dialogTexts.editNode)
         this.initMultiNodeInputs()                                      //controls buttons to display
         this.selectColor(this.nodes.get(this.ids[0]).color.background)  //determines current color
-      //this.selectShape(this.nodes.get(this.ids[0]).shape)             //determines current shape
     }
   }
 
