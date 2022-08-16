@@ -338,6 +338,8 @@ class ConceptMap {
     * DOUBLECLICK EVENT: Create a Node
     *************************************/
     this.network.on("doubleClick", params => {
+      if (buttonMode == ConceptMap.edgeButton)
+        return
       $("#hoverButton").attr("hidden", true)
       this.createNode(params)
     })
