@@ -549,7 +549,8 @@ class ConceptMap {
     const postObj = {}
     let method = "put"
     let path
-
+    $("#entry_concept").val($("#entry_concept").val().replace(/\\/g," ")) // prevent input of "\" because vis network cannot handle this symbol
+ 
     switch (mode) {
       case ConceptMap.addNode:
         method = "post"
