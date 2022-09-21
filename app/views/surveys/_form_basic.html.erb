@@ -1,46 +1,37 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="card card-default">
+  <div class="card-header">
     <%= if @survey.id.nil? then t('surveys.new') else t('surveys.edit') end %>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <%= form_for([@user, @project, @survey], class: "form", remote: true) do |f| %>
-      <div class="form-group <%= "has-error" unless @survey.errors[:name].blank? %>">
+      <div class="form-group mb-4<%= "has-error" unless @survey.errors[:name].blank? %>">
         <%= f.label :name, class: "control-label" %>
         <%= f.text_field :name, class: "form-control" %>
       </div>
-      <div class="form-group">
+      <div class="form-group mb-4">
         <%= f.label :description, class: "control-label" %>
         <%= f.text_field :description, class: "form-control" %>
       </div>
-      <div class="form-group <%= "has-error" unless @survey.errors[:code].blank? %>">
+      <div class="form-group mb-4 <%= "has-error" unless @survey.errors[:code].blank? %>">
         <%= f.label :code, class: "control-label" %>
         <%= f.text_field :code, class: "form-control" %>
       </div>
-      <div class="form-group">
+      <div class="form-group mb-4">
         <%= f.label :start_date, class: "control-label" %>
         <%= f.date_select :start_date, class: "form-control", order: [:day, :month, :year]%>
       </div>
-      <div class="form-group">
+      <div class="form-group mb-4">
         <%= f.label :end_date, class: "control-label" %>
         <%= f.date_select :end_date, class: "form-control", order: [:day, :month, :year]%>
       </div>
       <div class="form-group">
+        <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>"/>
         <%= f.submit :class => "btn btn-primary" %>
-        <button type="button" class="btn btn-default" onclick="cancelForm()"><%= t('cancel') %></button>
+        <button type="button" class="btn btn-secondary" onclick="history.back()"><%= t('cancel') %></button>
         <% unless @survey.id.nil? %>
-            <%= link_to t('surveys.delete'), user_project_survey_path(@user, @project, @survey), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-danger pull-right"%>
+            <%= link_to t('surveys.delete'), user_project_survey_path(@user, @project, @survey), data: {turbo_method: :delete, turbo_confirm: t('are_you_sure')}, class: "btn btn-danger float-end"%>
         <% end %>
       </div>
     <% end %>
   </div>
 </div>
-
-<script>
-    function cancelForm() {
-        <% if @survey.id.nil? then %>
-          $('#new_survey').html("<%= escape_javascript(render 'new') %>");
-        <% else %>
-          $('#survey_<%= @survey.id %>').html("<%= escape_javascript(render @survey) %>");
-        <% end %>
-    }
-</script>

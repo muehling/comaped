@@ -1,16 +1,20 @@
-<div class="well" style="width: 100%; padding-bottom: 56%">
+<div class="card" style="width: 100%; padding-bottom: 56%">
   <div id="canvas_<%= concept_map.id%>" style="position:  absolute; top: 0; left: 0; bottom: 0; right: 0; margin-bottom: 20px; margin-left: 20px; margin-right: 20px">
   </div>
 </div>
 
-<script>
-  var nodes_<%= concept_map.id%> = new vis.DataSet([
+<script type="module">
+  import vis from "vis-network"
+  import { DataSet } from "vis-data/peer/umd/vis-data.js"
+
+
+  window.nodes_<%= concept_map.id%> = new DataSet([
     <% concept_map.concepts.each do |c| %>
     <%= render c %>,
     <% end %>
   ]);
 
-  var edges_<%= concept_map.id%> = new vis.DataSet([
+  window.edges_<%= concept_map.id%> = new DataSet([
     <% concept_map.links.each do |l| %>
     <%= render l %>,
     <% end %>
@@ -19,8 +23,8 @@
   var container_<%= concept_map.id%> = document.getElementById('canvas_<%= concept_map.id%>');
 
   var data_<%= concept_map.id%> = {
-    nodes: nodes_<%= concept_map.id%>,
-    edges: edges_<%= concept_map.id%>
+    nodes: window.nodes_<%= concept_map.id%>,
+    edges: window.edges_<%= concept_map.id%>
   };
 
   var options = {
@@ -48,7 +52,7 @@
     }
   };
 
-  var network_<%= concept_map.id%> = new vis.Network(container_<%= concept_map.id%>, data_<%= concept_map.id%>, options);
+  window.network_<%= concept_map.id%> = new vis.Network(container_<%= concept_map.id%>, data_<%= concept_map.id%>, options);
   network_<%= concept_map.id%>.once('afterDrawing', function(params) {network_<%= concept_map.id%>.fit();});
   network_<%= concept_map.id%>.redraw();
 </script>

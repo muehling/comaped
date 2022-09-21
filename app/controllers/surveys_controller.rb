@@ -39,69 +39,68 @@ class SurveysController < ApplicationController
   # GET /surveys/new.js
   def new
     @survey = Survey.new
-    respond_to do |format|
-      format.js {
-      }
-      format.zip {
-        render 'import.js.erb', content_type: Mime::JS
-      }
+    if params['import'].nil?
+      render "create_survey"
+    else
+      render "import_survey"
     end
   end
 
   # GET /surveys/1/edit.js
   def edit
+    if params[:detail].nil?
+      render 'edit'
+    else
+      render 'edit_detail'
+    end
   end
 
   # POST /surveys
   def create
-    respond_to do |format|
-      format.js {
-        @survey = @project.surveys.build(survey_params)
-        if @survey.save
-          redirect_to user_project_survey_path(@user, @project, @survey)
-        else
-          render :new
-        end
-      }
-      format.html {
-        if params.has_key?(:survey) && !params[:survey][:file].nil?
-          res = true
-          params[:survey][:file].each do |f|
-            @survey = @project.surveys.build
-            res = res && @survey.import_file(f.tempfile)
-          end
-        end
-        if res
-          if params[:survey][:file].size == 1
-            redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.imported')
-          else
-            redirect_to user_project_surveys_path(@user, @project), notice: I18n.t('surveys.imported')
-          end
-        else
-          redirect_to user_project_surveys_path(@user, @project), notice: I18n.t('error_import')
-        end
-      }
+    # no file was passed -> create from form input
+    if params.has_key?(:survey) && params[:survey][:file].nil?
+      @survey = @project.surveys.build(survey_params)
+      logger.info @survey.inspect
+      if @survey.save
+        redirect_to user_project_survey_path(@user, @project, @survey)
+      else
+        render :new
+      end
+      return
+    end
+
+    # one or more files were passed -> import
+    if params.has_key?(:survey) && !params[:survey][:file].nil?
+      res = true
+      params[:survey][:file].each do |f|
+        @survey = @project.surveys.build
+        res = res && @survey.import_file(f.tempfile)
+      end
+    end
+    if res
+      if params[:survey][:file].size == 1
+        redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.imported')
+      else
+        redirect_to user_project_path(@user, @project), notice: I18n.t('surveys.imported')
+      end
+    else
+      redirect_to user_project_surveys_path(@user, @project), notice: I18n.t('error_import')
     end
   end
 
-  # PATCH/PUT /surveys/1.js
+  # PATCH/PUT /surveys/1
   def update
-    respond_to do |format|
-      if @survey.update(survey_params)
-        format.js{}
-        format.html {redirect_to user_project_survey_path(@user, @project, @survey)}
-      else
-        format.js { render :edit }
-      end
+    if @survey.update(survey_params)
+      redirect_to user_project_survey_path(@user, @project, @survey)
+    else
+      redirect_to edit_user_project_survey_path(@user, @project, @survey), notice: I18n.t('error')
     end
   end
 
   # DELETE /surveys/1
   def destroy
     @survey.destroy
-    respond_to do |format|
-      format.html { redirect_to user_project_path(@user, @project), notice: I18n.t('surveys.destroyed') }
-    end
+    redirect_to user_project_surpath(@user, @project), notice: I18n.t('surveys.destroyed'), status: :see_other
   end
 
   private

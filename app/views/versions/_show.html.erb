@@ -1,40 +1,84 @@
-<button class="btn btn-default" onclick="version = 0; updatePreview();"><span class="glyphicon glyphicon-fast-backward"></span></button>
-<button id="prev" class="btn btn-default" onclick="version = Math.max(0, version-1); updatePreview();"><span class="glyphicon glyphicon-step-backward"></span></button>
-<button id="play" class="btn btn-default" onclick="play();"><span class="glyphicon glyphicon-play"></span></button>
-<button id="next" class="btn btn-default" disabled="disabled" onclick="version = Math.min(max_version, version+1);; updatePreview();"><span class="glyphicon glyphicon-step-forward"></span></button>
-<button class="btn btn-default" onclick="version = max_version; updatePreview();"><span class="glyphicon glyphicon-fast-forward"></span></button>
+<button class="btn btn-light" onclick="updatePreview(0);"><span class="bi-chevron-double-left"></span></button>
+<button id="prev" class="btn btn-light" onclick="updatePreview(Math.max(0, window.version-1));"><span class="bi-chevron-left"></span></button>
+<button id="play" class="btn btn-light" onclick="play();"><span class="bi-play"></span></button>
+<button id="next" class="btn btn-light" disabled="disabled" onclick="updatePreview(Math.min(max_version, window.version+1));"><span class="bi-chevron-right"></span></button>
+<button class="btn btn-light" onclick="updatePreview(max_version);"><span class="bi-chevron-double-right"></span></button>
 
-<script>
+<script type="module">
+  import "jquery"
   const max_version = <%= concept_map.versions.count-1%>;
-  var version = max_version;
-  var playing = false;
-  var timerID = -1;
 
-    function updatePreview() {
-      jQuery.ajax({
-        type: "GET",
-        url: "<%= concept_map_versions_path(concept_map) %>/" + version + "/"
-      });
-      $('#cur_ver').html(version+1);
-      if (version == 0)
-        $('#prev').attr("disabled", "disabled");
-      else
-        $('#prev').removeAttr("disabled");
-      if (version == max_version)
-        $('#next').attr("disabled", "disabled");
-      else
-        $('#next').removeAttr("disabled");
-    };
+  window.version = max_version;
+  let playing = false;
+  let timerID = -1;
+  let timerId
 
-    function play() {
-      playing = !playing
-      if (playing) {
-        $('#play').html("<span class='glyphicon glyphicon-pause'></span>");
-        timerId = window.setInterval(function() {if (version == max_version) $('#play').click(); else $('#next').click();}, 1500);
-      }
-      else {
-        $('#play').html("<span class='glyphicon glyphicon-play'></span>");
-        window.clearInterval(timerId);
-      }
-    };
+  async function updatePreview(desiredVersion) {
+    window.version = desiredVersion
+    const url = "<%= concept_map_versions_path(concept_map) %>/" + desiredVersion + "/"
+    const res = await fetch(url, {
+      "method": "GET",
+      mode: "cors",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+    })
+
+    // concept map was not found, or user has no privileges to see it -> redirect to login page
+    if (res.status === 401) {
+      location.replace("/backend")
+    }
+    // no versions found. This can happen if a concept map was imported without versions
+    if (res.status === 404) {
+      //TODO display message to user?
+      return
+    }
+    const body = await res.json()
+
+    window.nodes_<%= @concept_map.id%>.clear();
+    window.edges_<%= @concept_map.id%>.clear();
+    window.nodes_<%= @concept_map.id%>.update(body.nodes)
+    window.edges_<%= @concept_map.id%>.update(body.edges.map(node=>({id: node.id, from: node.start_id, to: node.end_id, ...node})))
+
+    network_<%= @concept_map.id%>.redraw();
+
+    $('#cur_ver').html(window.version+1);
+    if (version === 0) {
+      $('#prev').attr("disabled", "disabled");
+    } else {
+      $('#prev').removeAttr("disabled");
+    }
+    if (version === max_version) {
+      $('#next').attr("disabled", "disabled");
+    } else {
+      $('#next').removeAttr("disabled");
+    }
+
+    window.timeline.setCustomTime(body.timestamp, window.timeBar);
+    window.timeline.moveTo(body.timestamp);
+  };
+
+  function play() {
+    playing = !playing
+
+    if (playing) {
+      $('#play').html("<span class='bi-pause'></span>");
+      timerId = window.setInterval(function() {
+        if (window.version === max_version) {
+          play()
+        }else {
+          updatePreview(Math.min(max_version, window.version + 1))
+        }
+      }, 1500);
+    }
+    else {
+      $('#play').html("<span class='bi-play'></span>");
+      window.clearInterval(timerId);
+    }
+  };
+  window.play = play
+  window.updatePreview = updatePreview
+  window.version = version
+  window.max_version = max_version
 </script>

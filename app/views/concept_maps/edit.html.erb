@@ -4,401 +4,118 @@
 <% if @concept_map.first? %>
   <%= render 'concept_maps/editor/intro' %>
 <% end %>
-
 <!-- Flexible form for CRUD-actions -->
-<div id="panel" class="hidden panel panel-default" style="z-index:1; position:absolute; left:0px; top:0px;">
-  <div class="panel-body">
-    <p><em id="action"></em><button type="button" class="close pull-right" onclick="hideForm();" aria-label="Close"><span class="glyphicon glyphicon-remove" aria-hidden="true" style="font-size: 12pt"></span></button></p>
-
-    <form id="form" class="form-inline" method="post" data-remote="true">
+<div id="edit-dialog" class="d-none card" style="z-index:1; position:absolute; left:0px; top:0px;">
+  <div class="card-header d-flex justify-content-between">
+    <em id="action"></em>
+    <button type="button" class="btn-close" onclick="hideForm();" aria-label="Close"></button>
+  </div>
+  <div class="card-body">
+    <form id="form" class="form-inline" onsubmit="submitChanges(event);return false;">
       <div class="form-group">
         <% if @concept_map.survey.association_labels.blank? %>
             <input id="entry_link" class="form-control" name="link[label]" placeholder="<%= t :name %>" type="text" />
         <% else %>
             <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
         <% end %>
+
         <input id="entry_concept" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
         <input id="x" type="hidden" name="concept[x]"/>
         <input id="y" type="hidden" name="concept[y]"/>
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
+
+        <!--DH Add the following hidden inputs: not needed for the cooperation anymore, but who knows for what it might be useful later-->
+        <input id="concept_id" type="hidden" name="concept[id]"/>
+        <input id="lock" type="hidden" name="concept[lock]"/>
+        <input id="link_id" type="hidden" name="link[id]"/>
+        <input id="link_lock" type="hidden" name="link[lock]"/>
+
       </div>
-      <div class="form-group">
+      <div class="form-group mt-2 d-flex">
         <%= render 'concept_maps/editor/colorpicker' %>
-        <button class="btn btn-sm btn-success" onclick="return validateForm();"><span class="glyphicon glyphicon-ok"></span></button>
-        <button id="delete" class="btn btn-sm btn-danger" onclick="destroy();return false;"><span class="glyphicon glyphicon-trash"></span></button>
+        <div class="flex-grow-1"></div>
+        <button class="btn btn-sm btn-success flex-grow-0  me-1 mb-2" onclick="return validateForm();"><span class="bi-check-lg"></span></button>
+        <button id="delete" class="btn btn-sm btn-danger flex-grow-0 mb-2" onclick="destroy();return false;"><span class="bi-trash"></span></button>
       </div>
     </form>
   </div>
 </div>
-
 <!-- Dummy element for Vis-canvas -->
 <div id="map-canvas">
 </div>
+<!-- DH: The container on the right with all the user information -->
+<div id="right">
+  <div id="users">
+      <!-- DH: Needed to determine the current user ID-->
+     <div id="user_me_id" style="display: none"><%= @current_student.id %></div>
+
+      <!-- DH: Needed to determine the current Map -->
+      <div id="map_id" style="display: none"><%= @map.id %>
+      </div>
+
+      <!-- DH. Show all users of this map-->
+      <div id="students">
+        <div id="students_header">
+          <%= t('active_students') %>
+        </div>
+
+        <!-- DH: Show the "me" user first -->
+        <div id="student_<%= @current_student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= @current_student.color %>">
+          <label> <%= @current_student.name %> (<%= t('me') %>) <input type="checkbox" class="filter_students" id="filter_<%= @current_student.id %>" checked/></label>
+        </div>
+
+        <!-- DH: show all the other user-->
+        <% @student.each do |student| %>
+          <% if student.id !=  @current_student.id %>
+            <div id="student_<%= student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= student.color %>">
+              <label><%= student.name %> <input type="checkbox" class="filter_students" id="filter_<%= student.id %>" checked/></label>
+            </div>
+          <% else %>
+          <% end %>
+        <% end %>
+      </div>
+  </div>
+
+  <!-- DH: The recent changes and filter-->
+  <h4 style="text-align:center"> <%= t('recent_changes') %></h4>
+  <div id="filter_left_students" style="display: none; text-align: center; font-size: 12 px; margin-bottom: 1em;">
+    <label id="label_filter_left_students"><%= t('students_left') %><input type="checkbox" class="filter_students" id="filter_left" checked/></label>
+  </div>
+  <!-- DH: Filter options -->
+  <div id="check" style="text-align: center; font-size: 12px; margin-bottom: 1em">
+    <div id="checkAll" style="width: 50%; float: left; border-right: 1px dotted black;"><%= t('check_all') %></div>
+    <div id="uncheckAll" style="width: 50%; float: right;"><%= t('uncheck_all') %></div>
+  </div>
+  <div id="recent_changes">
+  </div>
+  </div>
+
 
 <!-- Scripts -->
-<script type="text/javascript">
-    const none = 0;
-    const addNode = 1;
-    const editNode = 2;
-    const addEdge = 3;
-    const editEdge = 4;
-    const dragNode = 5;
+<script type="module">
+  import { init } from "application"
 
-    var mode = none;
-    var canvasX = 0, canvasY = 0, id = 0;
-
-    var nodes = new vis.DataSet([
-        <% @concept_map.concepts.each do |c| %>
-        <%= render c %>,
-        <% end %>
-    ]);
-
-    var edges = new vis.DataSet([
+  init({
+    edgeData: [
         <% @concept_map.links.each do |l| %>
         <%= render l %>,
         <% end %>
-    ]);
-
-    var container = document.getElementById('map-canvas');
-
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
-
-    var options = {
-        autoResize: true,
-        height: '100%',
-        width: '100%',
-        edges: {
-          arrows : {
-              to: {
-                  enabled: true,
-                  scaleFactor: 0.75
-              },
-          },
-          smooth: false
-        },
-        physics: {
-            enabled: false
-        },
-        interaction : {
-            hover: true,
-            navigationButtons: true,
-            selectConnectedEdges: false,
-            hoverConnectedEdges: false,
-        }
-    };
-
-    var network = new vis.Network(container, data, options);
-
-    $('#context-help-text').html($('#ch_normal').html());
-
-    network.on("hoverNode", function (params) {
-      if (mode == none)
-        $('#context-help-text').html($('#ch_hovernode').html());
-      network.canvas.body.container.style.cursor = 'pointer'
-    });
-    network.on("hoverEdge", function (params) {
-      if (mode == none)
-        $('#context-help-text').html($('#ch_hoveredge').html());
-      network.canvas.body.container.style.cursor = 'pointer'
-    });
-
-    network.on("blurNode", function (params) {
-      if (mode == none)
-        $('#context-help-text').html($('#ch_normal').html());
-      network.canvas.body.container.style.cursor = 'default'
-    });
-    network.on("blurEdge", function (params) {
-      if (mode == none)
-        $('#context-help-text').html($('#ch_normal').html());
-      network.canvas.body.container.style.cursor = 'default'
-    });
-
-    //Drag: Knoten verschieben - Anfang
-    network.on("dragStart", function (params) {
-      if (params.nodes.length > 0) {
-        id = params.nodes[0];
-        mode = dragNode;
-      }
-    });
-
-    //Drag: Knoten verschieben - Ende
-    network.on("dragEnd", function (params) {
-      switch (mode) {
-        case dragNode:
-          jQuery.ajax({
-            type: "PUT",
-            url: "<%= concept_map_concepts_path(@map) %>/" + id + "/",
-            data: {"concept": {'label': nodes.get(id).label, 'x': params.pointer.canvas.x, 'y':  params.pointer.canvas.y}}
-          });
-          hideForm();
-      }
-    });
-
-    //Klick: Aktuelle Aktion abbrechen, Edit Node, Edit Edge, Add Node, Add Edge
-    network.on("click", function (params) {
-      switch (mode) {
-        case editEdge:
-        case editNode:
-        case addNode:
-          hideForm();
-          break;
-        case addEdge:
-          if (params.nodes.length > 0) {
-            $('#start').val(id);
-            $('#end').val(params.nodes[0]);
-            canvasX = Math.min(nodes.get(id).x, nodes.get(params.nodes[0]).x) + Math.abs(nodes.get(id).x - nodes.get(params.nodes[0]).x) / 2;
-            canvasY = Math.min(nodes.get(id).y, nodes.get(params.nodes[0]).y) + Math.abs(nodes.get(id).y - nodes.get(params.nodes[0]).y) / 2;
-            edge = edges.get({
-              filter: function (item) {
-                return (item.from == $('#start').val() && item.to == $('#end').val());
-              }
-            }, {returnType: 'Array'});
-            if (edge.length > 0) {
-              id = edge[0].id;
-              mode = editEdge;
-            }
-            showForm();
-          }
-          else
-            hideForm();
-          break;
-        case none:
-          if (params.nodes.length > 0) {
-            id = params.nodes[0];
-            setTimeout(function() {
-            <% if @concept_map.survey.concept_labels.blank? %>
-              if (mode == none) {
-                canvasX = nodes.get(id).x;
-                canvasY = nodes.get(id).y;
-                mode = editNode;
-                showForm();
-              }
-            <% end %>
-            },
-                175);
-          }
-          else
-            if (params.edges.length > 0) {
-              id = params.edges[0];
-              setTimeout(function() {
-                if (mode == none) {
-                  canvasX = params.pointer.canvas.x;
-                  canvasY = params.pointer.canvas.y;
-                  mode = editEdge;
-                  showForm();
-                }
-              },
-                  175);
-            }
-      }
-    });
-
-    //Hold: Neue Kante erstellen - Anfang
-    network.on("hold", function (params) {
-      if (mode == none) {
-        if (params.nodes.length > 0) {
-          id = params.nodes[0];
-          mode = addEdge;
-          $('#context-help-text').html($('#ch_addedge').html());
-        }
-        else {
-          <% if @concept_map.survey.concept_labels.blank? %>
-            canvasX = params.pointer.canvas.x;
-            canvasY = params.pointer.canvas.y;
-            mode = addNode;
-            showForm();
-          <% end %>
-        }
-      }
-    });
-
-    function destroy() {
-      switch (mode) {
-        case editNode:
-          jQuery.ajax({type: "DELETE", url: "<%= concept_map_concepts_path(@map) %>/" + id });
-          break;
-        case editEdge:
-          jQuery.ajax({type: "DELETE", url: "<%= concept_map_links_path(@map) %>/" + id });
-          break;
-      }
-      hideForm();
+    ],
+    nodeData: [
+        <% @concept_map.concepts.each do |c| %>
+        <%= render c %>,
+        <% end %>
+    ],
+    conceptsPath: "<%= concept_map_concepts_path(@map) %>",
+    conceptMapsPath: "<%= concept_map_path(@concept_map, format: :text)%>",
+    linksPath: "<%= concept_map_links_path(@map) %>",
+    dialogTexts: {
+      editNode: "<%= t('.action_edit_node')%>",
+      addNode: "<%= t('.action_new_node')%>",
+      editEdge: "<%= t('.action_edit_link')%>",
+      addEdge: "<%= t('.action_new_link')%>"
     }
-
-    function showForm() {
-      $("#panel").removeClass("hidden");
-      $("#panel").attr("style", "z-index: 1; position:absolute;left:" + ($("#map-canvas").offset().left+network.canvasToDOM({x: canvasX, y: canvasY}).x-$("#form").width()/2) + "px;top:" + ($("#map-canvas").offset().top+network.canvasToDOM({x: canvasX, y: canvasY}).y-$("#form").height()/2) + "px;");
-      switch (mode) {
-            case addNode:
-              $('#context-help-text').html($('#ch_new').html());
-              $('#action').html("<%= t('.action_new_node')%>");
-              $("#entry_concept").val("");
-              $("#entry_concept").removeClass("hidden");
-              $("#colorpicker").removeClass("hidden");
-              $("#entry_link").addClass("hidden");
-              $("#delete").addClass("hidden");
-              $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>');
-              $("#form").attr('method', 'post');
-              $("#x").attr("value", canvasX);
-              $("#y").attr("value", canvasY);
-              focus("#entry_concept");
-              break;
-            case editNode:
-              $('#context-help-text').html($('#ch_edit').html());
-              $('#action').html("<%= t('.action_edit_node')%>");
-              $("#entry_concept").val(nodes.get(id).label);
-              $("#entry_concept").removeClass("hidden");
-              $("#colorpicker").removeClass("hidden");
-              selectColor(nodes.get(id).color.background);
-              $("#entry_link").addClass("hidden");
-              $("#delete").removeClass("hidden");
-              $("#form").attr('action', '<%= concept_map_concepts_path(@map) %>/' + id);
-              $("#form").attr('method', 'put');
-              $("#x").attr("value", canvasX);
-              $("#y").attr("value", canvasY);
-              focus("#entry_concept");
-              break;
-            case editEdge:
-              $('#context-help-text').html($('#ch_edit').html());
-              $('#action').html("<%= t('.action_edit_link')%>");
-              $("#entry_link").val(edges.get(id).label);
-              $("#entry_link").removeClass("hidden");
-              $("#entry_concept").addClass("hidden");
-              $("#colorpicker").addClass("hidden");
-              $("#delete").removeClass("hidden");
-              $("#form").attr('action', '<%= concept_map_links_path(@map) %>/' + id);
-              $("#form").attr('method', 'put');
-              focus("#entry_link");
-              break;
-            case addEdge:
-              $('#context-help-text').html($('#ch_new').html());
-              $('#action').html("<%= t('.action_new_link')%>");
-              $("#entry_link").val("");
-              $("#entry_link").removeClass("hidden");
-              $("#entry_concept").addClass("hidden");
-              $("#colorpicker").addClass("hidden");
-              $("#delete").addClass("hidden");
-              $("#form").attr('action', '<%= concept_map_links_path(@map) %>');
-              $("#form").attr('method', 'post');
-              focus("#entry_link");
-        }
-   }
-
-    //Edit/Create Aktion beenden
-    function hideForm() {
-        $("#panel").addClass("hidden");
-        $("#panel").focusout();
-        network.unselectAll();
-        mode = none;
-        $('#context-help-text').html($('#ch_normal').html());
-        //Zoom-Out by Mobilgeräten veranlassen
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if ( viewport ) {
-            viewport.content = 'initial-scale=1';
-            viewport.content = 'width=device-width';
-            viewport.content = 'maximum-scale=1';
-        }
-    }
-
-    //Form bei ESC oder Enter schließen
-    $("#entry_concept").on('keyup', function (e) {
-      if (e.keyCode == 27)
-        hideForm();
-    });
-    $("#entry_link").on('keyup', function (e) {
-      if (e.keyCode == 27)
-        hideForm();
-    });
-
-    function validateForm() {
-      if (mode == addNode || mode == editNode) {
-        var t = $('#entry_concept').val();
-        hideForm();
-        node = nodes.get({
-          filter: function (item) {
-            return (item.label.toLocaleLowerCase() === t.toLocaleLowerCase());
-          }
-        });
-        if (node == null || node.length == 0 || node[0].id == id)
-            return true;
-        else {
-          network.focus(node[0].id);
-          return false;
-        }
-      }
-      else {
-        hideForm();
-        return true;
-      }
-
-    }
-
-    function sendMail() {
-      $('#emailgroup').removeClass('has-error');
-      $('#emailgroup').removeClass('has-success');
-      $('#submit').removeClass('btn-danger');
-      $('#submit').removeClass('btn-success');
-      if ($('#email').is(':valid') && $('#email').val() != '') {
-        $.ajax({url: '<%= concept_map_path(@concept_map, format: :text)%>' + '?email=' + $('#email').val()});
-        $('#submit').addClass('btn-success');
-        $('#emailgroup').addClass('has-success');
-      }
-      else {
-        $('#submit').addClass('btn-danger');
-        $('#emailgroup').addClass('has-error');
-      }
-    }
-
-    function searchConcept(concept) {
-        if (concept === "") {
-            $('#searchGroup').removeClass('has-error');
-            $('#searchGroup').removeClass('has-success');
-            return;
-        }
-        node = nodes.get({
-            filter: function (item) {
-                return (item.label.toLocaleLowerCase() === concept.toLocaleLowerCase());
-            }
-        });
-        if (node != null && node.length > 0) {
-            network.focus(node[0].id);
-            $('#searchGroup').removeClass('has-error');
-            $('#searchGroup').addClass('has-success');
-        }
-        else {
-            $('#searchGroup').removeClass('has-success');
-            $('#searchGroup').addClass('has-error');
-        }
-    }
-
-    function focus(id) {
-        setTimeout(function() {
-            $(id).focus();
-        }, 100);
-    }
-
-    //Prevent firing of onresize multiple times during e.g. manual resize
-    var waitForFinalEvent = (function () {
-        var timers = {};
-        return function (callback, ms, uniqueId) {
-            if (!uniqueId) {
-                uniqueId = "Not Resize";
-            }
-            if (timers[uniqueId]) {
-                clearTimeout (timers[uniqueId]);
-            }
-            timers[uniqueId] = setTimeout(callback, ms);
-        };
-    })();
-
-    //Prevent disappearing nodes in Safari when resizing
-    $(window).resize(function () {
-        waitForFinalEvent(function(){
-            network.redraw();
-        }, 250, "Resize");
-    });
-
+  }
+  )
 </script>

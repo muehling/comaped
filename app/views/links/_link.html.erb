@@ -3,11 +3,12 @@ id: <%= link.id %>,
 from: <%= link.start.id %>,
 to: <%= link.end.id  %>,
 label: "<%= link.label %>",
+lock: "<%= link.lock %>",
 font: {align: '<%= if link.start.id < link.end.id then 'bottom' else 'top' end%>'},
 labelHighlightBold: false,
 arrowStrikethrough: false,
 color: {
-  color: '#a0a0a0',
+  color: '<%= if link.lock then 'black' else '#a0a0a0' end%>',
   hover: '#808080',
   highlight:'#808080'
 },

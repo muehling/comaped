@@ -1,8 +1,8 @@
 <span id="colorpicker">
   <input id="color" type="hidden" name="concept[color]" value="<%= palette(0) %>"/>
-  <div class="dropdown" style="display: inline-block">
+  <div class="dropdown" style="display: inline-block;" >
     <div id="currentColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%= default_color %>;"><%= t :color %>&nbsp;<span class="caret"></span></div>
-    <div class="dropdown-menu">
+    <div id="colorSelect" class="dropdown-menu">
       <table>
         <tr>
           <td style="padding-left: 12px;"><div id="color1" class="btn" style="width: 40px;height:30px;background-color: <%= palette(0) %>;" onclick="changeColor('1');"></div></td>
@@ -19,27 +19,11 @@
   </div>
 </span>
 
-<script>
-    function changeColor(id) {
-        $('#currentColor').css('background-color', $('#color'+id).css('background-color'));
-        var color = $('#currentColor').css('background-color');
-        $("#color").attr("value", standardizeColor(color));
-        for (var i = 1; i <= 6; ++i)
-          $('#color'+i).html("<span></span>");
-        $('#color'+id).html("<span class='glyphicon glyphicon-ok'></span>");
-        $("#entry_concept").focus();
-        return false;
-    }
-
-    function selectColor(color) {
-        for (var i = 1; i <= 6; ++i)
-            if (standardizeColor($('#color' + i).css('background-color')) === color)
-                changeColor(i);
-    }
-
-    function standardizeColor(color) {
-        var ctx = document.createElement('canvas').getContext('2d');
-        ctx.fillStyle = color;
-        return ctx.fillStyle;
-    }
+<script type="module">
+  import $ from "jquery"
+  // colorpicker open/close handler
+  $("#currentColor").on("click", () => {
+    const isColorPickerOpen = $("#colorSelect").css("display") === "block"
+    $("#colorSelect").css("display", isColorPickerOpen ? "none" : "block")
+  })
 </script>

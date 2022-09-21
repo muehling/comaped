@@ -34,71 +34,70 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # GET /projects/new.js
+  # GET /projects/new.html
   def new
     @project = Project.new
-    respond_to do |format|
-      format.js {
-      }
-      format.zip {
-        render 'import.js.erb', content_type: Mime::JS
-      }
+    if params['import'].nil?
+      render "create_project"
+    else
+      render "import_project"
     end
   end
 
-  # GET /projects/1/edit.js
+  def import
+  end
+
+  # GET /projects/1/edit.html
   def edit
   end
 
-  # POST /projects.js
+  # POST /projects.html
   def create
-    respond_to do |format|
-      format.js {
-        @project = @user.projects.build(project_params)
-        if @project.save
-         redirect_to user_project_path(@user, @project)
-        else
-          render :new
-        end
-      }
-      format.html {
-        if params.has_key?(:project) && !params[:project][:file].nil?
-          res = true
-          params[:project][:file].each do |f|
-            @project = @user.projects.build
-            res = res && @project.import_file(f.tempfile)
-          end
-        end
-        if res
-          if params[:project][:file].size == 1
-            redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')
-          else
-            redirect_to user_projects_path(@user), notice: I18n.t('projects.imported')
-          end
-        else
-          redirect_to user_projects_path(@user), notice: I18n.t('error_import')
-        end
-      }
+
+    # create project from form inputs
+    if params.has_key?(:project) && params[:project][:file].nil?
+      @project = @user.projects.build(project_params)
+      if @project.save
+       redirect_to user_project_path(@user, @project)
+      else
+        render :new
+      end
+      return
+    end
+
+    # create projects from input file(s)
+    if params.has_key?(:project) && !params[:project][:file].nil?
+      res = true
+      params[:project][:file].each do |f|
+        @project = @user.projects.build
+        res = res && @project.import_file(f.tempfile)
+      end
+    end
+
+    if res
+      if params[:project][:file].size == 1
+        redirect_to user_project_path(@user, @project), notice: I18n.t('projects.imported')
+      else
+        redirect_to user_projects_path(@user), notice: I18n.t('projects.imported')
+      end
+    else
+      redirect_to user_projects_path(@user), notice: I18n.t('error_import')
     end
   end
 
-  # PATCH/PUT /projects/1.js
+  # PATCH/PUT /projects/1
   def update
-    respond_to do |format|
-      if @project.update(project_params)
-        format.js {}
-      else
-        format.js { render :edit }
-      end
+    if @project.update(project_params)
+      redirect_to user_project_path(@user, @project)
+    else
+      render edit_user_project_path(@user, @project), notice: I18n.t('error')
     end
   end
 
   # DELETE /projects/1
   def destroy
     @project.destroy
-    respond_to do |format|
-      format.html { redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed')}
-    end
+    redirect_to user_projects_path(@user), notice: I18n.t('projects.destroyed'), status: :see_other
   end
 
   private
