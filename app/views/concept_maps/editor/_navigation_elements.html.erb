@@ -3,9 +3,9 @@
 
   <div id="header-nav">
     <div class="dropdown">
-      <div class="dropdown-toggle" id="menuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <span id="header-button" class="bi-list canvasButton" title="<%=t('concept_maps.edit.menu')%>"></span>
-      </div>
+      
+        <span id="header-button" class="bi-list canvasButton dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<%=t('concept_maps.edit.menu')%>"></span>
+
       <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
         <li class="dropdown-header"><%= t('concept_maps.edit.help') %></li>
         <% unless @concept_map.survey.introduction.blank? %>
