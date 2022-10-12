@@ -12,6 +12,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   build-essential \
   gnupg2 \
   git \
+  sqlite3 \
+  libsqlite3-dev \
   default-libmysqlclient-dev \
   nano \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
