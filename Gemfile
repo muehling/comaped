@@ -8,13 +8,11 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.2'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4.2'
+
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbo-rails', '~> 1'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
@@ -34,9 +32,11 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.0.5'
+  # Use sqlite3 as the database for Active Record
+  gem 'sqlite3', '~> 1.4.2'
 end
 
-group :production do
+group :production, :staging do
   gem 'mysql2'
 end
 

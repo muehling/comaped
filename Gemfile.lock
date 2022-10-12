@@ -187,10 +187,6 @@ GEM
     strscan (3.0.4)
     thor (1.2.1)
     timeout (0.3.0)
-    turbo-rails (1.1.1)
-      actionpack (>= 6.0.0)
-      activejob (>= 6.0.0)
-      railties (>= 6.0.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     vite_rails (3.0.10)
@@ -228,7 +224,6 @@ DEPENDENCIES
   rubyzip
   sprockets-rails (~> 3.4)
   sqlite3 (~> 1.4.2)
-  turbo-rails (~> 1)
   tzinfo-data
   vite_rails
   web-console (>= 3.3.0)
