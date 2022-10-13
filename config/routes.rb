@@ -33,7 +33,7 @@ Rails.application.routes.draw do
     end
 
   if ENV['RAILS_ENV'] == 'staging'
-    scope(path: ENV['RAILS_RELATIVE_ROOT_URL']) { routes_config.call }
+    scope(path: ENV['RAILS_RELATIVE_URL_ROOT']) { routes_config.call }
   else
     routes_config.call
   end
