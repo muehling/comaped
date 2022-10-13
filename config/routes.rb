@@ -1,3 +1,4 @@
+Rails.application.routes.default_url_options[ENV['RAILS_RELATIVE_URL_ROOT']]
 Rails.application.routes.draw do
   routes_config =
     Proc.new do
@@ -32,7 +33,7 @@ Rails.application.routes.draw do
       root 'application#frontend', as: :frontend
     end
 
-  if ENV['RAILS_ENV'] == 'staging'
+  if ENV['RAILS_RELATIVE_URL_ROOT']
     scope(path: ENV['RAILS_RELATIVE_URL_ROOT']) { routes_config.call }
   else
     routes_config.call
