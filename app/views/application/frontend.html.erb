@@ -1,4 +1,4 @@
-<%= form_tag(url_for(controller: 'application', action: 'map_form'), class: "form") do %>
+<%= form_tag(map_path, class: "form") do %>
     <div class="form-group">
       <label class="control-label" for="code"><%= t('.enter_code') %></label>
       <%= text_field_tag "code", nil, type: "text", class: "form-control"%>

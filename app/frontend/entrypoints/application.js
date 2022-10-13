@@ -1,18 +1,33 @@
-
 import './add_jquery'
-import * as bootstrap from "bootstrap"
-import "@hotwired/turbo-rails"
+import * as bootstrap from 'bootstrap'
+import '@hotwired/turbo-rails'
 
-import ConceptMap from "../js/ConceptMap"
-import BackendViewer from "../js/BackendViewer"
+import ConceptMap from '../js/ConceptMap'
+import BackendViewer from '../js/BackendViewer'
+
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 window.bootstrap = bootstrap
 
 /**********************************
  * intantiates the editor object
  *********************************/
-window.initEditor = ({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts }) => {
-  const cm = new ConceptMap({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts })
+window.initEditor = ({
+  edgeData,
+  nodeData,
+  conceptsPath,
+  conceptMapsPath,
+  linksPath,
+  dialogTexts,
+}) => {
+  const cm = new ConceptMap({
+    edgeData,
+    nodeData,
+    conceptsPath,
+    conceptMapsPath,
+    linksPath,
+    dialogTexts,
+  })
 
   // expose handlers needed for DOM events
   window.hideForm = cm.hideForm
@@ -20,7 +35,7 @@ window.initEditor = ({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksP
   window.searchConcept = cm.searchConcept
   window.sendMail = cm.sendMail
   window.destroy = cm.destroy
-  window.submitChanges = (event) => {
+  window.submitChanges = event => {
     event.preventDefault()
     event.stopPropagation()
     cm.onSubmit()
@@ -31,11 +46,19 @@ window.initEditor = ({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksP
   window.changeColor = cm.changeColor
 }
 
-
 /**********************************
  * instantiates Objects needed to display concept maps and timelines in admin area
  *********************************/
-window.initBackend = ({ edgeData, nodeData, id, fetchUrl, items, firstTimestamp, lastTimestamp, maxVersion }) => {
+window.initBackend = ({
+  edgeData,
+  nodeData,
+  id,
+  fetchUrl,
+  items,
+  firstTimestamp,
+  lastTimestamp,
+  maxVersion,
+}) => {
   window.viewers = window.viewers || {}
 
   // create an instance for the passed concept map id if none is present
@@ -51,9 +74,15 @@ window.initBackend = ({ edgeData, nodeData, id, fetchUrl, items, firstTimestamp,
 
   // function is called from the timeline partial. This will init the timeline data.
   if (fetchUrl) {
-    window.viewers[id].setTimelineData({ id, fetchUrl, items, firstTimestamp, lastTimestamp, maxVersion })
+    window.viewers[id].setTimelineData({
+      id,
+      fetchUrl,
+      items,
+      firstTimestamp,
+      lastTimestamp,
+      maxVersion,
+    })
   }
 
   return window.viewers[id]
-
 }

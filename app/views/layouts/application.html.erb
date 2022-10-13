@@ -10,8 +10,8 @@
     <!-- Mobile Unterstützung verbessern -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="manifest" href="/manifest.json">
-    <% if ENV['RAILS_ENV']=="staging" %>
-      <meta name="turbo-root" content="/comaped">
+    <% if ENV['RAILS_RELATIVE_URL_ROOT'] %>
+      <meta name="turbo-root" content=<%=ENV['RAILS_RELATIVE_URL_ROOT']%>>
     <% end %>
   </head>
 
