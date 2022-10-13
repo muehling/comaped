@@ -23,7 +23,8 @@ ENV LANG=C.UTF-8 \
   BUNDLE_RETRY=3 \
   RAILS_ENV=staging \
   RAILS_RELATIVE_URL_ROOT='/comaped' \
-  RAILS_SERVE_STATIC_FILES=true
+  RAILS_SERVE_STATIC_FILES=true \
+  VITE_RUBY_BASE='/comaped'
 
 WORKDIR /usr/src/app
 COPY Gemfile /Gemfile
