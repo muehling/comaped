@@ -1,12 +1,13 @@
 json.edge do
+  json.id @link.id
   json.from @link.start_id
   json.to @link.end_id
   json.label @link.label
-  json.id @link.id
-  json.font do
-    json.align @link.start_id < @link.end_id ? 'bottom' : 'top'
-  end
   json.labelHighlightBold false
+  json.font do
+    json.align 'top'
+  end
+  json.arrows 'to'
   json.arrowStrikethrough false
   json.color do
     json.color '#a0a0a0'

@@ -1,12 +1,21 @@
+
 <%= render 'concept_maps/editor/navigation_elements' %>
 
+
+
+
+<!-- Hover Button -->
+<div id="header-hover" class= "hidden">
+  <button id="hoverButton" class="btn info" hidden ></button>
+</div>
 <!-- Intro -->
-<% if !@concept_map.first? %>
+<% if @concept_map.first? %>
   <%= render 'concept_maps/editor/intro' %>
 <% end %>
 <!-- Flexible form for CRUD-actions -->
 <div id="edit-dialog" class="d-none card" style="z-index:1; position:absolute; left:0px; top:0px;">
-  <div class="card-header d-flex justify-content-between">
+  <meta meta name="viewport" content="width=device-width, user-scalable=no" />
+  <div id="edit-dialog-header" class="card-header d-flex justify-content-between">
     <em id="action"></em>
     <button type="button" class="btn-close" onclick="hideForm();" aria-label="Close"></button>
   </div>
@@ -26,13 +35,21 @@
       </div>
       <div class="form-group mt-2 d-flex">
         <%= render 'concept_maps/editor/colorpicker' %>
-        <div class="flex-grow-1"></div>
-        <button class="btn btn-sm btn-success flex-grow-0  me-1 mb-2" onclick="return validateForm();"><span class="bi-check-lg"></span></button>
-        <button id="delete" class="btn btn-sm btn-danger flex-grow-0 mb-2" onclick="destroy();return false;"><span class="bi-trash"></span></button>
+        <%= render 'concept_maps/editor/shapepicker' %>
+      <div class="flex-grow-1"></div>
+        <button class="bi-check-lg btn btn-sm btn-success flex-grow-0  me-1 mb-2 " onclick="return validateForm();"></button>
+        <button id="delete" class="btn btn-sm btn-danger flex-grow-0 mb-2 bi-trash" onclick="destroy();return false;"></button>
       </div>
     </form>
   </div>
 </div>
+
+
+<div id="doubleNodeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_node') %></div>
+
+<div id="doubleEdgeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_edge') %></div>
+
+
 <!-- Dummy element for Vis-canvas -->
 <div id="map-canvas">
 </div>

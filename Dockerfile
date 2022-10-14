@@ -11,6 +11,8 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends \
   libmariadb-dev \
   sqlite3 \
   libsqlite3-dev \
+  libpq-dev \
+  postgresql-client \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 

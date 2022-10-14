@@ -8,12 +8,20 @@ module ConceptsHelper
     ['#cfe0c8', '#0ea5c6', '#ffcdab', '#becbff', '#ded473', '#ff8484']
   end
 
+  def shapes
+    [ 'ellipse', 'box', 'circle']
+  end
+
   def default_color
     return colors[0]
   end
 
   def palette(i)
     return colors[i]
+  end
+
+  def shape_palette(i)
+    return shapes[i]
   end
 
   def get_highlight(color)

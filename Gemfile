@@ -8,7 +8,6 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.2'
-
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 

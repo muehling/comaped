@@ -1,7 +1,7 @@
 <span id="colorpicker">
   <input id="color" type="hidden" name="concept[color]" value="<%= palette(0) %>"/>
   <div class="dropdown" style="display: inline-block;" >
-    <div id="currentColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%= default_color %>;"><%= t :color %>&nbsp;<span class="caret"></span></div>
+    <div id="currentColor" class="color btn dropdown-toggle me-1" data-toggle="dropdown" style="width: 50px;height:36px;background-color: <%= default_color %>;"><span class="caret"></span></div>
     <div id="colorSelect" class="dropdown-menu">
       <div class="d-flex justify-content-between flex-wrap mx-1">
         <div id="colorSelect-0" class="colorSelectIcon btn m-1" style="width: 40px;height:30px;background-color: <%= palette(0) %>;"></div>
@@ -19,7 +19,9 @@
 
   $("#currentColor").on("click", () => {
     const isColorPickerOpen = $("#colorSelect").css("display") === "block"
+    const isShapePickerOpen = $("#shapeSelect").css("display") === "block"
     $("#colorSelect").css("display", isColorPickerOpen ? "none" : "block")
+    if (!isColorPickerOpen) $("#shapeSelect").css("display", "none")  // ColorPicker is about to be opened -> close ShapePicker
   })
 
   for (let i = 0; i < 6; i++){

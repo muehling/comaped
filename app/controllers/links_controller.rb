@@ -6,7 +6,7 @@ class LinksController < ApplicationController
 
   # POST /concept_maps/1/links
   def create
-    @link = @map.links.build(link_params)
+    @link = @map.links.build(label: link_params[:label], start_id: link_params[:start_id].to_i, end_id: link_params[:end_id].to_i)
     if @link.save
       @map.versionize(DateTime.now)
     end

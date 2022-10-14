@@ -48,7 +48,7 @@ class ConceptsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_params
-    params.require(:concept).permit([:label, :x, :y, :color])
+    params.require(:concept).permit([:label, :x, :y, :color, :shape])
   end
 
 end

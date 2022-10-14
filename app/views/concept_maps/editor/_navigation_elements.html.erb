@@ -1,58 +1,72 @@
 <!-- Menubutton top left corner -->
-<div id="header-nav">
-  <div class="dropdown">
-    <div class="dropdown-toggle" id="menuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <span class="bi-list canvasButton" title="<%=t('concept_maps.edit.menu')%>"></span>
-    </div>
-    <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
-      <li class="dropdown-header"><%= t('concept_maps.edit.help') %></li>
-      <% unless @concept_map.survey.introduction.blank? %>
-        <li><%= link_to t('concept_maps.edit.task'), '', onclick: "$('#task').removeClass('d-none');return false;", class: "dropdown-item"%></li>
-      <% end %>
-      <li><%= link_to t('concept_maps.edit.help_short'), '', onclick: "$('#context-help').removeClass('d-none');return false;", class: "dropdown-item"%></li>
-      <li><%= link_to t('concept_maps.edit.help_info'), '#',  data: {"bs-toggle": "modal", "bs-target": "#info"}, class: "dropdown-item"%></li>
-      <li role="separator" class="dropdown-divider"></li>
-      <li class="dropdown-header"><%= t('export') %></li>
-      <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text'), class: "dropdown-item"%></li>
-      <li><a id="png_link"  class="dropdown-item" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
-      <li role="separator" class="dropdown-divider"></li>
-      <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {toggle: "modal", target: "#legal"}, class: "dropdown-item"%></li>
-      <li><%= link_to t('logout'), logout_path(target: 'frontend'), class: "dropdown-item"%></li>
-    </ul>
-  </div>
-</div>
+<div class="btn-group">
 
-<!-- Code info + Mailform top center -->
-<div id="header-code" class="alert">
-  <div class="dropdown">
-    <div class="dropdown-toggle" id="mailButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <%= t('concept_maps.edit.code')%>: <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="bi-envelope" title="<%=t('concept_maps.edit.mail')%>"></span>
-    </div>
-    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mailButton" style="padding: 3px">
-      <form class="form form-inline">
-        <div class="form-group" style="padding-bottom: 3px">
-          <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
-        </div>
-        <button id="submit-mail" type="submit" class="btn btn-block btn-primary" onclick="sendMail();return false;"><%= t('concept_maps.edit.send')%></button>
-      </form>
-    </div>
-  </div>
-</div>
+  <div id="header-nav">
+    <div class="dropdown">
+      
+        <span id="header-button" class="bi-list canvasButton dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<%=t('concept_maps.edit.menu')%>"></span>
 
-<!-- Search button top right corner -->
-<div id="header-search">
-  <div class="dropdown">
-    <div class="dropdown-toggle" id="searchButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <span class="bi-search canvasButton" title="<%=t('concept_maps.edit.search')%>"></span>
-    </div>
-    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="searchButton" style="background-color: white; padding: 0px; border: 0px">
-      <form class="form-inline">
-        <div class="form-group" id="searchGroup">
-          <input id="searchInput" type="text" class="form-control input-sm" onkeyup="searchConcept($('#searchInput').val());" placeholder="<%= t('concept')%>">
-        </div>
-      </form>
+      <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
+        <li class="dropdown-header"><%= t('concept_maps.edit.help') %></li>
+        <% unless @concept_map.survey.introduction.blank? %>
+          <li><%= link_to t('concept_maps.edit.task'), '', onclick: "$('#task').removeClass('d-none');return false;", class: "dropdown-item"%></li>
+        <% end %>
+        <li><%= link_to t('concept_maps.edit.help_short'), '', onclick: "$('#context-help').removeClass('d-none');return false;", class: "dropdown-item"%></li>
+        <li><%= link_to t('concept_maps.edit.help_info'), '#',  data: {"bs-toggle": "modal", "bs-target": "#info"}, class: "dropdown-item"%></li>
+        <li role="separator" class="dropdown-divider"></li>
+        <li class="dropdown-header"><%= t('export') %></li>
+        <li><%= link_to 'TGF', concept_map_path(@concept_map, format: 'text'), class: "dropdown-item"%></li>
+        <li><a id="png_link"  class="dropdown-item" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());">PNG</a></li>
+        <li role="separator" class="dropdown-divider"></li>
+        <li><%= link_to t('imprint') + ' & ' + t('privacy'), '#', data: {"bs-toggle": "modal", "bs-target": "#legal"}, class: "dropdown-item"%></li>
+        <li><%= link_to t('logout'), logout_path(target: 'frontend'), class: "dropdown-item"%></li>
+      </ul>
     </div>
   </div>
+
+
+  <!-- Cursor Function Button -->
+  <button id="editButton" class="btn info "><span class='button-text'><%= t :edit %></span></button>
+  <!-- Node Function Button -->
+  <button id="nodeButton" class="btn info"><span class='button-text'><%= t :addNode %></span></button>
+  <!-- Edge Function Button -->
+  <button id="edgeButton" class="btn info"><span class='button-text'><%= t :addEdge %></span></button>
+
+
+  <!-- Code info + Mailform top center -->
+  <div id="header-code" class="alert">
+    <div class="dropdown">
+      <div class="dropdown-toggle" id="mailButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <span class="code-text"><%= t('concept_maps.edit.code')%>:</span> <b><%= @concept_map.code%></b>&nbsp;&nbsp;<span class="bi-envelope" title="<%=t('concept_maps.edit.mail')%>"></span>
+      </div>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mailButton" style="padding: 3px">
+        <form class="form form-inline">
+          <div class="form-group" style="padding-bottom: 3px">
+            <input id="email" type="email" class="form-control" placeholder="<%= t('email')%>">
+          </div>
+          <button id="submit-mail" type="submit" class="btn btn-block btn-primary" onclick="sendMail();return false;"><%= t('concept_maps.edit.send')%></button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Search button top right corner -->
+  <div id="header-search">
+    <div class="dropdown">
+      <div class="dropdown-toggle" id="searchButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" onclick="$('#hoverButton').attr('hidden',true)">
+        <span class="bi-search canvasButton" title="<%=t('concept_maps.edit.search')%>"></span>
+      </div>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="searchButton" style="background-color: white; padding: 0px; border: 0px">
+        <form class="form-inline">
+          <div class="form-group" id="searchGroup">
+            <input id="searchInput" type="text" class="form-control input-sm" onkeyup="searchConcept($('#searchInput').val());" placeholder="<%= t('concept')%>">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Modals for manual -->
