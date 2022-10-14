@@ -2,8 +2,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :set_locale
-  before_action :check_login_frontend, except: [:frontend, :backend, :login, :map_link, :map_form, :logout]  #Logout hier drin lassen? Sonst: getrennte Actions?
-  before_action :check_login_backend, except: [:frontend, :backend, :login, :map_link, :map_form, :logout]   #Logout hier drin lassen? Sonst: getrennte Actions?
+  before_action :check_login_frontend, except: %i[frontend backend login map_link map_form logout] #Logout hier drin lassen? Sonst: getrennte Actions?
+  before_action :check_login_backend, except: %i[frontend backend login map_link map_form logout] #Logout hier drin lassen? Sonst: getrennte Actions?
 
   #GET '/'
   def frontend
@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
       session[:user] = @user.id
       redirect_to user_projects_path @user
     else
-      redirect_to '/backend', notice: (I18n.t('application.backend.wrong_credentials'))
+      redirect_to root_path, notice: (I18n.t('application.backend.wrong_credentials'))
     end
   end
 
@@ -35,12 +35,11 @@ class ApplicationController < ActionController::Base
       redirect_to '/', notice: (I18n.t('application.frontend.goodbye', code: @map.code))
     elsif params[:target] == 'backend'
       session[:user] = nil
-      redirect_to '/backend', notice: (I18n.t('application.backend.goodbye'))
+      redirect_to root_path, notice: (I18n.t('application.backend.goodbye'))
     end
   end
 
-  def send_code
-  end
+  def send_code; end
 
   #GET /map/:code
   def map_link
@@ -58,7 +57,8 @@ class ApplicationController < ActionController::Base
     code = params[:code]
     unless code.nil? || code.blank?
       @map = ConceptMap.prepare_map(code) #Retrieve map or create a new one
-      unless @map.nil?               #If a map has been found or created => Save it to session hash and continue, else return to welcome screen
+      unless @map.nil?
+        #If a map has been found or created => Save it to session hash and continue, else return to welcome screen
         session[:map] = @map.id
         redirect_to edit_concept_map_path @map
       else
@@ -76,9 +76,7 @@ class ApplicationController < ActionController::Base
       I18n.locale = :en
     else
       I18n.locale = request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first
-      unless (I18n.locale == :de) || (I18n.locale == :en)
-        I18n.locale = :en
-      end
+      I18n.locale = :en unless (I18n.locale == :de) || (I18n.locale == :en)
     end
   end
 
@@ -94,7 +92,7 @@ class ApplicationController < ActionController::Base
     if session.has_key?(:user)
       @login = User.find(session[:user])
     else
-      redirect_to '/backend'
+      redirect_to root_path
     end
   end
 end

@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :set_user
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
+  before_action :set_project, only: %i[show edit update destroy]
   skip_before_action :check_login_frontend
 
   layout 'backend'
@@ -17,20 +17,28 @@ class ProjectsController < ApplicationController
     @surveys = @project.surveys.order(created_at: :desc)
     respond_to do |format|
       format.html {}
-      format.text {
+      format.text do
         if params.has_key?(:versions)
-          send_file @project.to_zip(true, true), filename: @project.name+".zip", type: "application/zip"
+          send_file @project.to_zip(true, true),
+                    filename: @project.name + '.zip',
+                    type: 'application/zip'
         else
-          send_file @project.to_zip(true, false), filename: @project.name+".zip", type: "application/zip"
+          send_file @project.to_zip(true, false),
+                    filename: @project.name + '.zip',
+                    type: 'application/zip'
         end
-      }
-      format.json {
+      end
+      format.json do
         if params.has_key?(:versions)
-          send_file @project.to_zip(false, true), filename: @project.name+".zip", type: "application/zip"
+          send_file @project.to_zip(false, true),
+                    filename: @project.name + '.zip',
+                    type: 'application/zip'
         else
-          send_file @project.to_zip(false, false), filename: @project.name+".zip", type: "application/zip"
+          send_file @project.to_zip(false, false),
+                    filename: @project.name + '.zip',
+                    type: 'application/zip'
         end
-      }
+      end
     end
   end
 
@@ -38,27 +46,24 @@ class ProjectsController < ApplicationController
   def new
     @project = Project.new
     if params['import'].nil?
-      render "create_project"
+      render 'create_project'
     else
-      render "import_project"
+      render 'import_project'
     end
   end
 
-  def import
-  end
+  def import; end
 
   # GET /projects/1/edit.html
-  def edit
-  end
+  def edit; end
 
   # POST /projects.html
   def create
-
     # create project from form inputs
     if params.has_key?(:project) && params[:project][:file].nil?
       @project = @user.projects.build(project_params)
       if @project.save
-       redirect_to user_project_path(@user, @project)
+        redirect_to user_project_path(@user, @project)
       else
         render :new
       end
@@ -101,24 +106,21 @@ class ProjectsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
+  # Use callbacks to share common setup or constraints between actions.
 
   def set_user
     @user = User.find(params[:user_id])
-    if @user.nil? || (@user.id != @login.id &&  !@login.admin?)
-      redirect_to '/backend'
-    end
+    redirect_to root_path if @user.nil? || (@user.id != @login.id && !@login.admin?)
   end
 
-    def set_project
-      @project = Project.find(params[:id])
-      if @project.nil? || (@project.user != @user)
-        redirect_to '/backend'
-      end
-    end
+  def set_project
+    @project = Project.find(params[:id])
+    redirect_to root_path if @project.nil? || (@project.user != @user)
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def project_params
-      params.fetch(:project, {}).permit([:name, :description])
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def project_params
+    params.fetch(:project, {}).permit(%i[name description])
+  end
 end
