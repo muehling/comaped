@@ -21,11 +21,5 @@ export default defineConfig({
       '~bootstrap': 'bootstrap',
     }
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: []
-      }
-    }
-  },
+
 })

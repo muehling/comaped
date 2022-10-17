@@ -7,7 +7,7 @@ import BackendViewer from '../js/BackendViewer'
 
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-import "../scss/application.scss"
+import '../scss/application.scss'
 
 window.bootstrap = bootstrap
 
