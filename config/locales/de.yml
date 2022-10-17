@@ -250,6 +250,7 @@ de:
       code_not_found: "Code nicht gefunden!"
       enter_code: "Bitte den Zugangscode eingeben"
       goodbye: "Vielen Dank für die Benutzung von CoMapEd!<br/>Sie können zu Ihrem Begriffsnetz mit dem Code <b>%{code}</b> zurückkehren."
+      full: "Die Map ist leider voll!"
   layouts:
     backend:
       my_data: "Meine Daten"
@@ -356,3 +357,11 @@ de:
   privacy: "Datenschutz"
   projects_text: "Projekte"
   show: "Anzeigen"
+  # DH: Adding the following: 
+  active_students: "AKTIVE NUTZER"
+  me: "ich"
+  recent_changes: "Neuesten Änderungen"
+  students_left: "Änderungen von verlassenen Studenten"
+  check_all: "alle auswählen"
+  uncheck_all: "alle deaktivieren"
+  show_students: "ZEIGE NUTZER"

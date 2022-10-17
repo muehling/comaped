@@ -7,6 +7,9 @@ class ConceptMap < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
 
+  #DH
+  has_many :students, dependent: :destroy
+
   #Use slug instead of id for routing
   #Return: Code of concept map
   def to_param

@@ -55,6 +55,7 @@ en:
       code_not_found: "Code not found!"
       enter_code: "Please enter your code here"
       goodbye: "Thank you for using CoMapEd!<br/>You may return to your map using the code <b>%{code}</b> later on."
+      full: "The map is full! You may try again later!<br/>"
   layouts:
     backend:
       my_data: "My data"
@@ -161,3 +162,11 @@ en:
   privacy: "Privacy"
   projects_text: "Projects"
   show: "Show"
+  # DH: Adding the following: 
+  active_students: "ACTIVE USERS"
+  me: "me"
+  recent_changes: "Recent Changes"
+  students_left: "changes from students who left"
+  check_all: "Check All"
+  uncheck_all: "Uncheck All"
+  show_students: "SHOW USERS"

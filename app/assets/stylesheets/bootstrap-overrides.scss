@@ -1,0 +1,30 @@
+.dropdown-toggle {
+  &:after {
+    display: none;
+  }
+}
+
+.dropdown-menu, .modal-dialog {
+  box-shadow: 0 0.2em 0.8em rgba(0, 0, 0, 0.175)
+}
+
+.popover-header {
+  display: flex;
+  justify-content: space-between;
+  .close {
+    span:before {
+      font-size: 1em !important;
+    }
+  }
+}
+
+#menuButton span:before {
+  font-weight: bold !important;
+}
+
+.card-header {
+  a {
+    color: black;
+    text-decoration: none;
+  }
+}

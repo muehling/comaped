@@ -26,11 +26,19 @@
         <% else %>
             <%= select_tag 'link[label]', options_for_select(@concept_map.survey.association_labels.split(',').map{|l| l.strip}), id: 'entry_link', class: 'form-control' %>
         <% end %>
+
         <input id="entry_concept" class="form-control" name="concept[label]" placeholder="<%= t :name %>" type="text" />
         <input id="x" type="hidden" name="concept[x]"/>
         <input id="y" type="hidden" name="concept[y]"/>
         <input id="start" type="hidden" name="link[start]"/>
         <input id="end" type="hidden" name="link[end]"/>
+
+        <!--DH Add the following hidden inputs: not needed for the cooperation anymore, but who knows for what it might be useful later-->
+        <input id="concept_id" type="hidden" name="concept[id]"/>
+        <input id="lock" type="hidden" name="concept[lock]"/>
+        <input id="link_id" type="hidden" name="link[id]"/>
+        <input id="link_lock" type="hidden" name="link[lock]"/>
+
       </div>
       <div class="form-group mt-2 d-flex">
         <%= render 'concept_maps/editor/colorpicker' %>
@@ -42,32 +50,65 @@
     </form>
   </div>
 </div>
-
-
 <div id="doubleNodeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_node') %></div>
-
 <div id="doubleEdgeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_edge') %></div>
-
 
 <!-- Dummy element for Vis-canvas -->
 <div id="map-canvas">
 </div>
+<!-- DH: The container on the right with all the user information -->
+<div id="right">
+  <div id="users">
+      <!-- DH: Needed to determine the current user ID-->
+     <div id="user_me_id" style="display: none"><%= @current_student.id %></div>
+
+      <!-- DH: Needed to determine the current Map -->
+      <div id="map_id" style="display: none"><%= @map.id %>
+      </div>
+
+      <!-- DH. Show all users of this map-->
+      <div id="students">
+        <div id="students_header">
+          <%= t('active_students') %>
+        </div>
+
+        <!-- DH: Show the "me" user first -->
+        <div id="student_<%= @current_student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= @current_student.color %>">
+          <label> <%= @current_student.name %> (<%= t('me') %>) <input type="checkbox" class="filter_students" id="filter_<%= @current_student.id %>" checked/></label>
+        </div>
+
+        <!-- DH: show all the other user-->
+        <% @student.each do |student| %>
+          <% if student.id !=  @current_student.id %>
+            <div id="student_<%= student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= student.color %>">
+              <label><%= student.name %> <input type="checkbox" class="filter_students" id="filter_<%= student.id %>" checked/></label>
+            </div>
+          <% else %>
+          <% end %>
+        <% end %>
+      </div>
+  </div>
+
+  <!-- DH: The recent changes and filter-->
+  <h4 style="text-align:center"> <%= t('recent_changes') %></h4>
+  <div id="filter_left_students" style="display: none; text-align: center; font-size: 12 px; margin-bottom: 1em;">
+    <label id="label_filter_left_students"><%= t('students_left') %><input type="checkbox" class="filter_students" id="filter_left" checked/></label>
+  </div>
+  <!-- DH: Filter options -->
+  <div id="check" style="text-align: center; font-size: 12px; margin-bottom: 1em">
+    <div id="checkAll" style="width: 50%; float: left; border-right: 1px dotted black;"><%= t('check_all') %></div>
+    <div id="uncheckAll" style="width: 50%; float: right;"><%= t('uncheck_all') %></div>
+  </div>
+  <div id="recent_changes">
+  </div>
+  </div>
+
 
 <!-- Scripts -->
 <script type="module">
+  import { init } from "application"
 
-  const edgeData = [
-        <% @concept_map.links.each do |l| %>
-        <%= render l %>,
-        <% end %>
-    ]
-  const nodeData = [
-        <% @concept_map.concepts.each do |c| %>
-        <%= render c %>,
-        <% end %>
-    ]
-
-  initEditor({
+  init({
     edgeData: [
         <% @concept_map.links.each do |l| %>
         <%= render l %>,

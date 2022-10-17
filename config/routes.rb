@@ -20,6 +20,10 @@ Rails.application.routes.draw do
   end
 
   post 'login' => 'application#login'
+
+  #DH
+  post 'delete_student' => 'application#delete_student'
+
   get 'logout' => 'application#logout'
   post 'send_code' => 'application#send_code'
   get 'map/(:code)' => 'application#map_link'
