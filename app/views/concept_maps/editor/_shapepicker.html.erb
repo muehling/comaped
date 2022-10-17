@@ -3,13 +3,11 @@
   <div class="dropdown" style="display: inline-block;">
     <div id="currentShape" class="shapes shape btn dropdown-toggle me-1" data-toggle="dropdown" style="width: 50px;height:36px;background-color: <%= default_color %>;"></div>
     <div id= "shapeSelect" class="dropdown-menu">
-      <table>
-        <tr>
-          <td style="padding-left: 12px;"><div id="shape1" class="ellipse shape btn " style="width: 40px;height:30px;" value= <%= shape_palette(0) %> onclick="changeShape(1);"></div></td>
-          <td style="padding-left: 7px;"><div id="shape2" class="box shape btn " style="width: 40px;height:30px;" value= <%= shape_palette(1) %> onclick="changeShape(2);"></div></td>
-          <td style="padding-left: 7px;"><div id="shape3" class="circle shape btn" style="width: 40px;height:30px;" value= <%= shape_palette(2) %> onclick="changeShape(3);"></div></td>
-        </tr>
-      </table>
+      <div class="d-flex justify-content-around">
+        <div id="shape1" class="ellipse-select shape-select btn " style="width: 40px;height:30px;" value= <%= shape_palette(0) %> onclick="changeShape(1);"></div>
+        <div id="shape2" class="box-select shape-select btn " style="width: 40px;height:30px;" value= <%= shape_palette(1) %> onclick="changeShape(2);"></div>
+        <div id="shape3" class="circle-select shape-select btn" style="width: 40px;height:30px;" value= <%= shape_palette(2) %> onclick="changeShape(3);"></div>
+      </div>
     </div>
   </div>
 </span>

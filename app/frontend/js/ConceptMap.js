@@ -79,7 +79,6 @@ class ConceptMap {
           var connected_edges = [network.getConnectedEdges(data.from)]
           for (let i = 0, len = connected_edges[0].length; i < len; i++) {
             if (nodes.get(edges.get(connected_edges[0][i]).to).id == data.to && nodes.get(edges.get(connected_edges[0][i]).from).id == data.from) {
-              console.log("Edge already exists")
               network.disableEditMode()
               activeButton(1)
               buttonMode = ConceptMap.editButton
@@ -498,7 +497,6 @@ class ConceptMap {
   * validate inputs: check for duplicated node names
   ********************************/
   validateForm = () => {
-    console.log("-----------------validate-------------------", mode)
     if (mode == ConceptMap.addNode || mode == ConceptMap.editNode) {
       var t = $('#entry_concept').val()
       const node = this.nodes.get({
@@ -545,12 +543,11 @@ class ConceptMap {
   * put or post after editing/adding node(s) or an edge
   ********************************/
   onSubmit = async () => {
-    console.log("-----------onSubmit----------" + mode)
     const postObj = {}
     let method = "put"
     let path
     $("#entry_concept").val($("#entry_concept").val().replace(/\\/g," ")) // prevent input of "\" because vis network cannot handle this symbol
- 
+
     switch (mode) {
       case ConceptMap.addNode:
         method = "post"
@@ -593,7 +590,6 @@ class ConceptMap {
         this.hideForm()
         return
       default:
-        console.log("default")
         // Nothing to submit, really. Shouldn't happen, but you never know.
         return
     }
@@ -658,9 +654,11 @@ class ConceptMap {
   changeShape(i) {
     var shape = $('#shape' + i).attr("value")
     $("#shape").attr("value", shape)
-    for (var j = 1; j <= 3; ++j)
-      $('#shape' + j).html("<span></span>")
-    $('#shape' + i).html("<span class='bi-check-lg'></span>")
+    switch (shape){
+      case "circle": $("#currentShape").addClass("currently-circle").removeClass("currently-box currently-ellipse"); break;
+      case "box": $("#currentShape").addClass("currently-box").removeClass("currently-circle currently-ellipse"); break;
+      case "ellipse": $("#currentShape").addClass("currently-ellipse").removeClass("currently-box currently-circle"); break;
+    }
     $("#entry_concept").focus()
     $("#shapeSelect").css("display", "none")
     return false
@@ -674,7 +672,6 @@ class ConceptMap {
     }
   }
 
- 
   /******************************************
   * controls buttons to display in EditForm
   *******************************************/
@@ -784,7 +781,6 @@ class ConceptMap {
    * Hides EditForm and sets EditMode active
    *******************************************/
   hideForm = () => {
-    console.log("--------------hideForm----------------------")
     $("#edit-dialog").addClass("d-none")
     //$("#edit-dialog").focusout()
     this.network.disableEditMode()
@@ -832,7 +828,6 @@ class ConceptMap {
    **********************************************/
   searchConcept = (searchTerm) => {
     if (searchTerm === "") {
-      console.log("label is empty")
       $('#searchGroup').removeClass('has-error')
       $('#searchGroup').removeClass('has-success')
       return

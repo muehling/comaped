@@ -3,7 +3,7 @@
 
   <div id="header-nav">
     <div class="dropdown">
-      
+
         <span id="header-button" class="bi-list canvasButton dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="<%=t('concept_maps.edit.menu')%>"></span>
 
       <ul class="dropdown-menu" id="sidebarMenu" aria-labelledby="menuButton">
@@ -23,15 +23,14 @@
       </ul>
     </div>
   </div>
-
-
-  <!-- Cursor Function Button -->
-  <button id="editButton" class="btn info "><span class='button-text'><%= t :edit %></span></button>
-  <!-- Node Function Button -->
-  <button id="nodeButton" class="btn info"><span class='button-text'><%= t :addNode %></span></button>
-  <!-- Edge Function Button -->
-  <button id="edgeButton" class="btn info"><span class='button-text'><%= t :addEdge %></span></button>
-
+  <div class="editor-buttons">
+    <!-- Cursor Function Button -->
+    <button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :edit %></span></button>
+    <!-- Node Function Button -->
+    <button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addNode %></span></button>
+    <!-- Edge Function Button -->
+    <button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addEdge %></span></button>
+  </div>
 
   <!-- Code info + Mailform top center -->
   <div id="header-code" class="alert">
@@ -50,7 +49,6 @@
     </div>
   </div>
 
-  
   <!-- Search button top right corner -->
   <div id="header-search">
     <div class="dropdown">

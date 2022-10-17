@@ -7,10 +7,6 @@ body {
   touch-action: none;
 }
 
-.button-text {
-  display: none;
-}
-
 .code-text {
   display: none;
 }
@@ -36,33 +32,40 @@ body {
 }
 
 .color {
-  background-image: $color !important;
-  background-position: 8px 1px;
+  font-family: 'bootstrap-icons';
+  &:before {
+    content: '\F4B1';
+  }
+}
+
+#currentShape {
   background-repeat: no-repeat;
+  background-position: center;
+  &.currently-circle {
+    background-image: $circle-icon;
+  }
+  &.currently-box {
+    background-image: $box-icon;
+  }
+  &.currently-ellipse {
+    background-image: $ellipse-icon;
+  }
 }
 
-.shape {
+.shape-select {
   background-repeat: no-repeat;
-}
+  background-position: center;
+  &.ellipse-select {
+    background-image: $ellipse-icon !important;
+  }
 
-.shapes {
-  background-image: $shapes !important;
-  background-position: 8px 1px;
-}
+  &.circle-select {
+    background-image: $circle-icon !important;
+  }
 
-.ellipse {
-  background-image: $ellipse !important;
-  background-position: 4px -2px;
-}
-
-.circle {
-  background-image: $circle-icon !important;
-  background-position: 4px -1px;
-}
-
-.box {
-  background-image: $box !important;
-  background-position: 4px -2px;
+  &.box-select {
+    background-image: $box-icon !important;
+  }
 }
 
 .arrow {
@@ -94,75 +97,47 @@ body {
   padding: 12 12 !important;
 }
 
-.btn-group {
-  display: block;
-}
+.editor-buttons {
+  display: inline-flex;
+  align-items: center;
+  .btn.editor-button {
+    font-family: 'bootstrap-icons';
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 6px !important;
+    box-sizing: content-box;
+    float: left;
+    height: 24px;
+    margin-left: 10px !important;
+    padding: 0 12px;
+    position: relative;
+    left: 60px;
+    top: -35px;
+    z-index: 1;
+    color: $blue;
+    span.button-text {
+      margin-left: 5px;
+      // font-family: $btn-font-family !important;
+      font-family: $font-family-sans-serif;
+    }
+  }
+  #editButton {
+    &:before {
+      content: '\F4C9';
+    }
+  }
 
-#editButton {
-  background-image: $editButton;
-  background-position: 0px 0px;
-  background-repeat: no-repeat;
-  background-color: #fcfcfc;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  box-sizing: content-box;
-  float: left;
-  font-family: verdana;
-  font-size: 12px;
-  height: 24px;
-  margin-left: 10px;
-  padding: 0 12px;
-  position: relative;
-  left: 60px;
-  top: -35px;
-  z-index: 1;
-  display: block;
-}
+  #nodeButton {
+    &:before {
+      content: '\F24D';
+    }
+  }
 
-button span {
-  margin-left: 15px;
-}
-
-#nodeButton {
-  background-image: $nodeButton;
-  background-position: 0px 0px;
-  background-repeat: no-repeat;
-  background-color: #fcfcfc;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  box-sizing: content-box;
-  float: left;
-  font-family: verdana;
-  font-size: 12px;
-  height: 24px;
-  margin-left: 10px;
-  padding: 0 12px;
-  position: relative;
-  left: 60px;
-  top: -35px;
-  z-index: 1;
-  display: block;
-}
-
-#edgeButton {
-  background-image: $edgeButton;
-  background-position: 0px 0px;
-  background-repeat: no-repeat;
-  background-color: #fcfcfc;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  box-sizing: content-box;
-  float: left;
-  font-family: verdana;
-  font-size: 12px;
-  height: 24px;
-  margin-left: 10px;
-  padding: 0 12px;
-  position: relative;
-  left: 60px;
-  top: -35px;
-  z-index: 1;
-  display: block;
+  #edgeButton {
+    &:before {
+      content: '\F123';
+    }
+  }
 }
 
 #hoverButton {
