@@ -792,7 +792,9 @@ class ConceptMap {
     buttonMode = ConceptMap.editButton
     this.activeButton(1)
     //Zoom-Out by Mobilgeräten veranlassen
-    const viewport = document.querySelector('meta[name="viewport"]')
+
+    //TODO really needed? Currently breaks the meta attribute
+    /*const viewport = document.querySelector('meta[name="viewport"]')
     if (viewport) {
       viewport.content = 'initial-scale=1.0'
       viewport.content = 'width=device-width'
@@ -801,7 +803,7 @@ class ConceptMap {
       // viewport.content = 'user-scalable=no'
       // viewport.content = 'height=device-height'
       // viewport.content = 'target-densitydpi=device-dpi'
-    }
+    }*/
   }
 
   /*********************************
