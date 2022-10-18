@@ -1,1 +1,27 @@
-{"id": <%= concept.id %>, "label": "<%= concept.label %>", "x": <%= concept.x || 0 %>, "y": <%= concept.y || 0 %>, "shape": "ellipse", "borderWidth": 2, "color": {"background": "<%= concept.color || default_color %>", "border": "<%= concept.color || default_color %>", "hover": {"background": "<%= get_highlight(concept.color) %>", "border": "<%= get_highlight(concept.color) %>" }, "highlight":{"background": "<%= get_highlight(concept.color) %>", "border": "black"}}}
+{
+    "id": <%= concept.id %>,
+    "label": "<%= concept.label %>",
+    "lock": "<%= concept.lock %>",
+    "x": <%= concept.x || 0 %>,
+    "y": <%= concept.y || 0 %>,
+    font: {multi: "md", face: "georgia"},
+    "shape": '<%=  concept.shape %>',
+    "borderWidth": 1,
+    borderWidthSelected: 3,
+    labelHighlightBold: false,
+    widthConstraint:{
+        maximum: 120
+    },
+    "color": {
+        "background": "<%= if concept.lock then 'grey' else concept.color || default_color end%>",
+        "border": "<%= concept.color || default_color %>",
+        "hover": {
+            "background": "<%= get_highlight(concept.color) %>",
+            "border": "<%= get_highlight(concept.color) %>"
+            },
+        "highlight":{
+            "background": "<%= get_highlight(concept.color) %>",
+            "border": "black"
+        }
+    }
+}

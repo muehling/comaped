@@ -250,6 +250,7 @@ de:
       code_not_found: "Code nicht gefunden!"
       enter_code: "Bitte den Zugangscode eingeben"
       goodbye: "Vielen Dank für die Benutzung von CoMapEd!<br/>Sie können zu Ihrem Begriffsnetz mit dem Code <b>%{code}</b> zurückkehren."
+      full: "Die Map ist leider voll!"
   layouts:
     backend:
       my_data: "Meine Daten"
@@ -262,11 +263,13 @@ de:
     imported: "Begriffsnetze importiert"
     new: "Begriffsnetze erzeugen"
     edit:
+      double_edge: "Mehr als eine Verbindung pro Richtung nicht möglich!"
+      double_node: "Ein Knoten mit dieser Beschriftung existiert bereits! Wähle einen anderen Namen."
       action_edit_link: "Verbindung bearbeiten/löschen"
       action_edit_node: "Konzept bearbeiten/löschen"
       action_new_link: "Neue Verbindung anlegen"
       action_new_node: "Neues Konzept anlegen"
-      code: "Dieses Begriffsnetz hat den Code"
+      code: "Begriffsnetz-Code"
       help: "Hilfe"
       help_info: "Kurzanleitung"
       help_short: "Hinweise anzeigen"
@@ -328,6 +331,8 @@ de:
       first: "Erste"
       last: "Letzte"
       versions: "Versionen"
+  addEdge: "Neue Kante"
+  addNode: "Neuer Knoten"
   are_you_sure: "Sind Sie sicher?"
   cancel: "Abbrechen"
   color: "Farbe"
@@ -352,3 +357,11 @@ de:
   privacy: "Datenschutz"
   projects_text: "Projekte"
   show: "Anzeigen"
+  # DH: Adding the following: 
+  active_students: "AKTIVE NUTZER"
+  me: "ich"
+  recent_changes: "Neuesten Änderungen"
+  students_left: "Änderungen von verlassenen Studenten"
+  check_all: "alle auswählen"
+  uncheck_all: "alle deaktivieren"
+  show_students: "ZEIGE NUTZER"

@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+ruby "3.1.2"
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
   "https://github.com/#{repo_name}.git"
@@ -8,13 +8,11 @@ end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.2'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4.2'
+
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbo-rails', '~> 1'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
@@ -34,9 +32,11 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.0.5'
+  # Use sqlite3 as the database for Active Record
+  gem 'sqlite3', '~> 1.4.2'
 end
 
-group :production do
+group :production, :staging do
   gem 'mysql2'
 end
 
@@ -45,13 +45,14 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 #Additional gems:
 gem 'rubyzip'
-gem "importmap-rails", "~> 1.1"
 gem "js-routes"
-gem 'mime-types', '~> 3.1'
 
-# use bootstrap gem to avoid hassle of managing the js part through importmap and css part by hand
-gem "bootstrap", "~> 5.1"
-gem "sassc-rails"
+gem 'vite_rails'
 
 # js runtime for sass compilation
 gem "mini_racer"
+
+
+gem "sprockets-rails", "~> 3.4"
+# DH: for scheduling: Delete students that have been inactive for a while (solving the mobile problem)
+gem 'whenever', require: false

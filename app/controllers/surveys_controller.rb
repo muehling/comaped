@@ -1,6 +1,6 @@
 class SurveysController < ApplicationController
   before_action :set_user_project
-  before_action :set_survey, only: [:show, :edit, :update, :destroy]
+  before_action :set_survey, only: %i[show edit update destroy]
   skip_before_action :check_login_frontend
 
   layout 'backend'
@@ -15,24 +15,32 @@ class SurveysController < ApplicationController
   # GET /surveys/1.json
   def show
     respond_to do |format|
-      format.html {
+      format.html do
         @maps = @survey.concept_maps.limit(10).order(updated_at: :desc)
         @page = 0
-      }
-      format.text {
+      end
+      format.text do
         if params.has_key?(:versions)
-          send_file @survey.to_zip(true, true), filename: @survey.name+".zip", type: "application/zip"
+          send_file @survey.to_zip(true, true),
+                    filename: @survey.name + '.zip',
+                    type: 'application/zip'
         else
-          send_file @survey.to_zip(true, false), filename: @survey.name+".zip", type: "application/zip"
+          send_file @survey.to_zip(true, false),
+                    filename: @survey.name + '.zip',
+                    type: 'application/zip'
         end
-      }
-      format.json {
+      end
+      format.json do
         if params.has_key?(:versions)
-          send_file @survey.to_zip(false, true), filename: @survey.name+".zip", type: "application/zip"
+          send_file @survey.to_zip(false, true),
+                    filename: @survey.name + '.zip',
+                    type: 'application/zip'
         else
-          send_file @survey.to_zip(false, false), filename: @survey.name+".zip", type: "application/zip"
+          send_file @survey.to_zip(false, false),
+                    filename: @survey.name + '.zip',
+                    type: 'application/zip'
         end
-      }
+      end
     end
   end
 
@@ -40,9 +48,9 @@ class SurveysController < ApplicationController
   def new
     @survey = Survey.new
     if params['import'].nil?
-      render "create_survey"
+      render 'create_survey'
     else
-      render "import_survey"
+      render 'import_survey'
     end
   end
 
@@ -79,7 +87,8 @@ class SurveysController < ApplicationController
     end
     if res
       if params[:survey][:file].size == 1
-        redirect_to user_project_survey_path(@user, @project, @survey), notice: I18n.t('surveys.imported')
+        redirect_to user_project_survey_path(@user, @project, @survey),
+                    notice: I18n.t('surveys.imported')
       else
         redirect_to user_project_path(@user, @project), notice: I18n.t('surveys.imported')
       end
@@ -100,31 +109,42 @@ class SurveysController < ApplicationController
   # DELETE /surveys/1
   def destroy
     @survey.destroy
-    redirect_to user_project_surpath(@user, @project), notice: I18n.t('surveys.destroyed'), status: :see_other
+    redirect_to user_project_surpath(@user, @project),
+                notice: I18n.t('surveys.destroyed'),
+                status: :see_other
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_survey
-      @survey = Survey.find(params[:id])
-      if @survey.nil? || @survey.project != @project
-        redirect_to '/backend'
-      end
-    end
 
-    def set_user_project
-      @user = User.find(params[:user_id])
-      if @user.nil? || (@user.id != @login.id &&  !@login.admin?)
-        redirect_to '/backend'
-      end
-      @project = Project.find(params[:project_id])
-      if @project.nil? || (@project.user != @user && !@user.admin?)
-        redirect_to '/backend'
-      end
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_survey
+    @survey = Survey.find(params[:id])
+    redirect_to root_path if @survey.nil? || @survey.project != @project
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def survey_params
-      params.fetch(:survey, {}).permit([:name, :description, :code, :start_date, :end_date, :introduction, :concept_labels, :association_labels, :initial_map])
-    end
+  def set_user_project
+    @user = User.find(params[:user_id])
+    redirect_to root_path if @user.nil? || (@user.id != @login.id && !@login.admin?)
+    @project = Project.find(params[:project_id])
+    redirect_to root_path if @project.nil? || (@project.user != @user && !@user.admin?)
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def survey_params
+    params
+      .fetch(:survey, {})
+      .permit(
+        %i[
+          name
+          description
+          code
+          start_date
+          end_date
+          introduction
+          concept_labels
+          association_labels
+          initial_map
+        ]
+      )
+  end
 end

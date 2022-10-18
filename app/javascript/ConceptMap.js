@@ -3,7 +3,6 @@ import vis from "vis-network"
 import { DataSet } from "vis-data/peer/umd/vis-data.js"
 
 class ConceptMap {
-
   static none = 0
   static addNode = 1
   static editNode = 2
@@ -12,8 +11,6 @@ class ConceptMap {
   static dragNode = 5
 
   constructor({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts }) {
-
-
     this.conceptsPath = conceptsPath
     this.conceptMapsPath = conceptMapsPath
     this.linksPath = linksPath
@@ -108,32 +105,54 @@ class ConceptMap {
      * Network drag: save new node position
      ********************************/
     this.network.on("dragStart", (params) => {
+
       if (params.nodes.length > 0) {
+        // DH: If a node is locked and the user wants to drag another node, make sure to close the Form
+        if(this.mode == ConceptMap.editNode) {
+            this.hideForm()
+        }
         this.id = params.nodes[0]
         this.mode = ConceptMap.dragNode
       }
     })
 
     this.network.on("dragEnd", async (params) => {
+      console.log(this.mode)
       switch (this.mode) {
         case ConceptMap.dragNode:
-          const res = await fetch(this.conceptsPath + "/" + this.id, {
-            "method": "put",
-            "mode": "same-origin",
-            "headers": {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            },
-            "body": JSON.stringify({ "concept": { 'label': this.nodes.get(this.id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } })
-          })
-          const body = await res.json()
 
-          this.nodes.update(body.node)
+          if(!this.nodes.get(this.id).lock || this.nodes.get(this.id).lock == "false"){
+            const res = await fetch(this.conceptsPath + "/" + this.id, {
+              "method": "put",
+              "mode": "same-origin",
+              "headers": {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+              },
+              "body": JSON.stringify({ "concept": { 'label': this.nodes.get(this.id).label, 'x': params.pointer.canvas.x, 'y': params.pointer.canvas.y } })
+            })
+            const body = await res.json()
+
+            this.nodes.update(body.node)
+            this.mode = ConceptMap.none
+            this.id = undefined
+            this.hideForm()
+        }
+        else{
+          // DH: locked nodes should not be movable
+          this.nodes.update(this.nodes.get(this.id))
           this.mode = ConceptMap.none
           this.id = undefined
-          this.hideForm()
+
+
+        }
+        case ConceptMap.none:
+          // DH: If the user changes the position of the node while editing another node, the node should not be moved!
+          this.nodes.update(this.nodes.get(this.id))
+          this.mode = ConceptMap.none
+          this.id = undefined
       }
     })
 
@@ -147,6 +166,7 @@ class ConceptMap {
         } else if (params.nodes.length) {
           this.editNode(params)
         }
+
 
       }
     })
@@ -176,7 +196,7 @@ class ConceptMap {
         }
       }
     })
-  }
+  } // END CONSTRUCTOR
 
   /*********************************
   * create node
@@ -191,19 +211,49 @@ class ConceptMap {
   /*********************************
   * edit node
   ********************************/
-  editNode = (params) => {
-    let canvasX
-    let canvasY
-
+  editNode = async (params) => {
+    // DH: Inform the channel that this node is getting edit
     this.id = params.nodes[0]
+    // DH: IMPORT: We have to compare both: the boolean value and the string value
+    if(!this.nodes.get(this.id).lock || this.nodes.get(this.id).lock == "false"){
+      const res = await fetch(this.conceptsPath + "/" + this.id, {
+        "method": "put",
+        "mode": "same-origin",
+        "headers": {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        "body": JSON.stringify({ "concept": { 'label': this.nodes.get(this.id).label, 'lock': 'true', 'x': this.nodes.get(this.id).x, 'y': this.nodes.get(this.id).y } })
+      })
+      const body = await res.json()
 
-    const currentNode = this.nodes.get(this.id)
-    if (currentNode && currentNode.label !== "") {
-      canvasX = currentNode.x
-      canvasY = currentNode.y
-      this.mode = ConceptMap.editNode
-      this.showForm(canvasX, canvasY)
+      this.nodes.update(body.node)
+      this.mode = ConceptMap.none
+
+      let canvasX
+      let canvasY
+
+      const currentNode = this.nodes.get(this.id)
+      if (currentNode && currentNode.label !== "") {
+        canvasX = currentNode.x
+        canvasY = currentNode.y
+        this.mode = ConceptMap.editNode
+        this.showForm(canvasX, canvasY)
+      }
+    }else{
+      // DH: Message for the user that the node is locked!
+      let language =  navigator.userLanguage || (navigator.languages && navigator.languages.length && navigator.languages[0]) || navigator.language || navigator.browserLanguage || navigator.systemLanguage
+      if(language == "de"){
+        alert("Der Knoten ist gesperrt!")
+      }else{
+        alert("The node is Locked!")
+      }
+
     }
+
+
   }
 
   /*********************************
@@ -229,14 +279,48 @@ class ConceptMap {
   /*********************************
   * edit edge
   ********************************/
-  editEdge = (params) => {
-    if (params.edges.length > 0) {
-      this.id = params.edges[0]
-      const canvasX = params.pointer.canvas.x
-      const canvasY = params.pointer.canvas.y
-      this.mode = ConceptMap.editEdge
-      this.showForm(canvasX, canvasY)
+  editEdge = async (params) => {
+    // DH: Inform the channel that this edge is getting edit
+    this.id = params.edges[0]
+
+    // DH: Fill the edit-dialog, needed for the case that a node got deleted while a link is locked
+    $('#start').val(this.edges.get(this.id).from)
+    $('#end').val(this.edges.get(this.id).to)
+
+    // DH: IMPORT: We have to compare both: the boolean value and the string value.....
+    if(!this.edges.get(this.id).lock || this.edges.get(this.id).lock == "false"){
+      const res = await fetch(this.linksPath + "/" + this.id, {
+        "method": "put",
+        "mode": "same-origin",
+        "headers": {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        "body": JSON.stringify({ "link": { 'label': this.edges.get(this.id).label, 'lock': 'true', "start_id": this.edges.get(this.id).from, "end_id": this.edges.get(this.id).to } })
+      })
+      const body = await res.json()
+
+      this.edges.update(body.edge)
+      this.mode = ConceptMap.none
+
+      if (params.edges.length > 0) {
+        this.id = params.edges[0]
+        const canvasX = params.pointer.canvas.x
+        const canvasY = params.pointer.canvas.y
+        this.mode = ConceptMap.editEdge
+        this.showForm(canvasX, canvasY)
+      }
+    }else{
+      let language =  navigator.userLanguage || (navigator.languages && navigator.languages.length && navigator.languages[0]) || navigator.language || navigator.browserLanguage || navigator.systemLanguage
+      if(language == "de"){
+        alert("Die Verbindung ist gesperrt!")
+      }else{
+        alert("The edge is Locked!")
+      }
     }
+
   }
 
   /*********************************
@@ -322,19 +406,30 @@ class ConceptMap {
 
       case ConceptMap.addNode:
         method = "post"
+        // DH: needed for the lock, set the lock to false
+        $("#lock").val("false")
+
       case ConceptMap.editNode:
         postObj["x"] = $("#x").val()
         postObj["y"] = $("#y").val()
         postObj["label"] = $("#entry_concept").val()
         postObj["color"] = $("#color").val()
+        // DH: add the ID
+        //postObj["id"] = $("#concept_id").val()
+        postObj["lock"] = $("#lock").val()
         path = this.conceptsPath
         break
       case ConceptMap.addEdge:
         method = "post"
+        // DH: needed for the lock, set the lock to false
+        $("#link_lock").val("false")
         postObj["start_id"] = parseInt($("#start").val(), 10)
         postObj["end_id"] = parseInt($("#end").val(), 10)
       case ConceptMap.editEdge:
         postObj["label"] = $("#entry_link").val()
+        // DH: Add the link id
+        //postObj["id"] = $("#link_id").val()
+        postObj["lock"] = $("#link_lock").val()
         path = this.linksPath
         break
       default:
@@ -352,11 +447,14 @@ class ConceptMap {
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
       },
       "body": JSON.stringify(postObj)
+
     })
 
     const body = await res.json()
+
     if (body.edge) {
       this.edges.update(body.edge)
+
     }
     if (body.node) {
       this.nodes.update(body.node)
@@ -440,6 +538,11 @@ class ConceptMap {
         $('#context-help-text').html($('#ch_edit').html())
         $('#action').html(this.dialogTexts.editNode)
         $("#entry_concept").val(this.nodes.get(this.id).label)
+        // DH: ADD the ID, needed to compare and reset the link_id
+        $("#concept_id").val(this.nodes.get(this.id).id)
+        // DH: Set the lock still on true
+        $("#lock").val("true")
+        $("#link_id").val("")
         this.initNodeInputs(canvasX, canvasY)
         this.selectColor(this.nodes.get(this.id).color.background)
         break
@@ -447,6 +550,10 @@ class ConceptMap {
         $('#context-help-text').html($('#ch_edit').html())
         $('#action').html(this.dialogTexts.editEdge)
         $("#entry_link").val(this.edges.get(this.id).label)
+        // DH: ADD the ID, needed to compare and reset the concept_id
+        $("#link_id").val(this.edges.get(this.id).id)
+        $("#link_lock").val("true")
+        $("#concept_id").val("")
         this.initEdgeInputs(canvasX, canvasY)
         break
       case ConceptMap.addEdge:
@@ -457,8 +564,43 @@ class ConceptMap {
     }
   }
 
-  //Edit/Create Aktion beenden
-  hideForm = () => {
+  //Edit/Create Aktion beenden + Lock aufheben
+  hideForm =  async () => {
+
+    if(this.mode == ConceptMap.editNode ) {
+      //DH: Node Lock aufheben
+      const res = await fetch(this.conceptsPath + "/" + this.id, {
+        "method": "put",
+        "mode": "same-origin",
+        "headers": {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        "body": JSON.stringify({ "concept": { 'label': this.nodes.get(this.id).label, 'lock': 'false', 'x': this.nodes.get(this.id).x, 'y': this.nodes.get(this.id).y } })
+      })
+      const body = await res.json()
+      this.nodes.update(body.node)
+
+    } else if(this.mode == ConceptMap.editEdge) {
+      // DH: Edge Lock aufheben
+      const res = await fetch(this.linksPath + "/" + this.id, {
+        "method": "put",
+        "mode": "same-origin",
+        "headers": {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        "body": JSON.stringify({ "link": { 'label': this.edges.get(this.id).label, 'lock': 'false', "start_id": this.edges.get(this.id).from, "end_id": this.edges.get(this.id).to } })
+      })
+      const body = await res.json()
+      this.edges.update(body.edge)
+    }
+
+
     $("#edit-dialog").addClass("d-none")
     $("#edit-dialog").focusout()
     this.network.unselectAll()
@@ -510,6 +652,23 @@ class ConceptMap {
       $('#searchGroup').addClass('has-error')
     }
   }
+
+  /*********************************
+  * // DH: external setter for node/edge data and mode
+  ********************************/
+  setNodeData = (nodeData) => {
+    this.nodes.update(nodeData)
+  }
+
+  setEdgeData = (edgeData) => {
+    this.edges.update(edgeData)
+  }
+
+  // DH Make the mode available for the channel
+  setMode = (mode) => {
+    this.mode = mode
+  }
+
 }
 
 
