@@ -4,6 +4,7 @@ import '@hotwired/turbo-rails'
 
 import ConceptMap from '../js/ConceptMap'
 import BackendViewer from '../js/BackendViewer'
+import StudentLog from '../js/StudentLog'
 import '../channels/test_channel'
 
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -106,3 +107,8 @@ window.initBackend = ({
 
   return window.viewers[id]
 }
+
+/**********************************
+ * instantiates student log display handlers
+ *********************************/
+new StudentLog()

@@ -1,5 +1,5 @@
 <!-- Menubutton top left corner -->
-<div class="btn-group">
+<div class="btn-group navigation-elements d-flex flex-row justify-between mx-4 mb-4 mt-2">
 
   <div id="header-nav">
     <div class="dropdown">
@@ -23,14 +23,8 @@
       </ul>
     </div>
   </div>
-  <div class="editor-buttons">
-    <!-- Cursor Function Button -->
-    <button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :edit %></span></button>
-    <!-- Node Function Button -->
-    <button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addNode %></span></button>
-    <!-- Edge Function Button -->
-    <button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addEdge %></span></button>
-  </div>
+  
+  <div class="flex-fill"></div>
 
   <!-- Code info + Mailform top center -->
   <div id="header-code" class="alert">
@@ -48,6 +42,7 @@
       </div>
     </div>
   </div>
+  <div class="flex-fill"></div>
 
   <!-- Search button top right corner -->
   <div id="header-search">
@@ -64,11 +59,10 @@
       </div>
     </div>
   </div>
-
 </div>
 
 <!-- DH: Toogle Button to switch between Canvas and Logs for mobile devices -->
-<div id="toggle_button">
+<div id="toggle_button" class="d-lg-none">
   <%=t('show_students')%><br><br>
 </div>
 

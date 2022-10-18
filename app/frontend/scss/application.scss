@@ -4,7 +4,9 @@
 @import 'vis-network/styles/vis-network.min.css';
 @import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 
-@import './bootstrap-variables.scss';
+@import './variables.scss';
 @import '~bootstrap';
 @import './frontend_editor.scss';
+@import './student-log.scss';
+@import './navigation-elements.scss';
 @import './bootstrap-overrides.scss';

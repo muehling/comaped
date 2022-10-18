@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import { Network } from 'vis-network'
 import { DataSet } from 'vis-data'
+import { getLanguage } from './helpers'
 
 class ConceptMap {
   static none = 0
@@ -769,16 +770,6 @@ class ConceptMap {
     $('#edit-dialog').attr(
       'style',
       'z-index: 1; position:absolute;left:' + left + 'px;top:' + top + 'px;'
-    )
-  }
-
-  getLanguage = () => {
-    return (
-      navigator.userLanguage ||
-      (navigator.languages && navigator.languages.length && navigator.languages[0]) ||
-      navigator.language ||
-      navigator.browserLanguage ||
-      navigator.systemLanguage
     )
   }
 

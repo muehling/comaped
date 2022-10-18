@@ -5,6 +5,10 @@ body {
   margin: 0px;
   padding: 0px;
   touch-action: none;
+  .main-container {
+    top: $header-height;
+    margin: 0 !important;
+  }
 }
 
 .code-text {
@@ -97,49 +101,6 @@ body {
   padding: 12 12 !important;
 }
 
-.editor-buttons {
-  display: inline-flex;
-  align-items: center;
-  .btn.editor-button {
-    font-family: 'bootstrap-icons';
-    display: flex;
-    border: 1px solid #ccc;
-    border-radius: 6px !important;
-    box-sizing: content-box;
-    float: left;
-    height: 24px;
-    margin-left: 10px !important;
-    padding: 0 12px;
-    position: relative;
-    left: 60px;
-    top: -35px;
-    z-index: 1;
-    color: $blue;
-    span.button-text {
-      margin-left: 5px;
-      // font-family: $btn-font-family !important;
-      font-family: $font-family-sans-serif;
-    }
-  }
-  #editButton {
-    &:before {
-      content: '\F4C9';
-    }
-  }
-
-  #nodeButton {
-    &:before {
-      content: '\F24D';
-    }
-  }
-
-  #edgeButton {
-    &:before {
-      content: '\F123';
-    }
-  }
-}
-
 #hoverButton {
   background-image: $pencil-light;
   background-position: 2px 1px;
@@ -172,60 +133,8 @@ body {
 }
 
 #map-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
+  height: calc(100% - $header-height);
   background-color: #f8f8f8;
-}
-
-#header-nav {
-  position: relative;
-  top: 0px;
-  left: 30px;
-  z-index: 1;
-  display: block;
-}
-
-#header-code {
-  position: relative;
-  float: right;
-  right: 90px;
-  top: -35px;
-  z-index: 1;
-  display: inline-block;
-  //transform: translatex(50%);
-  background-color: #1b809e;
-  padding: 5px;
-  color: white;
-}
-
-#header-search {
-  position: absolute;
-  right: 30px;
-  top: 0px;
-  //float: right;
-  z-index: 1;
-  display: block;
-}
-
-#submit-mail {
-  background-color: #1b809e;
-  &:hover {
-    background-color: #07668a;
-  }
-}
-
-.canvasButton {
-  color: #1b809e;
-  font-family: 'bootstrap-icons';
-  font-size: 32px;
-  &:hover {
-    color: #07668a;
-    cursor: pointer;
-  }
 }
 
 #context-help {

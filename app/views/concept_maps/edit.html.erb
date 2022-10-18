@@ -1,9 +1,5 @@
 
 <%= render 'concept_maps/editor/navigation_elements' %>
-
-
-
-
 <!-- Hover Button -->
 <div id="header-hover" class= "hidden">
   <button id="hoverButton" class="btn info" hidden ></button>
@@ -53,12 +49,22 @@
 <div id="doubleNodeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_node') %></div>
 <div id="doubleEdgeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_edge') %></div>
 
+<div class="main-container row w-100 h-100 position-fixed">
+  <div class="map-wrapper col-12 col-lg-9 position-relative">
+    <div class="editor-buttons position-absolute end-0">
+      <!-- Cursor Function Button -->
+      <div class="d-block"><button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :edit %></span></button></div>
+      <!-- Node Function Button -->
+      <div class="d-block"><button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addNode %></span></button></div>
+      <!-- Edge Function Button -->
+      <div class="d-block"><button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addEdge %></span></button></div>
+    </div>
 <!-- Dummy element for Vis-canvas -->
-<div id="map-canvas">
-</div>
-<!-- DH: The container on the right with all the user information -->
-<div id="right">
-  <div id="users">
+  <div id="map-canvas" class=""></div>
+  </div>
+  <!-- DH: The container on the right with all the user information -->
+  <div id="right" class="col-lg-3">
+    <div id="users">
       <!-- DH: Needed to determine the current user ID-->
      <div id="user_me_id" style="display: none"><%= @current_student.id %></div>
 
@@ -82,26 +88,25 @@
           <% if student.id !=  @current_student.id %>
             <div id="student_<%= student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= student.color %>">
               <label><%= student.name %> <input type="checkbox" class="filter_students" id="filter_<%= student.id %>" checked/></label>
-            </div>
-          <% else %>
+            </div>          
           <% end %>
         <% end %>
       </div>
-  </div>
+    </div>
 
-  <!-- DH: The recent changes and filter-->
-  <h4 style="text-align:center"> <%= t('recent_changes') %></h4>
-  <div id="filter_left_students" style="display: none; text-align: center; font-size: 12 px; margin-bottom: 1em;">
-    <label id="label_filter_left_students"><%= t('students_left') %><input type="checkbox" class="filter_students" id="filter_left" checked/></label>
+    <!-- DH: The recent changes and filter-->
+    <h4 style="text-align:center"> <%= t('recent_changes') %></h4>
+    <div id="filter_left_students" style="display: none; text-align: center; font-size: 12 px; margin-bottom: 1em;">
+      <label id="label_filter_left_students"><%= t('students_left') %><input type="checkbox" class="filter_students" id="filter_left" checked/></label>
+    </div>
+    <!-- DH: Filter options -->
+    <div id="check" style="text-align: center; font-size: 12px; margin-bottom: 1em">
+      <div id="checkAll" style="width: 50%; float: left; border-right: 1px dotted black;"><%= t('check_all') %></div>
+      <div id="uncheckAll" style="width: 50%; float: right;"><%= t('uncheck_all') %></div>
+    </div>
+    <div id="recent_changes"></div>
   </div>
-  <!-- DH: Filter options -->
-  <div id="check" style="text-align: center; font-size: 12px; margin-bottom: 1em">
-    <div id="checkAll" style="width: 50%; float: left; border-right: 1px dotted black;"><%= t('check_all') %></div>
-    <div id="uncheckAll" style="width: 50%; float: right;"><%= t('uncheck_all') %></div>
-  </div>
-  <div id="recent_changes">
-  </div>
-  </div>
+</div>
 
 
 <!-- Scripts -->
