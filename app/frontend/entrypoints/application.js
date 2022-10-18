@@ -4,6 +4,7 @@ import '@hotwired/turbo-rails'
 
 import ConceptMap from '../js/ConceptMap'
 import BackendViewer from '../js/BackendViewer'
+import '../channels/test_channel'
 
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
@@ -57,6 +58,12 @@ window.initEditor = ({
   window.buttonMode = cm.buttonMode
   window.activeButton = cm.activeButton
   window.createEdge = cm.createEdge
+
+  window.setNodeData = cm.setNodeData
+  window.setEdgeData = cm.setEdgeData
+
+  //DH Make the mode available
+  window.setMode = cm.setMode
 }
 
 /**********************************

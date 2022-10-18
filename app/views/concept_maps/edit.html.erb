@@ -106,9 +106,8 @@
 
 <!-- Scripts -->
 <script type="module">
-  import { init } from "application"
 
-  init({
+  initEditor({
     edgeData: [
         <% @concept_map.links.each do |l| %>
         <%= render l %>,
