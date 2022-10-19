@@ -6,10 +6,10 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch('REDIS_URL') %>
+  url: <%= ENV.fetch('REDIS_URL') {'random_default'}%>
   channel_prefix: 'comaped_production'
 
 staging:
   adapter: redis
-  url: <%= ENV.fetch('REDIS_URL') %>
+  url: <%= ENV.fetch('REDIS_URL') {'random_default'}%>
   channel_prefix: 'comaped_staging'
