@@ -56,3 +56,5 @@ gem "mini_racer"
 gem "sprockets-rails", "~> 3.4"
 # DH: for scheduling: Delete students that have been inactive for a while (solving the mobile problem)
 gem 'whenever', require: false
+
+gem "redis", "~> 5.0"
