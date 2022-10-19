@@ -50,7 +50,7 @@
 <div id="doubleEdgeToast" class="toast error_toast" style="display:none"><%= t('concept_maps.edit.double_edge') %></div>
 
 <div class="main-container row w-100 h-100 position-fixed">
-  <div class="map-wrapper col-12 col-lg-9 position-relative">
+  <div class="map-wrapper col-12 position-relative">
     <div class="editor-buttons position-absolute end-0">
       <!-- Cursor Function Button -->
       <div class="d-block"><button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :edit %></span></button></div>
@@ -58,51 +58,55 @@
       <div class="d-block"><button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addNode %></span></button></div>
       <!-- Edge Function Button -->
       <div class="d-block"><button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addEdge %></span></button></div>
+      <div class="d-block"><button id="logButton" class="editor-button btn info" data-bs-toggle="offcanvas" data-bs-target="#student-log" aria-controls="student-log"><span class='button-text d-none d-md-block'><%= t :show_log %></span></button></div>
     </div>
 <!-- Dummy element for Vis-canvas -->
   <div id="map-canvas" class=""></div>
   </div>
-  <!-- DH: The container on the right with all the user information -->
-  <div id="right" class="col-lg-3">
-    <div id="users">
-      <!-- DH: Needed to determine the current user ID-->
-     <div id="user_me_id" style="display: none"><%= @current_student.id %></div>
-
-      <!-- DH: Needed to determine the current Map -->
-      <div id="map_id" style="display: none"><%= @map.id %>
+</div>
+<!-- DH: The container on the right with all the user information -->
+<div id="student-log" class="offcanvas offcanvas-start" aria-labelledby="student-log">
+  <div id="users">
+    <!-- DH: Needed to determine the current user ID-->
+    <div id="user_me_id" style="display: none"><%= @current_student.id %></div>
+    <!-- DH: Needed to determine the current Map -->
+    <div id="map_id" style="display: none"><%= @map.id %>
+    </div>
+  </div>
+  <!-- DH. Show all users of this map-->
+  <div class="offcanvas-header">
+    <div class="offcanvas-title">
+      <span><%= t :log_title %></span>
+    </div>
+    <button type="button" class="btn-close text-reset float-right" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="students">
+      <p id="students_header" class="log-title">
+        <%= t('active_students') %>
+      </p>
+      <!-- DH: Show the "me" user first -->
+      <div id="student_<%= @current_student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= @current_student.color %>">
+        <label> <%= @current_student.name %> (<%= t('me') %>) <input type="checkbox" class="filter_students" id="filter_<%= @current_student.id %>" checked/></label>
       </div>
-
-      <!-- DH. Show all users of this map-->
-      <div id="students">
-        <div id="students_header">
-          <%= t('active_students') %>
-        </div>
-
-        <!-- DH: Show the "me" user first -->
-        <div id="student_<%= @current_student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= @current_student.color %>">
-          <label> <%= @current_student.name %> (<%= t('me') %>) <input type="checkbox" class="filter_students" id="filter_<%= @current_student.id %>" checked/></label>
-        </div>
-
-        <!-- DH: show all the other user-->
-        <% @student.each do |student| %>
-          <% if student.id !=  @current_student.id %>
-            <div id="student_<%= student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= student.color %>">
-              <label><%= student.name %> <input type="checkbox" class="filter_students" id="filter_<%= student.id %>" checked/></label>
-            </div>          
-          <% end %>
+      <!-- DH: show all the other user-->
+      <% @student.each do |student| %>
+        <% if student.id !=  @current_student.id %>
+          <div id="student_<%= student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= student.color %>">
+            <label><%= student.name %> <input type="checkbox" class="filter_students" id="filter_<%= student.id %>" checked/></label>
+          </div>
         <% end %>
+      <% end %>
+       <!-- DH: Filter options -->
+      <div id="check" class="mb-4 mt-2">
+        <button id="checkAll" class="btn btn-outline-secondary"><%= t('check_all') %></button>
+        <button id="uncheckAll" class="btn btn-outline-secondary"><%= t('uncheck_all') %></button>
       </div>
     </div>
-
-    <!-- DH: The recent changes and filter-->
-    <h4 style="text-align:center"> <%= t('recent_changes') %></h4>
+     <!-- DH: The recent changes and filter-->
+    <p class="log-title"> <%= t('recent_changes') %></p>
     <div id="filter_left_students" style="display: none; text-align: center; font-size: 12 px; margin-bottom: 1em;">
       <label id="label_filter_left_students"><%= t('students_left') %><input type="checkbox" class="filter_students" id="filter_left" checked/></label>
-    </div>
-    <!-- DH: Filter options -->
-    <div id="check" style="text-align: center; font-size: 12px; margin-bottom: 1em">
-      <div id="checkAll" style="width: 50%; float: left; border-right: 1px dotted black;"><%= t('check_all') %></div>
-      <div id="uncheckAll" style="width: 50%; float: right;"><%= t('uncheck_all') %></div>
     </div>
     <div id="recent_changes"></div>
   </div>

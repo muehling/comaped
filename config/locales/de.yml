@@ -1,29 +1,29 @@
 de:
   activerecord:
     models:
-       project: "Projekt"
-       survey: "Befragung"
-       user: "Benutzer"
+      project: 'Projekt'
+      survey: 'Befragung'
+      user: 'Benutzer'
     attributes:
       concept_map:
-        accesses: "Zugriffe"
-        concepts: "Konzepte"
-        links: "Assoziationen"
-        updated_at: "Letzte Änderung"
+        accesses: 'Zugriffe'
+        concepts: 'Konzepte'
+        links: 'Assoziationen'
+        updated_at: 'Letzte Änderung'
       project:
-        description: "Beschreibung"
-        name: "Name"
+        description: 'Beschreibung'
+        name: 'Name'
       survey:
-        association_labels: "Erlaubte Assoziationsbezeichner"
-        code: "Zugangscode"
-        concept_labels: "Erlaubte Konzepte"
-        description: "Beschreibung"
-        end_date: "Verfügbar bis"
-        initial_map: "Vorgegebenens Begriffsnetz"
-        introduction: "Einführungstext"
-        start_date: "Verfügbar ab"
+        association_labels: 'Erlaubte Assoziationsbezeichner'
+        code: 'Zugangscode'
+        concept_labels: 'Erlaubte Konzepte'
+        description: 'Beschreibung'
+        end_date: 'Verfügbar bis'
+        initial_map: 'Vorgegebenens Begriffsnetz'
+        introduction: 'Einführungstext'
+        start_date: 'Verfügbar ab'
       user:
-        capabilities: "Rechte"
+        capabilities: 'Rechte'
     errors:
       messages:
         record_invalid: 'Gültigkeitsprüfung ist fehlgeschlagen: %{errors}'
@@ -33,57 +33,57 @@ de:
           has_many: Datensatz kann nicht gelöscht werden, da abhängige %{record} existieren.
   date:
     abbr_day_names:
-    - So
-    - Mo
-    - Di
-    - Mi
-    - Do
-    - Fr
-    - Sa
+      - So
+      - Mo
+      - Di
+      - Mi
+      - Do
+      - Fr
+      - Sa
     abbr_month_names:
-    -
-    - Jan
-    - Feb
-    - Mär
-    - Apr
-    - Mai
-    - Jun
-    - Jul
-    - Aug
-    - Sep
-    - Okt
-    - Nov
-    - Dez
+      -
+      - Jan
+      - Feb
+      - Mär
+      - Apr
+      - Mai
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Okt
+      - Nov
+      - Dez
     day_names:
-    - Sonntag
-    - Montag
-    - Dienstag
-    - Mittwoch
-    - Donnerstag
-    - Freitag
-    - Samstag
+      - Sonntag
+      - Montag
+      - Dienstag
+      - Mittwoch
+      - Donnerstag
+      - Freitag
+      - Samstag
     formats:
-      default: "%d.%m.%Y"
-      long: "%e. %B %Y"
-      short: "%e. %b"
+      default: '%d.%m.%Y'
+      long: '%e. %B %Y'
+      short: '%e. %b'
     month_names:
-    -
-    - Januar
-    - Februar
-    - März
-    - April
-    - Mai
-    - Juni
-    - Juli
-    - August
-    - September
-    - Oktober
-    - November
-    - Dezember
+      -
+      - Januar
+      - Februar
+      - März
+      - April
+      - Mai
+      - Juni
+      - Juli
+      - August
+      - September
+      - Oktober
+      - November
+      - Dezember
     order:
-    - :day
-    - :month
-    - :year
+      - :day
+      - :month
+      - :year
   datetime:
     distance_in_words:
       about_x_hours:
@@ -110,16 +110,16 @@ de:
         other: mehr als %{count} Jahre
       x_days:
         one: ein Tag
-        other: "%{count} Tage"
+        other: '%{count} Tage'
       x_minutes:
         one: eine Minute
-        other: "%{count} Minuten"
+        other: '%{count} Minuten'
       x_months:
         one: ein Monat
-        other: "%{count} Monate"
+        other: '%{count} Monate'
       x_seconds:
         one: eine Sekunde
-        other: "%{count} Sekunden"
+        other: '%{count} Sekunden'
     prompts:
       day: Tag
       hour: Stunden
@@ -128,7 +128,7 @@ de:
       second: Sekunde
       year: Jahr
   errors:
-    format: "%{attribute} %{message}"
+    format: '%{attribute} %{message}'
     messages:
       accepted: muss akzeptiert werden
       blank: muss ausgefüllt werden
@@ -169,28 +169,28 @@ de:
     select:
       prompt: Bitte wählen
     submit:
-      create: "%{model} erstellen"
-      submit: "%{model} speichern"
-      update: "%{model} aktualisieren"
+      create: '%{model} erstellen'
+      submit: '%{model} speichern'
+      update: '%{model} aktualisieren'
   number:
     currency:
       format:
-        delimiter: "."
-        format: "%n %u"
+        delimiter: '.'
+        format: '%n %u'
         precision: 2
-        separator: ","
+        separator: ','
         significant: false
         strip_insignificant_zeros: false
-        unit: "€"
+        unit: '€'
     format:
-      delimiter: "."
+      delimiter: '.'
       precision: 2
-      separator: ","
+      separator: ','
       significant: false
       strip_insignificant_zeros: false
     human:
       decimal_units:
-        format: "%n %u"
+        format: '%n %u'
         units:
           billion:
             one: Milliarde
@@ -212,7 +212,7 @@ de:
         significant: true
         strip_insignificant_zeros: true
       storage_units:
-        format: "%n %u"
+        format: '%n %u'
         units:
           byte:
             one: Byte
@@ -224,144 +224,146 @@ de:
     percentage:
       format:
         delimiter: ''
-        format: "%n %"
+        format: '%n %'
     precision:
       format:
         delimiter: ''
   support:
     array:
-      last_word_connector: " und "
-      two_words_connector: " und "
-      words_connector: ", "
+      last_word_connector: ' und '
+      two_words_connector: ' und '
+      words_connector: ', '
   time:
     am: vormittags
     formats:
-      default: "%A, %d. %B %Y, %H:%M Uhr"
-      long: "%A, %d. %B %Y, %H:%M Uhr"
-      short: "%d. %B, %H:%M Uhr"
+      default: '%A, %d. %B %Y, %H:%M Uhr'
+      long: '%A, %d. %B %Y, %H:%M Uhr'
+      short: '%d. %B, %H:%M Uhr'
     pm: nachmittags
   application:
     backend:
-      email: "E-Mail"
-      goodbye: "Erfolgreich ausgeloggt!"
-      password: "Passwort"
-      wrong_credentials: "E-Mail oder Passwort falsch!"
+      email: 'E-Mail'
+      goodbye: 'Erfolgreich ausgeloggt!'
+      password: 'Passwort'
+      wrong_credentials: 'E-Mail oder Passwort falsch!'
     frontend:
-      code_not_found: "Code nicht gefunden!"
-      enter_code: "Bitte den Zugangscode eingeben"
-      goodbye: "Vielen Dank für die Benutzung von CoMapEd!<br/>Sie können zu Ihrem Begriffsnetz mit dem Code <b>%{code}</b> zurückkehren."
-      full: "Die Map ist leider voll!"
+      code_not_found: 'Code nicht gefunden!'
+      enter_code: 'Bitte den Zugangscode eingeben'
+      goodbye: 'Vielen Dank für die Benutzung von CoMapEd!<br/>Sie können zu Ihrem Begriffsnetz mit dem Code <b>%{code}</b> zurückkehren.'
+      full: 'Die Map ist leider voll!'
   layouts:
     backend:
-      my_data: "Meine Daten"
-      projects: "Projekte"
-      users: "Benutzerverwaltung"
+      my_data: 'Meine Daten'
+      projects: 'Projekte'
+      users: 'Benutzerverwaltung'
   concept_maps:
-    create: "Begriffsnetze mit den folgenden Codes wurden angelegt"
-    delete: "Begriffsnetz löschen"
-    import: "Begriffsnetze importieren"
-    imported: "Begriffsnetze importiert"
-    new: "Begriffsnetze erzeugen"
+    create: 'Begriffsnetze mit den folgenden Codes wurden angelegt'
+    delete: 'Begriffsnetz löschen'
+    import: 'Begriffsnetze importieren'
+    imported: 'Begriffsnetze importiert'
+    new: 'Begriffsnetze erzeugen'
     edit:
-      double_edge: "Mehr als eine Verbindung pro Richtung nicht möglich!"
-      double_node: "Ein Knoten mit dieser Beschriftung existiert bereits! Wähle einen anderen Namen."
-      action_edit_link: "Verbindung bearbeiten/löschen"
-      action_edit_node: "Konzept bearbeiten/löschen"
-      action_new_link: "Neue Verbindung anlegen"
-      action_new_node: "Neues Konzept anlegen"
-      code: "Begriffsnetz-Code"
-      help: "Hilfe"
-      help_info: "Kurzanleitung"
-      help_short: "Hinweise anzeigen"
-      legal: "Rechtliche Hinweise"
-      mail: "Als E-Mail schicken"
-      menu: "Menü"
-      search: "Nach Konzept suchen"
-      send: "Absenden"
-      task: "Aufgabenbeschreibung anzeigen"
+      double_edge: 'Mehr als eine Verbindung pro Richtung nicht möglich!'
+      double_node: 'Ein Knoten mit dieser Beschriftung existiert bereits! Wähle einen anderen Namen.'
+      action_edit_link: 'Verbindung bearbeiten/löschen'
+      action_edit_node: 'Konzept bearbeiten/löschen'
+      action_new_link: 'Neue Verbindung anlegen'
+      action_new_node: 'Neues Konzept anlegen'
+      code: 'Begriffsnetz-Code'
+      help: 'Hilfe'
+      help_info: 'Kurzanleitung'
+      help_short: 'Hinweise anzeigen'
+      legal: 'Rechtliche Hinweise'
+      mail: 'Als E-Mail schicken'
+      menu: 'Menü'
+      search: 'Nach Konzept suchen'
+      send: 'Absenden'
+      task: 'Aufgabenbeschreibung anzeigen'
     _form_email:
-      anonymize: "Codes anonym verschicken"
-      description: "Codes für eine Liste von E-Mail Adressen generieren und versenden"
-      placeholder: "Eine E-Mail Adresse pro Zeile"
-      submit: "E-Mails verschicken"
+      anonymize: 'Codes anonym verschicken'
+      description: 'Codes für eine Liste von E-Mail Adressen generieren und versenden'
+      placeholder: 'Eine E-Mail Adresse pro Zeile'
+      submit: 'E-Mails verschicken'
     _form_simple:
-      description: "Feste Anzahl an Begriffsnetzen erzeugen"
-      submit: "Codes erzeugen"
+      description: 'Feste Anzahl an Begriffsnetzen erzeugen'
+      submit: 'Codes erzeugen'
     mails:
       created: 'Ein Begriffsnetz wurde für Sie in CoMapEd angelegt'
       edited: 'CoMapEd: Code für Begriffsnetz per E-Mail senden'
   projects:
-    delete: "Projekt löschen"
-    destroyed: "Projekt gelöscht"
-    edit: "Projekt bearbeiten"
-    import: "Projekt importieren"
-    imported: "Projekt importiert"
-    new: "Neues Projekt"
-    show: "Projekt öffnen"
+    delete: 'Projekt löschen'
+    destroyed: 'Projekt gelöscht'
+    edit: 'Projekt bearbeiten'
+    import: 'Projekt importieren'
+    imported: 'Projekt importiert'
+    new: 'Neues Projekt'
+    show: 'Projekt öffnen'
     project:
-      surveys: "Befragungen"
+      surveys: 'Befragungen'
   users:
-    created: "Benutzer angelegt"
-    destroyed: "Benutzer gelöscht"
-    edit: "Nutzerdaten bearbeiten"
-    new: "Nutzer anlegen"
-    updated: "Nutzerdaten geändert"
+    created: 'Benutzer angelegt'
+    destroyed: 'Benutzer gelöscht'
+    edit: 'Nutzerdaten bearbeiten'
+    new: 'Nutzer anlegen'
+    updated: 'Nutzerdaten geändert'
     _form:
-      password_confirmation: "Passwort bestätigen"
+      password_confirmation: 'Passwort bestätigen'
     show:
-      change: "Daten ändern"
+      change: 'Daten ändern'
     mails:
-      created: "Ein CoMapEd Benutzerkonto wurde angelegt"
+      created: 'Ein CoMapEd Benutzerkonto wurde angelegt'
   surveys:
-    delete: "Befragung löschen"
-    destroyed: "Befragung gelöscht"
-    edit: "Befragung bearbeiten"
-    import: "Befragung importieren"
-    imported: "Befragung importiert"
-    new: "Neue Befragung"
-    show: "Befragung anzeigen"
+    delete: 'Befragung löschen'
+    destroyed: 'Befragung gelöscht'
+    edit: 'Befragung bearbeiten'
+    import: 'Befragung importieren'
+    imported: 'Befragung importiert'
+    new: 'Neue Befragung'
+    show: 'Befragung anzeigen'
     form_detail:
-      example_concepts: "z.B. Auto, Motor, Umwelt"
-      example_associations: "z.B. hat, ist, bewirkt"
-      example_initial_map: "Bitte TGF Format verwenden"
+      example_concepts: 'z.B. Auto, Motor, Umwelt'
+      example_associations: 'z.B. hat, ist, bewirkt'
+      example_initial_map: 'Bitte TGF Format verwenden'
   versions:
-    delete: "Versionshistorie löschen"
+    delete: 'Versionshistorie löschen'
     _index:
-      current: "Aktuell angezeigt"
-      first: "Erste"
-      last: "Letzte"
-      versions: "Versionen"
-  addEdge: "Neue Kante"
-  addNode: "Neuer Knoten"
-  are_you_sure: "Sind Sie sicher?"
-  cancel: "Abbrechen"
-  color: "Farbe"
-  concept: "Konzept"
-  delete: "Löschen"
-  details: "Details"
-  edit: "Bearbeiten"
-  email: "E-Mail Adresse"
-  error: "Es ist ein Fehler aufgetreten!"
-  error_import: "Fehler beim Importieren"
-  export: "Exportieren"
-  export.all: "Alle Versionen"
-  export.current: "Aktueller Stand"
-  file: "Datei"
-  import: "Importieren"
-  imprint: "Impressum"
-  login: "Einloggen"
-  logout: "Ausloggen"
-  maps: "Begriffsnetze"
-  name: "Bezeichner"
-  no_description: "Keine Beschreibung"
-  privacy: "Datenschutz"
-  projects_text: "Projekte"
-  show: "Anzeigen"
-  # DH: Adding the following: 
-  active_students: "AKTIVE NUTZER"
-  me: "ich"
-  recent_changes: "Neuesten Änderungen"
-  students_left: "Änderungen von verlassenen Studenten"
-  check_all: "alle auswählen"
-  uncheck_all: "alle deaktivieren"
-  show_students: "ZEIGE NUTZER"
+      current: 'Aktuell angezeigt'
+      first: 'Erste'
+      last: 'Letzte'
+      versions: 'Versionen'
+  addEdge: 'Neue Kante'
+  addNode: 'Neuer Knoten'
+  are_you_sure: 'Sind Sie sicher?'
+  cancel: 'Abbrechen'
+  color: 'Farbe'
+  concept: 'Konzept'
+  delete: 'Löschen'
+  details: 'Details'
+  edit: 'Bearbeiten'
+  email: 'E-Mail Adresse'
+  error: 'Es ist ein Fehler aufgetreten!'
+  error_import: 'Fehler beim Importieren'
+  export: 'Exportieren'
+  export.all: 'Alle Versionen'
+  export.current: 'Aktueller Stand'
+  file: 'Datei'
+  import: 'Importieren'
+  imprint: 'Impressum'
+  login: 'Einloggen'
+  logout: 'Ausloggen'
+  maps: 'Begriffsnetze'
+  name: 'Bezeichner'
+  no_description: 'Keine Beschreibung'
+  privacy: 'Datenschutz'
+  projects_text: 'Projekte'
+  show: 'Anzeigen'
+  # DH: Adding the following:
+  active_students: 'Aktive Nutzer'
+  me: 'ich'
+  recent_changes: 'Neuesten Änderungen'
+  students_left: 'Änderungen von verlassenen Studenten'
+  check_all: 'alle auswählen'
+  uncheck_all: 'alle deaktivieren'
+  show_students: 'Zeige Nutzer'
+  show_log: 'Log'
+  log_title: 'Aktivitäten'

@@ -227,8 +227,7 @@ consumer.subscriptions.create(
 
         // Update the recent changes container
         let log = ''
-        let user = data['user'].split('-')
-        user = user[0] + '<br>' + user[1]
+        const user = data['user'].split('-').join(' ')
 
         // Object Header
         let object = ''

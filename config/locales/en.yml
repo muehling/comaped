@@ -22,151 +22,153 @@
 en:
   activerecord:
     models:
-      project: "Project"
-      survey: "Survey"
-      user: "User"
+      project: 'Project'
+      survey: 'Survey'
+      user: 'User'
     attributes:
       concept_map:
-        accesses: "Accesses"
-        concepts: "Concepts"
-        links: "associations"
-        updated_at: "Last updated"
+        accesses: 'Accesses'
+        concepts: 'Concepts'
+        links: 'associations'
+        updated_at: 'Last updated'
       project:
-        description: "Description"
-        name: "Name"
+        description: 'Description'
+        name: 'Name'
       survey:
-        association_labels: "Allowed association labels"
-        code: "Access code"
-        concept_labels: "Allowed concepts"
-        description: "Description"
-        end_date: "Available to"
-        initial_map: "Initial concept map"
-        introduction: "Introduction"
-        start_date: "Available from"
+        association_labels: 'Allowed association labels'
+        code: 'Access code'
+        concept_labels: 'Allowed concepts'
+        description: 'Description'
+        end_date: 'Available to'
+        initial_map: 'Initial concept map'
+        introduction: 'Introduction'
+        start_date: 'Available from'
       user:
-        capabilities: "Capabilites"
+        capabilities: 'Capabilites'
   application:
     backend:
-      email: "E-mail"
-      goodbye: "Successfully logged out!"
-      password: "Password"
-      wrong_credentials: "E-mail or password incorrect"
+      email: 'E-mail'
+      goodbye: 'Successfully logged out!'
+      password: 'Password'
+      wrong_credentials: 'E-mail or password incorrect'
     frontend:
-      code_not_found: "Code not found!"
-      enter_code: "Please enter your code here"
-      goodbye: "Thank you for using CoMapEd!<br/>You may return to your map using the code <b>%{code}</b> later on."
-      full: "The map is full! You may try again later!<br/>"
+      code_not_found: 'Code not found!'
+      enter_code: 'Please enter your code here'
+      goodbye: 'Thank you for using CoMapEd!<br/>You may return to your map using the code <b>%{code}</b> later on.'
+      full: 'The map is full! You may try again later!<br/>'
   layouts:
     backend:
-      my_data: "My data"
-      projects: "Projects"
-      users: "Manage users"
+      my_data: 'My data'
+      projects: 'Projects'
+      users: 'Manage users'
   concept_maps:
-    create: "Concept maps with the following codes have been created"
-    delete: "Delete concept map"
-    import: "Import concept maps"
-    imported: "Concept maps imported"
-    new: "Create concept maps"
+    create: 'Concept maps with the following codes have been created'
+    delete: 'Delete concept map'
+    import: 'Import concept maps'
+    imported: 'Concept maps imported'
+    new: 'Create concept maps'
     edit:
-      action_edit_link: "Edit or delete link"
-      action_edit_node: "Edit or delete concept"
-      action_new_link: "Create new link"
-      action_new_node: "Create new concept"
-      code: "Concept Map Code"
+      action_edit_link: 'Edit or delete link'
+      action_edit_node: 'Edit or delete concept'
+      action_new_link: 'Create new link'
+      action_new_node: 'Create new concept'
+      code: 'Concept Map Code'
       double_edge: "You can't create more than one edge per direction!"
-      double_node: "A Node with this label already exists! Choose another name."
-      help: "Help"
-      help_info: "Short manual"
-      help_short: "Show hints"
-      legal: "Legal information"
-      mail: "Send as e-mail"
-      menu: "Menu"
-      search: "Search for concept"
-      send: "Send"
-      task: "Show task description"
+      double_node: 'A Node with this label already exists! Choose another name.'
+      help: 'Help'
+      help_info: 'Short manual'
+      help_short: 'Show hints'
+      legal: 'Legal information'
+      mail: 'Send as e-mail'
+      menu: 'Menu'
+      search: 'Search for concept'
+      send: 'Send'
+      task: 'Show task description'
     _form_email:
-      anonymize: "Send anonymous codes"
-      description: "Create codes for a list of e-mail addresses and send the codes"
-      placeholder: "One e-mail adress per row"
-      submit: "Send e-mails"
+      anonymize: 'Send anonymous codes'
+      description: 'Create codes for a list of e-mail addresses and send the codes'
+      placeholder: 'One e-mail adress per row'
+      submit: 'Send e-mails'
     _form_simple:
-      description: "Generate a fixed number of concept maps"
-      submit: "Generate codes"
+      description: 'Generate a fixed number of concept maps'
+      submit: 'Generate codes'
     mails:
       created: 'A concept map has been created for you in CoMapEd'
       edited: 'CoMapEd: Send code for concept map via email'
   projects:
-    delete: "Delete project"
-    destroyed: "Project was deleted"
-    edit: "Edit project"
-    import: "Import project"
-    imported: "Project imported successfully"
-    new: "New project"
-    show: "Open project"
+    delete: 'Delete project'
+    destroyed: 'Project was deleted'
+    edit: 'Edit project'
+    import: 'Import project'
+    imported: 'Project imported successfully'
+    new: 'New project'
+    show: 'Open project'
     project:
-      surveys: "Surveys"
+      surveys: 'Surveys'
   users:
-    created: "User created"
-    destroyed: "User was deleted"
-    edit: "Edit user data"
-    new: "New user"
-    updated: "User data updated"
+    created: 'User created'
+    destroyed: 'User was deleted'
+    edit: 'Edit user data'
+    new: 'New user'
+    updated: 'User data updated'
     _form:
-      password_confirmation: "Confirm password"
+      password_confirmation: 'Confirm password'
     show:
-      change: "Edit data"
+      change: 'Edit data'
     mails:
-      created: "A CoMapEd user account has been created"
+      created: 'A CoMapEd user account has been created'
   surveys:
-    delete: "Delete survey"
-    destroyed: "Survey was deleted"
-    edit: "Edit survey"
-    import: "Import survey"
-    imported: "Survey imported successfully"
-    new: "New survey"
-    show: "Show survey"
+    delete: 'Delete survey'
+    destroyed: 'Survey was deleted'
+    edit: 'Edit survey'
+    import: 'Import survey'
+    imported: 'Survey imported successfully'
+    new: 'New survey'
+    show: 'Show survey'
     form_detail:
-      example_concepts: "e.g. Car, Engine, Environment"
-      example_associations: "e.g. has, is, affects"
-      example_initial_map: "Please use TGF format"
+      example_concepts: 'e.g. Car, Engine, Environment'
+      example_associations: 'e.g. has, is, affects'
+      example_initial_map: 'Please use TGF format'
   versions:
-    delete: "Delete version history"
+    delete: 'Delete version history'
     _index:
-      current: "Currently shown"
-      first: "First"
-      last: "Last"
-      versions: "Versions"
-  addEdge: "Add Edge"
-  addNode: "Add Node"
-  are_you_sure: "Are you sure?"
-  cancel: "Cancel"
-  color: "Color"
-  concept: "Concept"
-  delete: "Delete"
-  details: "Details"
-  edit: "Edit"
-  email: "E-mail address"
-  error: "An error occurred!"
-  error_import: "Error occurred during import"
-  export: "Export"
-  export.all: "All versions"
-  export.current: "Current state"
-  file: "File"
-  import: "Import"
-  imprint: "Imprint"
-  login: "Login"
-  logout: "Logout"
-  maps: "Concept maps"
-  name: "Name"
-  no_description: "No description"
-  privacy: "Privacy"
-  projects_text: "Projects"
-  show: "Show"
-  # DH: Adding the following: 
-  active_students: "ACTIVE USERS"
-  me: "me"
-  recent_changes: "Recent Changes"
-  students_left: "changes from students who left"
-  check_all: "Check All"
-  uncheck_all: "Uncheck All"
-  show_students: "SHOW USERS"
+      current: 'Currently shown'
+      first: 'First'
+      last: 'Last'
+      versions: 'Versions'
+  addEdge: 'Add Edge'
+  addNode: 'Add Node'
+  are_you_sure: 'Are you sure?'
+  cancel: 'Cancel'
+  color: 'Color'
+  concept: 'Concept'
+  delete: 'Delete'
+  details: 'Details'
+  edit: 'Edit'
+  email: 'E-mail address'
+  error: 'An error occurred!'
+  error_import: 'Error occurred during import'
+  export: 'Export'
+  export.all: 'All versions'
+  export.current: 'Current state'
+  file: 'File'
+  import: 'Import'
+  imprint: 'Imprint'
+  login: 'Login'
+  logout: 'Logout'
+  maps: 'Concept maps'
+  name: 'Name'
+  no_description: 'No description'
+  privacy: 'Privacy'
+  projects_text: 'Projects'
+  show: 'Show'
+  # DH: Adding the following:
+  active_students: 'Active Users'
+  me: 'me'
+  recent_changes: 'Recent Changes'
+  students_left: 'changes from students who left'
+  check_all: 'Check All'
+  uncheck_all: 'Uncheck All'
+  show_students: 'Show Users'
+  show_log: 'Log'
+  log_title: 'Activities'

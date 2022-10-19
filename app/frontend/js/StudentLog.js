@@ -2,10 +2,6 @@ import { getLanguage } from './helpers'
 
 class StudentLog {
   constructor() {
-    this.isMapVisible = true
-
-    $('#toggle_button').on('click', this.toggleLogAndMap)
-
     // DH: If the student wants to logout, make sure that the edit-dialog closes
     $('#header-nav').on('click', () => {
       if ($('#edit-dialog').is(':visible')) {
@@ -42,25 +38,6 @@ class StudentLog {
     $('#label_filter_left_students').on('click', function () {
       $('#students').click()
     })
-  }
-
-  toggleLogAndMap() {
-    if (!this.isMapVisible) {
-      if (getLanguage() === 'de') {
-        $('#toggle_button').html('Verstecke Nutzer<br><br>')
-      } else {
-        $('#toggle_button').html('Hide Users<br><br>')
-      }
-      $('#right').css('display', 'block')
-    } else {
-      if (getLanguage() === 'de') {
-        $('#toggle_button').html('Zeige Nutzer<br><br>')
-      } else {
-        $('#toggle_button').html('Show Users<br><br>')
-      }
-      $('#right').css('display', 'none')
-    }
-    this.isMapVisible = !this.isMapVisible
   }
 }
 
