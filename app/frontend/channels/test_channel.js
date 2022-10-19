@@ -1,4 +1,5 @@
 import consumer from './consumer'
+import { getLanguage } from '../js/helpers'
 
 // If the user has other Subscriptions, make sure to remove them: Might be useful in the future
 consumer.subscriptions.subscriptions.forEach(subscription => {
@@ -22,15 +23,6 @@ consumer.subscriptions.create(
     // Called when there's incoming data on the websocket for this channel
     received(data) {
       // function get the browser language of the user
-      function getLanguage() {
-        return (
-          navigator.userLanguage ||
-          (navigator.languages && navigator.languages.length && navigator.languages[0]) ||
-          navigator.language ||
-          navigator.browserLanguage ||
-          navigator.systemLanguage
-        )
-      }
 
       let language = getLanguage()
 
