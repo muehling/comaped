@@ -16,9 +16,6 @@ class ConceptMap {
   static edgeButton = 9
   static editButton = 10
 
-  //If device has no hover it is a touch device
-  static touchDevice = window.matchMedia('(hover: hover)').matches ? false : true
-
   constructor({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts }) {
     this.conceptsPath = conceptsPath
     this.conceptMapsPath = conceptMapsPath
@@ -51,6 +48,7 @@ class ConceptMap {
         smooth: { type: 'continuous' },
       },
       physics: {
+        //enabled: false,
         barnesHut: {
           springLength: 120,
           springConstant: 0.0,
@@ -61,6 +59,7 @@ class ConceptMap {
         },
         solver: 'barnesHut',
       },
+
       interaction: {
         hover: true,
         navigationButtons: true,
@@ -72,7 +71,7 @@ class ConceptMap {
         enabled: false,
         initiallyActive: false,
         addNode: true,
-        addEdge: (data, callback) => {
+        addEdge: data => {
           $('#addEdgeToast').fadeOut(500)
           var connected_edges = [this.network.getConnectedEdges(data.from)]
           for (let i = 0, len = connected_edges[0].length; i < len; i++) {
@@ -109,7 +108,6 @@ class ConceptMap {
         deleteEdge: true,
       },
     }
-    /****************************************************************/
 
     this.network = new Network(
       this.container,
@@ -123,14 +121,6 @@ class ConceptMap {
     /********************************
      * Make EditForm movable
      ********************************/
-
-    // document.getElementById("edit-dialog").ontouchmove = preventZoom;
-
-    // function preventZoom(e) {
-    //   e = e || window.event
-    //   e.preventDefault()
-    // }
-
     dragElement(document.getElementById('edit-dialog'))
 
     function dragElement(elmnt) {
@@ -194,7 +184,6 @@ class ConceptMap {
       this.activeButton(2)
       this.network.disableEditMode()
       this.network.unselectAll()
-      $('#hoverButton').attr('hidden', true)
     })
     // edgeButton pressed
     $('#edgeButton').on('click', () => {
@@ -202,66 +191,19 @@ class ConceptMap {
       this.buttonMode = ConceptMap.edgeButton
       this.activeButton(3)
       this.network.unselectAll()
-      $('#hoverButton').attr('hidden', true)
       this.network.addEdgeMode()
-    })
-
-    /**************************************
-     * hoverButton pressed => show EditForm
-     ***************************************/
-    $('#hoverButton').on('click', () => {
-      this.mode = ConceptMap.editNode
-      $('#hoverButton').attr('hidden', true)
-      this.showForm(this.canvasX, this.canvasY)
     })
 
     // Default Infotext
     $('#context-help-text').html($('#ch_editMode').html())
 
-    // Disable ContextMenu for Touchdevices
-    if (ConceptMap.touchDevice)
-      document.addEventListener('contextmenu', event => event.preventDefault())
-
-    // Hide hoverButton on Zoom
-    this.network.on('zoom', () => {
-      $('#hoverButton').attr('hidden', true)
-    })
-
     // ESC Pressed
     document.addEventListener('keyup', e => {
       if (e.code == 'Escape') {
         hideForm()
-        $('#hoverButton').attr('hidden', true)
       }
     })
 
-    /********************************
-     * HOVER NODE/EDGE EVENT
-     ********************************/
-    this.network.on('hoverNode', params => {
-      // Show hoverButton only in EditMode for non Touchdevices. Also Disabled while dragging Form oder Nodes.
-      if (
-        this.buttonMode == ConceptMap.editButton &&
-        this.mode == ConceptMap.none &&
-        !ConceptMap.touchDevice
-      ) {
-        this.network.canvas.body.container.style.cursor = 'pointer'
-        $('#context-help-text').html($('#ch_hovernode').html()) // Infotext hovernode
-        // Display Hover-Button
-        $('#hoverButton').removeAttr('hidden')
-        this.ids[0] = params.node
-        this.canvasX = this.nodes.get(this.ids[0]).x
-        this.canvasY = this.nodes.get(this.ids[0]).y
-        $('#hoverButton').attr(
-          'style',
-          'z-index: 1; position:absolute; left:' +
-            this.network.canvasToDOM({ x: this.canvasX, y: this.canvasY }).x +
-            'px;top:' +
-            (this.network.canvasToDOM({ x: this.canvasX, y: this.canvasY }).y - 40) +
-            'px;'
-        )
-      }
-    })
     this.network.on('hoverEdge', () => {
       if (buttonMode == ConceptMap.edgeButton) return
       $('#context-help-text').html($('#ch_hoveredge').html())
@@ -296,11 +238,10 @@ class ConceptMap {
      * DRAG EVENT: save new node position
      ***************************************/
     this.network.on('dragStart', params => {
-      $('#hoverButton').attr('hidden', true)
       if (params.nodes.length > 0) {
         // Does not fire when Stage is dragged
         this.ids[0] = params.nodes[0]
-        mode = ConceptMap.dragNode
+        this.mode = ConceptMap.dragNode
         this.oldPointerX = params.pointer.canvas.x
         this.oldPointerY = params.pointer.canvas.y
         $('#edit-dialog').addClass('d-none')
@@ -308,18 +249,14 @@ class ConceptMap {
     })
     this.network.on('dragEnd', async params => {
       const postObj = {}
-      switch (
-        mode // Does not trigger when Stage is dragged
-      ) {
-        case ConceptMap.dragNode:
-          const newPointerX = params.pointer.canvas.x
-          const newPointerY = params.pointer.canvas.y
-          const diffX = this.oldPointerX - newPointerX
-          const diffY = this.oldPointerY - newPointerY
 
+      switch (this.mode) {
+        case ConceptMap.dragNode:
+          //TODO single post
           for (let i = this.ids.length - 1; i >= 0; i--) {
-            postObj['x'] = nodes.get(this.ids[i]).x - diffX
-            postObj['y'] = nodes.get(this.ids[i]).y - diffY
+            postObj['x'] = params.pointer.canvas.x
+            postObj['y'] = params.pointer.canvas.y
+
             const res = await fetch(this.conceptsPath + '/' + this.ids[i], {
               method: 'PUT',
               mode: 'same-origin',
@@ -345,8 +282,7 @@ class ConceptMap {
      * DOUBLECLICK EVENT: Create a Node
      *************************************/
     this.network.on('doubleClick', params => {
-      if (buttonMode == ConceptMap.edgeButton) return
-      $('#hoverButton').attr('hidden', true)
+      if (this.buttonMode == ConceptMap.edgeButton) return
       this.createNode(params)
     })
 
@@ -356,8 +292,7 @@ class ConceptMap {
     this.network.on('click', params => {
       if (params.nodes.length == 0 && params.edges.length == 0) {
         ///STAGE selected
-        $('#hoverButton').attr('hidden', true)
-        if (buttonMode == ConceptMap.nodeButton) {
+        if (this.buttonMode == ConceptMap.nodeButton) {
           this.createNode(params)
         }
       }
@@ -370,25 +305,19 @@ class ConceptMap {
       if (buttonMode == ConceptMap.editButton) {
         if (params.nodes.length > 1) {
           ///MULTI-NODES selected///
-          $('#hoverButton').attr('hidden', true)
           this.mode = ConceptMap.editMultiNode
-          for (let i = 0; i < params.nodes.length; i++) this.ids[i] = params.nodes[i]
+          this.ids = params.nodes
           this.showForm(this.nodes.get(this.ids[0]).x, this.nodes.get(this.ids[0]).y)
-        } else if (params.nodes.length == 1) {
+        } else if (params.nodes.length === 1) {
           ///NODE selected///
-          $('#hoverButton').attr('hidden', true)
-          if (ConceptMap.touchDevice) {
-            this.editNode(params)
-          }
-        } else if (params.edges.length == 1) {
+          this.editNode(params)
+        } else if (params.edges.length === 1) {
           ///EDGE selected///
-          $('#hoverButton').attr('hidden', true)
           this.editEdge(params)
         }
       }
     })
   }
-  /**************************************************************************/
 
   /*********************
    * HELPER FUNCTIONS
@@ -410,21 +339,21 @@ class ConceptMap {
    * create node
    ********************************/
   createNode = params => {
-    var canvasX = params.pointer.canvas.x
-    var canvasY = params.pointer.canvas.y
+    this.canvasX = params.pointer.canvas.x
+    this.canvasY = params.pointer.canvas.y
     this.mode = ConceptMap.addNode
-    this.showForm(canvasX, canvasY)
+    this.showForm()
   }
 
   /*********************************
    * edit node
    ********************************/
   editNode = params => {
-    this.ids[0] = params.nodes[0]
+    this.ids = params.nodes
     this.canvasX = this.nodes.get(this.ids[0]).x
     this.canvasY = this.nodes.get(this.ids[0]).y
     this.mode = ConceptMap.editNode
-    this.showForm(canvasX, canvasY)
+    this.showForm()
   }
 
   /*********************************
@@ -446,11 +375,11 @@ class ConceptMap {
    * edit edge
    ********************************/
   editEdge = params => {
-    this.ids[0] = params.edges[0]
-    const canvasX = params.pointer.canvas.x
-    const canvasY = params.pointer.canvas.y
+    this.ids = params.edges
+    this.canvasX = params.pointer.canvas.x
+    this.canvasY = params.pointer.canvas.y
     this.mode = ConceptMap.editEdge
-    this.showForm(canvasX, canvasY)
+    this.showForm()
   }
 
   /*********************************
@@ -695,7 +624,7 @@ class ConceptMap {
   /******************************************
    * controls buttons to display in EditForm
    *******************************************/
-  initNodeInputs = (canvasX, canvasY) => {
+  initNodeInputs = () => {
     $('#entry_concept').removeClass('d-none')
     $('#entry_link').addClass('d-none')
     $('#colorpicker').removeClass('d-none')
@@ -703,15 +632,15 @@ class ConceptMap {
     $('#edgepicker').addClass('d-none')
     this.mode === ConceptMap.addNode && $('#delete').addClass('d-none')
     this.mode === ConceptMap.editNode && $('#delete').removeClass('d-none')
-    $('#x').attr('value', canvasX)
-    $('#y').attr('value', canvasY)
+    $('#x').attr('value', this.canvasX)
+    $('#y').attr('value', this.canvasY)
     this.focus('#entry_concept')
   }
 
   /******************************************
    * controls buttons to display in EditForm
    *******************************************/
-  initEdgeInputs = (canvasX, canvasY) => {
+  initEdgeInputs = () => {
     $('#entry_concept').addClass('d-none')
     $('#entry_link').removeClass('d-none')
     $('#colorpicker').addClass('d-none')
@@ -719,8 +648,8 @@ class ConceptMap {
     $('#edgepicker').removeClass('d-none')
     this.mode === ConceptMap.addEdge && $('#delete').addClass('d-none')
     this.mode === ConceptMap.editEdge && $('#delete').removeClass('d-none')
-    $('#x').attr('value', canvasX)
-    $('#y').attr('value', canvasY)
+    $('#x').attr('value', this.canvasX)
+    $('#y').attr('value', this.canvasY)
     this.focus('#entry_link')
   }
 
@@ -739,14 +668,16 @@ class ConceptMap {
   /*************************************
    * Calculates Position of EditForm
    ************************************/
-  setDialogPosition = (canvasX, canvasY) => {
+  setDialogPosition = () => {
     $('#edit-dialog').removeClass('d-none')
     const form_width = $('#edit-dialog').width()
     const form_height = $('#edit-dialog').height()
     var x_pos =
-      $('#map-canvas').offset().left + this.network.canvasToDOM({ x: canvasX, y: canvasY }).x
+      $('#map-canvas').offset().left +
+      this.network.canvasToDOM({ x: this.canvasX, y: this.canvasY }).x
     var y_pos =
-      $('#map-canvas').offset().top + this.network.canvasToDOM({ x: canvasX, y: canvasY }).y
+      $('#map-canvas').offset().top +
+      this.network.canvasToDOM({ x: this.canvasX, y: this.canvasY }).y
     var left = x_pos - form_width / 2 // Form is in bounds
     var top = y_pos - form_height / 2 // Form is in bounds
 
@@ -822,30 +753,33 @@ class ConceptMap {
     this.edges.update(body.edge)
   }
 
-  checkLock = type => {
-    return !type.get(this.ids[0]).lock && type.get(this.ids[0]) === 'false'
+  checkIfIsLocked = elements => {
+    const isLocked = this.ids.reduce((acc, id) => {
+      const l = elements.get(id).lock
+      return acc || l
+    }, false)
+
+    return isLocked
   }
 
   /*******************************************
    * EditForm to Create/Edit Nodes and Edges
    * Controls which buttons are displayed
    *******************************************/
-  showForm = async (canvasX, canvasY) => {
+  showForm = async () => {
     let isLocked = false
 
     switch (this.mode) {
       case ConceptMap.editEdge:
-        isLocked = this.checkLock(this.edges)
+        isLocked = this.checkIfIsLocked(this.edges)
         break
       case ConceptMap.editNode:
       case ConceptMap.editMultiNode:
-        isLocked = this.checkLock(this.nodes)
+        isLocked = this.checkIfIsLocked(this.nodes)
         break
     }
     if (isLocked) {
-      alert(
-        this.getLanguage() === 'de' ? 'Dieses Element ist gesperrt!' : 'This element is locked!'
-      )
+      alert(getLanguage() === 'de' ? 'Dieses Element ist gesperrt!' : 'This element is locked!')
       return
     }
 
@@ -859,20 +793,20 @@ class ConceptMap {
         break
     }
 
-    this.setDialogPosition(canvasX, canvasY)
+    this.setDialogPosition()
 
     switch (this.mode) {
       case ConceptMap.addNode:
         $('#context-help-text').html($('#ch_newNode').html())
         $('#action').html(this.dialogTexts.addNode)
         $('#entry_concept').val('')
-        this.initNodeInputs(canvasX, canvasY) //controls buttons to display
+        this.initNodeInputs() //controls buttons to display
         break
       case ConceptMap.editNode:
         $('#context-help-text').html($('#ch_editNode').html())
         $('#action').html(this.dialogTexts.editNode)
         $('#entry_concept').val(this.nodes.get(this.ids[0]).label)
-        this.initNodeInputs(canvasX, canvasY) //controls buttons to display
+        this.initNodeInputs() //controls buttons to display
         this.selectColor(this.nodes.get(this.ids[0]).color.background) //determines current color
         this.selectShape(this.nodes.get(this.ids[0]).shape) //determines current shape
         break
@@ -880,19 +814,20 @@ class ConceptMap {
         $('#context-help-text').html($('#ch_editEdge').html())
         $('#action').html(this.dialogTexts.editEdge)
         $('#entry_link').val(this.edges.get(this.ids[0]).label)
-        this.initEdgeInputs(canvasX, canvasY) //controls buttons to display
+        this.initEdgeInputs() //controls buttons to display
         break
       case ConceptMap.addEdge:
         $('#context-help-text').html($('#ch_newEdge').html())
         $('#action').html(this.dialogTexts.addEdge)
         $('#entry_link').val('')
-        this.initEdgeInputs(canvasX, canvasY) //controls buttons to display
+        this.initEdgeInputs() //controls buttons to display
         break
       case ConceptMap.editMultiNode:
         $('#context-help-text').html($('#ch_edit').html())
         $('#action').html(this.dialogTexts.editNode)
         this.initMultiNodeInputs() //controls buttons to display
         this.selectColor(this.nodes.get(this.ids[0]).color.background) //determines current color
+        break
       default:
         console.error('Unknown mode: ', this.mode)
     }

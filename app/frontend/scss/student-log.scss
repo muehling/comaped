@@ -14,12 +14,18 @@
 
 #right {
   position: fixed;
-  top: $header-height;
   display: none;
   background-color: white;
+  z-index: 10;
   @media (min-width: 992px) {
     position: relative;
     display: block;
     right: 0;
+    max-height: calc(100vh - $header-height);
+    overflow-y: auto;
   }
+  //#recent_changes {
+  // needs a height for overflow
+  //overflow: auto;
+  //}
 }

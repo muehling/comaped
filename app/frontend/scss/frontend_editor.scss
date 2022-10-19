@@ -132,6 +132,10 @@ body {
   margin-right: 150px;
 }
 
+.map-wrapper {
+  padding: 0 !important;
+}
+
 #map-canvas {
   height: calc(100% - $header-height);
   background-color: #f8f8f8;
@@ -305,4 +309,46 @@ body {
 
 #edit-dialog-header {
   cursor: move;
+}
+
+.editor-buttons {
+  z-index: 5;
+  padding: 1em;
+  .btn.editor-button {
+    font-family: 'bootstrap-icons';
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 6px !important;
+    box-sizing: content-box;
+    height: 1.5em;
+    margin-bottom: 0.5em;
+    padding: 0 12px;
+    z-index: 1;
+    color: $blue;
+    width: 6em;
+    @media (max-width: 768px) {
+      width: 1em;
+    }
+    span.button-text {
+      margin-left: 5px;
+      font-family: $font-family-sans-serif;
+    }
+  }
+  #editButton {
+    &:before {
+      content: '\F4C9';
+    }
+  }
+
+  #nodeButton {
+    &:before {
+      content: '\F24D';
+    }
+  }
+
+  #edgeButton {
+    &:before {
+      content: '\F123';
+    }
+  }
 }

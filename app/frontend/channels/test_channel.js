@@ -27,7 +27,7 @@ consumer.subscriptions.create(
       let language = getLanguage()
 
       // function to create or update a node
-      function updateNode(id, label, x, y, color, lock, user_color) {
+      function updateNode(id, label, x, y, color, lock, user_color, shape) {
         let border = color
         let borderWidth = 2
         if (lock) {
@@ -40,7 +40,7 @@ consumer.subscriptions.create(
         window.setNodeData({
           id: id,
           label: label,
-          shape: 'ellipse',
+          shape: shape,
           borderWidth: borderWidth,
           lock: lock,
           x: x,
@@ -146,7 +146,14 @@ consumer.subscriptions.create(
             case 'create':
               if (data['type'] == 'node') {
                 // Display the new node
-                updateNode(data['id'], data['label'], data['x'], data['y'], data['color'])
+                updateNode(
+                  data['id'],
+                  data['label'],
+                  data['x'],
+                  data['y'],
+                  data['color'],
+                  data['shape']
+                )
               } else if (data['type'] == 'link') {
                 // Display the new link
                 updateEdge(data['id'], data['start'], data['end'], data['label'])
@@ -163,7 +170,8 @@ consumer.subscriptions.create(
                   data['y'],
                   data['color'],
                   data['lock'],
-                  data['user_color']
+                  data['user_color'],
+                  data['shape']
                 )
               } else if (data['type'] == 'link') {
                 // Display the updated link
