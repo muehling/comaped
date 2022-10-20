@@ -1,5 +1,3 @@
-import { getLanguage } from './helpers'
-
 class StudentLog {
   constructor() {
     // DH: If the student wants to logout, make sure that the edit-dialog closes
