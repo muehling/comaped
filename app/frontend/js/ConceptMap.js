@@ -758,7 +758,8 @@ class ConceptMap {
   checkIfIsLocked = elements => {
     const isLocked = this.ids.reduce((acc, id) => {
       const l = elements.get(id).lock
-      return acc || l
+      // check for 'false' is necessary, because vis seems to occasionally transform false into 'false'
+      return acc || (l && l !== 'false')
     }, false)
 
     return isLocked
@@ -780,6 +781,7 @@ class ConceptMap {
         isLocked = this.checkIfIsLocked(this.nodes)
         break
     }
+
     if (isLocked) {
       alert(getLanguage() === 'de' ? 'Dieses Element ist gesperrt!' : 'This element is locked!')
       return
