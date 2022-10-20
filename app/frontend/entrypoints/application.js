@@ -7,6 +7,8 @@ import BackendViewer from '../js/BackendViewer'
 import StudentLog from '../js/StudentLog'
 import '../channels/test_channel'
 
+import { initSubscription } from '../channels/test_channel'
+
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import '../scss/application.scss'
@@ -24,6 +26,7 @@ window.initEditor = ({
   linksPath,
   dialogTexts,
 }) => {
+  let isSubscriptionInitialized = false
   const cm = new ConceptMap({
     edgeData,
     nodeData,
@@ -65,6 +68,10 @@ window.initEditor = ({
 
   //DH Make the mode available
   window.setMode = cm.setMode
+  if (!isSubscriptionInitialized) {
+    initSubscription()
+    isSubscriptionInitialized = true
+  }
 }
 
 /**********************************
