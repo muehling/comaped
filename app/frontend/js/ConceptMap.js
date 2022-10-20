@@ -71,7 +71,7 @@ class ConceptMap {
         enabled: false,
         initiallyActive: false,
         addNode: true,
-        addEdge: data => {
+        addEdge: (data, callback) => {
           $('#addEdgeToast').fadeOut(500)
           var connected_edges = [this.network.getConnectedEdges(data.from)]
           for (let i = 0, len = connected_edges[0].length; i < len; i++) {
@@ -101,7 +101,7 @@ class ConceptMap {
               return
             }
           }
-          createEdge(data)
+          this.createEdge(data)
         },
         editEdge: true,
         deleteNode: true,
@@ -205,7 +205,9 @@ class ConceptMap {
     })
 
     this.network.on('hoverEdge', () => {
-      if (buttonMode == ConceptMap.edgeButton) return
+      if (buttonMode == ConceptMap.edgeButton) {
+        return
+      }
       $('#context-help-text').html($('#ch_hoveredge').html())
       this.network.canvas.body.container.style.cursor = 'pointer'
     })
@@ -365,10 +367,10 @@ class ConceptMap {
     $('#context-help-text').html($('#ch_addEdgeMode').html()).removeClass('d-none')
     const startNode = this.nodes.get(params.from)
     const endNode = this.nodes.get(params.to)
-    const canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
-    const canvasY = Math.min(startNode.y, endNode.y) + Math.abs(startNode.y - endNode.y) / 2
+    this.canvasX = Math.min(startNode.x, endNode.x) + Math.abs(startNode.x - endNode.x) / 2
+    this.canvasY = Math.min(startNode.y, endNode.y) + Math.abs(startNode.y - endNode.y) / 2
     this.mode = ConceptMap.addEdge
-    this.showForm(canvasX, canvasY)
+    this.showForm()
   }
 
   /*********************************
