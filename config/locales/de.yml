@@ -298,6 +298,9 @@ de:
     imported: 'Projekt importiert'
     new: 'Neues Projekt'
     show: 'Projekt öffnen'
+    enable_coworking: 'Gleichzeitiges Bearbeiten'
+    coworking: 'Gleichzeitiges Bearbeiten ist verfügbar.'
+    no_coworking: 'Gleichzeitiges Bearbeiten ist nicht verfügbar.'
     project:
       surveys: 'Befragungen'
   users:

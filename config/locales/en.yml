@@ -103,6 +103,9 @@ en:
     imported: 'Project imported successfully'
     new: 'New project'
     show: 'Open project'
+    enable_coworking: 'Simultaneous Editing'
+    coworking: 'Simultaneous editing is enabled.'
+    no_coworking: 'Simultaneous editing is disabled.'
     project:
       surveys: 'Surveys'
   users:

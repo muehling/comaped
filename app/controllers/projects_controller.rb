@@ -121,6 +121,6 @@ class ProjectsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def project_params
-    params.fetch(:project, {}).permit(%i[name description])
+    params.fetch(:project, {}).permit(%i[name description enable_coworking])
   end
 end

@@ -8,9 +8,13 @@
         <%= f.label :name, class: "control-label" %>
         <%= f.text_field :name, class: "form-control" %>
       </div>
-      <div class="form-group mb-4">
+      <div class="form-group mb-2">
         <%= f.label :description, class: "control-label" %>
         <%= f.text_field :description, class: "form-control" %>
+      </div>
+      <div class="form-group mb-4">
+        <%= f.label :enable_coworking, class: "control-label" %>
+        <%= f.check_box :enable_coworking, class: "ml-2 form-check-input" %>
       </div>
       <div class="form-group">
         <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>"/>

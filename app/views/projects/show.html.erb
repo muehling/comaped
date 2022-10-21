@@ -10,6 +10,7 @@
           <div class="row">
             <div class = "col-md-12">
               <p><%= @project.description %></p>
+              <p><%= @project.enable_coworking ? t('projects.coworking') : t('projects.no_coworking')%></p>
             </div>
           </div>
           <%= render 'surveys/index' %>
