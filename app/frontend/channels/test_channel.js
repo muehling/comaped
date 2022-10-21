@@ -111,7 +111,8 @@ export const initSubscription = () => {
           if (data['user_id'] != current_user) {
             // An other user did the change
             switch (data['action']) {
-              case 'user_left':
+              case 'user_left': // user left intentionally by logout
+              case 'user_disconnected': // user was disconnected by timeout
                 // the user must be removed of the active users
                 $('#student_' + data['user_id']).remove()
 

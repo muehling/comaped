@@ -12,7 +12,7 @@ module ApplicationCable
       Student.destroy(@current_user_id)
       ActionCable.server.broadcast(
         'test_channel',
-        { action: 'user_left', user_id: @current_user_id, map_id: @map_id }
+        { action: 'user_disconnected', user_id: @current_user_id, map_id: @map_id }
       )
     end
   end
