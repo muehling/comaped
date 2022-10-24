@@ -35,6 +35,7 @@ window.initEditor = ({
     conceptMapsPath,
     linksPath,
     dialogTexts,
+    enableCoworking,
   })
 
   // expose handlers needed for DOM events

@@ -16,11 +16,20 @@ class ConceptMap {
   static edgeButton = 9
   static editButton = 10
 
-  constructor({ edgeData, nodeData, conceptsPath, conceptMapsPath, linksPath, dialogTexts }) {
+  constructor({
+    edgeData,
+    nodeData,
+    conceptsPath,
+    conceptMapsPath,
+    linksPath,
+    dialogTexts,
+    enableCoworking,
+  }) {
     this.conceptsPath = conceptsPath
     this.conceptMapsPath = conceptMapsPath
     this.linksPath = linksPath
     this.dialogTexts = dialogTexts
+    this.enableCoworking = enableCoworking
 
     this.edges = new DataSet(edgeData)
     this.nodes = new DataSet(nodeData)
@@ -97,7 +106,6 @@ class ConceptMap {
                   $('#doubleEdgeToast').fadeOut(500)
                 }, 6000)
               }
-              this.mode = ConceptMap.none
               return
             }
           }
@@ -189,6 +197,7 @@ class ConceptMap {
     $('#edgeButton').on('click', () => {
       $('#context-help-text').html($('#ch_addEdgeMode').html())
       this.buttonMode = ConceptMap.edgeButton
+      this.mode = ConceptMap.addEdge
       this.activeButton(3)
       this.network.unselectAll()
       this.network.addEdgeMode()
@@ -772,29 +781,31 @@ class ConceptMap {
   showForm = async () => {
     let isLocked = false
 
-    switch (this.mode) {
-      case ConceptMap.editEdge:
-        isLocked = this.checkIfIsLocked(this.edges)
-        break
-      case ConceptMap.editNode:
-      case ConceptMap.editMultiNode:
-        isLocked = this.checkIfIsLocked(this.nodes)
-        break
-    }
+    if (this.enableCoworking) {
+      switch (this.mode) {
+        case ConceptMap.editEdge:
+          isLocked = this.checkIfIsLocked(this.edges)
+          break
+        case ConceptMap.editNode:
+        case ConceptMap.editMultiNode:
+          isLocked = this.checkIfIsLocked(this.nodes)
+          break
+      }
 
-    if (isLocked) {
-      alert(getLanguage() === 'de' ? 'Dieses Element ist gesperrt!' : 'This element is locked!')
-      return
-    }
+      if (isLocked) {
+        alert(getLanguage() === 'de' ? 'Dieses Element ist gesperrt!' : 'This element is locked!')
+        return
+      }
 
-    switch (this.mode) {
-      case ConceptMap.editEdge:
-        await this.toggleEdgeLock(true)
-        break
-      case ConceptMap.editNode:
-      case ConceptMap.editMultiNode:
-        await this.toggleNodeLock(true)
-        break
+      switch (this.mode) {
+        case ConceptMap.editEdge:
+          await this.toggleEdgeLock(true)
+          break
+        case ConceptMap.editNode:
+        case ConceptMap.editMultiNode:
+          await this.toggleNodeLock(true)
+          break
+      }
     }
 
     this.setDialogPosition()
@@ -864,10 +875,13 @@ class ConceptMap {
       // viewport.content = 'height=device-height'
       // viewport.content = 'target-densitydpi=device-dpi'
     }*/
-    if (this.mode === ConceptMap.editNode || this.mode === ConceptMap.editMultiNode) {
-      await this.toggleNodeLock(false)
-    } else if (this.mode === ConceptMap.editEdge) {
-      await this.toggleEdgeLock(false)
+
+    if (this.enableCoworking) {
+      if (this.mode === ConceptMap.editNode || this.mode === ConceptMap.editMultiNode) {
+        await this.toggleNodeLock(false)
+      } else if (this.mode === ConceptMap.editEdge) {
+        await this.toggleEdgeLock(false)
+      }
     }
     this.mode = ConceptMap.none
   }
