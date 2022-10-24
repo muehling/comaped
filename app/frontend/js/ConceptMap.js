@@ -31,6 +31,12 @@ class ConceptMap {
     this.dialogTexts = dialogTexts
     this.enableCoworking = enableCoworking
 
+    // on small devices/phones, the keyboard will resize the canvas when it
+    // comes up, and again when it is closed, but somewhat unpredictable.
+    // This is to restore the original state.
+    this.scale = undefined
+    this.viewPosition = undefined
+
     this.edges = new DataSet(edgeData)
     this.nodes = new DataSet(nodeData)
 
@@ -57,7 +63,6 @@ class ConceptMap {
         smooth: { type: 'continuous' },
       },
       physics: {
-        //enabled: false,
         barnesHut: {
           springLength: 120,
           springConstant: 0.0,
@@ -683,6 +688,21 @@ class ConceptMap {
     $('#edit-dialog').removeClass('d-none')
     const form_width = $('#edit-dialog').width()
     const form_height = $('#edit-dialog').height()
+
+    // mobile fix: detecting the screen size of the virtual keyboard does not
+    // seem to be possible, so we simply place the dialog at the top of the
+    // screen on smaller screens to ensure it is not obscured by the virtual keyboard.
+    if (window.innerWidth < 500) {
+      $('#edit-dialog').attr(
+        'style',
+        'z-index: 1; position:absolute;left:' +
+          (window.innerWidth / 2 - form_width / 2) +
+          'px;top:' +
+          '100px;'
+      )
+      return
+    }
+
     var x_pos =
       $('#map-canvas').offset().left +
       this.network.canvasToDOM({ x: this.canvasX, y: this.canvasY }).x
@@ -718,6 +738,7 @@ class ConceptMap {
   toggleNodeLock = async status => {
     //TODO this currently only locks the first selected concept
     //TODO for multiple selected nodes, we need a different endpoint to lock more than one node
+    //TODO same goes for toggleEdgeLock
     //TODO see comment in onSubmit for editMultiNodes
     const res = await fetch(this.conceptsPath + '/' + this.ids[0], {
       method: 'PUT',
@@ -779,6 +800,9 @@ class ConceptMap {
    * Controls which buttons are displayed
    *******************************************/
   showForm = async () => {
+    this.scale = this.network.getScale()
+    this.viewPosition = this.network.getViewPosition()
+
     let isLocked = false
 
     if (this.enableCoworking) {
@@ -862,19 +886,6 @@ class ConceptMap {
 
     this.buttonMode = ConceptMap.editButton
     this.activeButton(1)
-    //Zoom-Out by Mobilgeräten veranlassen
-
-    //TODO really needed? Currently breaks the meta attribute
-    /*const viewport = document.querySelector('meta[name="viewport"]')
-    if (viewport) {
-      viewport.content = 'initial-scale=1.0'
-      viewport.content = 'width=device-width'
-      viewport.content = 'minimum-scale=1.0'
-      viewport.content = 'maximum-scale=1.0'
-      // viewport.content = 'user-scalable=no'
-      // viewport.content = 'height=device-height'
-      // viewport.content = 'target-densitydpi=device-dpi'
-    }*/
 
     if (this.enableCoworking) {
       if (this.mode === ConceptMap.editNode || this.mode === ConceptMap.editMultiNode) {
@@ -884,6 +895,10 @@ class ConceptMap {
       }
     }
     this.mode = ConceptMap.none
+    if (this.scale && this.viewPosition) {
+      this.network.moveTo({ scale: this.scale, position: this.viewPosition })
+      this.scale = undefined
+    }
   }
 
   /*********************************
