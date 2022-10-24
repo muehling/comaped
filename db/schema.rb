@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_21_195830) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
   create_table "concept_maps", force: :cascade do |t|
     t.string "code"
     t.integer "accesses"
@@ -47,6 +47,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_21_195830) do
     t.integer "user_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.boolean "enable_coworking", default: false, null: false
   end
 
   create_table "students", force: :cascade do |t|

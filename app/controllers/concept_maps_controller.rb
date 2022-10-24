@@ -72,6 +72,10 @@ class ConceptMapsController < ApplicationController
 
   # GET /concept_maps/1/edit
   def edit
+    # project is needed to check whether coworking is enabled
+    survey = Survey.find_by_id(@concept_map.survey_id)
+    @project = Project.find_by_id(survey.project_id)
+
     @concept_map.accesses = 0 if @concept_map.accesses.nil?
     @concept_map.accesses = @concept_map.accesses + 1
     @concept_map.save

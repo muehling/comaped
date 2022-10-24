@@ -58,59 +58,63 @@
       <div class="d-block"><button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addNode %></span></button></div>
       <!-- Edge Function Button -->
       <div class="d-block"><button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addEdge %></span></button></div>
-      <div class="d-block"><button id="logButton" class="editor-button btn info" data-bs-toggle="offcanvas" data-bs-target="#student-log" aria-controls="student-log"><span class='button-text d-none d-md-block'><%= t :show_log %></span></button></div>
+      <% if @project.enable_coworking%>
+        <div class="d-block"><button id="logButton" class="editor-button btn info" data-bs-toggle="offcanvas" data-bs-target="#student-log" aria-controls="student-log"><span class='button-text d-none d-md-block'><%= t :show_log %></span></button></div>
+      <% end %>
     </div>
 <!-- Dummy element for Vis-canvas -->
   <div id="map-canvas" class=""></div>
   </div>
 </div>
-<!-- DH: The container on the right with all the user information -->
-<div id="student-log" data-bs-backdrop="false" class="offcanvas offcanvas-start" aria-labelledby="student-log">
-  <div id="users">
-    <!-- DH: Needed to determine the current user ID-->
-    <div id="user_me_id" style="display: none"><%= @current_student.id %></div>
-    <!-- DH: Needed to determine the current Map -->
-    <div id="map_id" style="display: none"><%= @map.id %>
-    </div>
-  </div>
-  <!-- DH. Show all users of this map-->
-  <div class="offcanvas-header">
-    <div class="offcanvas-title">
-      <span><%= t :log_title %></span>
-    </div>
-    <button type="button" class="btn-close text-reset float-right" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    <div id="students">
-      <p id="students_header" class="log-title">
-        <%= t('active_students') %>
-      </p>
-      <!-- DH: Show the "me" user first -->
-      <div id="student_<%= @current_student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= @current_student.color %>">
-        <label> <%= @current_student.name %> (<%= t('me') %>) <input type="checkbox" class="filter_students" id="filter_<%= @current_student.id %>" checked/></label>
+<% if @project.enable_coworking%>
+  <!-- DH: The container on the right with all the user information -->
+  <div id="student-log" data-bs-backdrop="false" class="offcanvas offcanvas-start" aria-labelledby="student-log">
+    <div id="users">
+      <!-- DH: Needed to determine the current user ID-->
+      <div id="user_me_id" style="display: none"><%= @current_student.id %></div>
+      <!-- DH: Needed to determine the current Map -->
+      <div id="map_id" style="display: none"><%= @map.id %>
       </div>
-      <!-- DH: show all the other user-->
-      <% @student.each do |student| %>
-        <% if student.id !=  @current_student.id %>
-          <div id="student_<%= student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= student.color %>">
-            <label><%= student.name %> <input type="checkbox" class="filter_students" id="filter_<%= student.id %>" checked/></label>
-          </div>
+    </div>
+    <!-- DH. Show all users of this map-->
+    <div class="offcanvas-header">
+      <div class="offcanvas-title">
+        <span><%= t :log_title %></span>
+      </div>
+      <button type="button" class="btn-close text-reset float-right" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div id="students">
+        <p id="students_header" class="log-title">
+          <%= t('active_students') %>
+        </p>
+        <!-- DH: Show the "me" user first -->
+        <div id="student_<%= @current_student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= @current_student.color %>">
+          <label> <%= @current_student.name %> (<%= t('me') %>) <input type="checkbox" class="filter_students" id="filter_<%= @current_student.id %>" checked/></label>
+        </div>
+        <!-- DH: show all the other user-->
+        <% @student.each do |student| %>
+          <% if student.id !=  @current_student.id %>
+            <div id="student_<%= student.id %>" style="display: inline-block; margin: 0.5em; border-bottom: 2px solid <%= student.color %>">
+              <label><%= student.name %> <input type="checkbox" class="filter_students" id="filter_<%= student.id %>" checked/></label>
+            </div>
+          <% end %>
         <% end %>
-      <% end %>
+      </div>
+       <!-- DH: Filter options -->
+      <div id="check" class="mb-4 mt-2">
+        <button id="checkAll" class="btn btn-outline-secondary"><%= t('check_all') %></button>
+        <button id="uncheckAll" class="btn btn-outline-secondary"><%= t('uncheck_all') %></button>
+      </div>
+       <!-- DH: The recent changes and filter-->
+      <p class="log-title"> <%= t('recent_changes') %></p>
+      <div id="filter_left_students" style="display: none; text-align: center; font-size: 12 px; margin-bottom: 1em;">
+        <label id="label_filter_left_students"><%= t('students_left') %><input type="checkbox" class="filter_students" id="filter_left" checked/></label>
+      </div>
+      <div id="recent_changes"></div>
     </div>
-     <!-- DH: Filter options -->
-    <div id="check" class="mb-4 mt-2">
-      <button id="checkAll" class="btn btn-outline-secondary"><%= t('check_all') %></button>
-      <button id="uncheckAll" class="btn btn-outline-secondary"><%= t('uncheck_all') %></button>
-    </div>
-     <!-- DH: The recent changes and filter-->
-    <p class="log-title"> <%= t('recent_changes') %></p>
-    <div id="filter_left_students" style="display: none; text-align: center; font-size: 12 px; margin-bottom: 1em;">
-      <label id="label_filter_left_students"><%= t('students_left') %><input type="checkbox" class="filter_students" id="filter_left" checked/></label>
-    </div>
-    <div id="recent_changes"></div>
   </div>
-</div>
+<% end%>
 
 
 <!-- Scripts -->
@@ -130,6 +134,7 @@
     conceptsPath: "<%= concept_map_concepts_path(@map) %>",
     conceptMapsPath: "<%= concept_map_path(@concept_map, format: :text)%>",
     linksPath: "<%= concept_map_links_path(@map) %>",
+    enableCoworking: <%= @project.enable_coworking %>,
     dialogTexts: {
       editNode: "<%= t('.action_edit_node')%>",
       addNode: "<%= t('.action_new_node')%>",

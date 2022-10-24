@@ -24,6 +24,7 @@ window.initEditor = ({
   conceptsPath,
   conceptMapsPath,
   linksPath,
+  enableCoworking,
   dialogTexts,
 }) => {
   let isSubscriptionInitialized = false
@@ -68,7 +69,10 @@ window.initEditor = ({
 
   //DH Make the mode available
   window.setMode = cm.setMode
-  if (!isSubscriptionInitialized) {
+
+  // init websocket connection only if enabled in the project settings
+  const isCoworkingEnabled = enableCoworking && enableCoworking !== 'false'
+  if (!isSubscriptionInitialized && isCoworkingEnabled) {
     initSubscription()
     isSubscriptionInitialized = true
   }
