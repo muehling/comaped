@@ -9,7 +9,7 @@ consumer.subscriptions.subscriptions.forEach(subscription => {
 
 // Create the TestChannel subscription, called from initEditor in entrypoints/application.js
 export const initSubscription = () => {
-  consumer.subscriptions.create(
+  consumer.notifications = consumer.subscriptions.create(
     { channel: 'TestChannel', map_id: '34' },
     {
       connected() {
@@ -20,6 +20,12 @@ export const initSubscription = () => {
       disconnected() {
         // Called when the subscription has been terminated by the server
         console.log('Terminated')
+      },
+
+      ping: function () {
+        return this.perform('ping', {
+          message: { event: 'ping' },
+        })
       },
 
       // Called when there's incoming data on the websocket for this channel
@@ -112,7 +118,7 @@ export const initSubscription = () => {
             // An other user did the change
             switch (data['action']) {
               case 'user_left': // user left intentionally by logout
-              case 'user_disconnected': // user was disconnected by timeout
+              case 'user_disconnected': // user was disconnected by timeout or closed window
                 // the user must be removed of the active users
                 $('#student_' + data['user_id']).remove()
 
@@ -443,4 +449,11 @@ export const initSubscription = () => {
       },
     }
   )
+  // if the connection is closed by the server, the student associated with the
+  // session is deleted. To avoid this, we ping every 30 seconds
+  document.addEventListener('DOMContentLoaded', function (event) {
+    setInterval(function () {
+      consumer.notifications.ping()
+    }, 30000)
+  })
 }
