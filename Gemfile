@@ -12,16 +12,12 @@ gem 'rails', '~> 7.0.2'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
 gem 'jbuilder'
 
 # Use Capistrano for deployment
-gem 'capistrano-rails'
-gem 'capistrano-passenger'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -49,12 +45,6 @@ gem "js-routes"
 
 gem 'vite_rails'
 
-# js runtime for sass compilation
-gem "mini_racer"
-
-
 gem "sprockets-rails", "~> 3.4"
-# DH: for scheduling: Delete students that have been inactive for a while (solving the mobile problem)
-gem 'whenever', require: false
 
 gem "redis", "~> 5.0"
