@@ -51,15 +51,15 @@
 
 <div class="main-container row w-100 h-100 position-fixed">
   <div class="map-wrapper col-12 position-relative">
-    <div class="editor-buttons position-absolute end-0">
+    <div class="editor-buttons position-absolute">
       <!-- Cursor Function Button -->
-      <div class="d-block"><button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :edit %></span></button></div>
+      <div class="d-block button-wrapper"><button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :edit %></span></button></div>
       <!-- Node Function Button -->
-      <div class="d-block"><button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addNode %></span></button></div>
+      <div class="d-block button-wrapper"><button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :addNode %></span></button></div>
       <!-- Edge Function Button -->
-      <div class="d-block"><button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-block'><%= t :addEdge %></span></button></div>
+      <div class="d-block button-wrapper"><button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :addEdge %></span></button></div>
       <% if @project.enable_coworking%>
-        <div class="d-block"><button id="logButton" class="editor-button btn info" data-bs-toggle="offcanvas" data-bs-target="#student-log" aria-controls="student-log"><span class='button-text d-none d-md-block'><%= t :show_log %></span></button></div>
+        <div class="d-block button-wrapper"><button id="logButton" class="editor-button btn info" data-bs-toggle="offcanvas" data-bs-target="#student-log" aria-controls="student-log"><span class='button-text d-none d-md-inline'><%= t :show_log %></span></button></div>
       <% end %>
     </div>
 <!-- Dummy element for Vis-canvas -->

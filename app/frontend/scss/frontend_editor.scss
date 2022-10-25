@@ -313,25 +313,34 @@ body {
 
 .editor-buttons {
   z-index: 5;
-  padding: 1em;
+  margin: 1em;
+  right: 1em;
   .btn.editor-button {
     font-family: 'bootstrap-icons';
-    display: flex;
+    background-color: white;
     border: 1px solid #ccc;
     border-radius: 6px !important;
     box-sizing: content-box;
-    height: 1.5em;
+    height: 2em;
     margin-bottom: 0.5em;
+    font-size: 1em;
     padding: 0 12px;
     z-index: 1;
     color: $blue;
-    width: 6em;
+    text-align: left;
+    width: 100%;
     @media (max-width: 768px) {
       width: 1em;
+      span.button-text {
+        display: none;
+      }
+    }
+    &:before {
+      position: relative;
     }
     span.button-text {
-      margin-left: 5px;
       font-family: $font-family-sans-serif;
+      padding-left: 1em;
     }
   }
   #editButton {
