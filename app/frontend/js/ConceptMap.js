@@ -953,6 +953,12 @@ class ConceptMap {
    ********************************/
   setNodeData = nodeData => {
     this.nodes.update(nodeData)
+
+    // workaround for a vis-network bug: in coworking mode, the edges were not properly
+    // refreshed after the nodes were updated by someone else
+    if (this.enableCoworking) {
+      this.network.once('afterDrawing', this.network.redraw)
+    }
   }
 
   setEdgeData = edgeData => {
