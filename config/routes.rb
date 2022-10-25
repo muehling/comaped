@@ -32,5 +32,4 @@ Rails.application.routes.draw do
 
   # Deployment check, see https://dokku.com/docs/deployment/zero-downtime-deploys/
   get '/check.txt', to: proc { [200, {}, ['simple_check']] }
-  get '/comaped/check.txt', to: proc { [200, {}, ['simple_check']] }
 end
