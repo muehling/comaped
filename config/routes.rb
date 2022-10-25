@@ -29,4 +29,7 @@ Rails.application.routes.draw do
   get 'map/(:code)' => 'application#map_link'
   post 'map' => 'application#map_form'
   root 'application#frontend', as: :frontend
+
+  # Deployment check, see https://dokku.com/docs/deployment/zero-downtime-deploys/
+  get '/check.txt', to: proc { [200, {}, ['simple_check']] }
 end
