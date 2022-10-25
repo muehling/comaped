@@ -114,11 +114,19 @@ export const initSubscription = () => {
           let current_user = $('#user_me_id').html()
 
           // Check who did an update
-          if (data['user_id'] != current_user) {
+          if (parseInt(data['user_id'], 10) !== parseInt(current_user, 10)) {
             // An other user did the change
             switch (data['action']) {
               case 'user_left': // user left intentionally by logout
               case 'user_disconnected': // user was disconnected by timeout or closed window
+                //TODO user_disconnected should be handled differently, as a disconnection
+                //TODO can occur for various reasons, e. g. phone goes to sleep, loses network
+                //TODO connection, or the user closes the browser. The backend will delete the
+                //TODO student on disconnect, so for the first two cases, it might be better to
+                //TODO store the student name frontend-side, and silently create a new user with
+                //TODO this name in the backend. Checks for user id must then be switched to checks
+                //TODO for user name.
+
                 // the user must be removed of the active users
                 $('#student_' + data['user_id']).remove()
 
@@ -451,9 +459,7 @@ export const initSubscription = () => {
   )
   // if the connection is closed by the server, the student associated with the
   // session is deleted. To avoid this, we ping every 30 seconds
-  document.addEventListener('DOMContentLoaded', function (event) {
-    setInterval(function () {
-      consumer.notifications.ping()
-    }, 30000)
-  })
+  setInterval(function () {
+    consumer.notifications.ping()
+  }, 30000)
 }
