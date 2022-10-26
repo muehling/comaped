@@ -84,7 +84,7 @@ class ConceptMap < ApplicationRecord
     save
   end
 
-  #Import data from aeither a ZIP file in the same format that to_zip creates, or a JSON file
+  #Import data from either a ZIP file in the same format that to_zip creates, or a JSON file
   #Parameter:
   # file: Path to a file
   # code: Will be used as an initial code for the map. May be overwritten if importing from JSON.
@@ -207,7 +207,7 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :x, :y, :color]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
+    as_json(include: {concepts: {only: [:id, :label, :x, :y, :color, :shape]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
   end
 
   #Creates a TGF representation of the map
