@@ -22,16 +22,16 @@
 
               <div class="card-body">
                 <div class="row">
-                  <div class="col-md-2">
+                  <div class="col-md-3 col-xl-2">
                     <%= render partial: "versions/index", locals: {concept_map: @concept_map}%>
                   </div>
-                  <div class="col-md-10">
+                  <div class="col-md-9 col-xl-10">
                     <%= render partial: 'versions/timeline', locals: {concept_map: @concept_map}%>
                   </div>
                 </div>
 
                 <div class="row">
-                  <div class="col-md-2">
+                  <div class="col-md-3 col-xl-2">
                     <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
                     <a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());" class="btn btn-secondary mb-2 w-100">PNG</a>
                     <%= button_to concept_map_version_path(@concept_map, 0), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-danger mb-2 w-100" do %>
@@ -42,7 +42,7 @@
                       <%= t('concept_maps.delete') %>
                     <% end %>
                   </div>
-                  <div class="col-md-10">
+                  <div class="col-md-9 col-lg-xl">
                     <%= render partial: 'concept_maps/preview', locals: {concept_map: @concept_map}%>
                   </div>
                 </div>
