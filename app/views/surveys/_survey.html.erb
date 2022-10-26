@@ -16,10 +16,10 @@
         <tr><td><%= t('activerecord.attributes.survey.start_date') %>:</td><td><%= survey.start_date || '-' %></td></tr>
         <tr><td><%= t('activerecord.attributes.survey.end_date') %>:</td><td><%= survey.end_date || '-' %></td></tr>
       </table>
-      <%= link_to t('surveys.show'), user_project_survey_path(@user, @project, survey), class: "btn btn-secondary" %>
-      <%= link_to t('surveys.edit'), edit_user_project_survey_path(@user, @project, survey), class: "btn btn-secondary", remote: true %>
+      <%= link_to t('surveys.show'), user_project_survey_path(@user, @project, survey), class: "btn btn-outline-secondary" %>
+      <%= link_to t('surveys.edit'), edit_user_project_survey_path(@user, @project, survey), class: "btn btn-outline-secondary", remote: true %>
       <div class="dropdown float-end">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= t('export') %>
           <span class="caret"></span>
         </button>

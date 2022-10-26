@@ -15,10 +15,10 @@
         <tr><td><%= t('maps') %>:</td><td><%= project.concept_maps.count %></td></tr>
       </table>
       <p><%= project.enable_coworking ? t('projects.coworking') : t('projects.no_coworking')%></p>
-      <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-secondary" %>
-      <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-secondary", remote: true %>
+      <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-outline-secondary" %>
+      <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-outline-secondary", remote: true %>
       <div class="dropdown float-end">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= t('export') %>
           <span class="caret"></span>
         </button>
