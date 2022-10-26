@@ -56,6 +56,10 @@ class BackendViewer {
 
     this.network.redraw()
 
+    this.network.once('afterDrawing', () => {
+      this.network.fit()
+    })
+
     $('#cur_ver').html(this.version + 1)
     if (this.version === 0) {
       $('#prev').attr('disabled', 'disabled')
