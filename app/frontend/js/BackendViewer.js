@@ -1,13 +1,9 @@
-import { Network } from "vis-network"
-import { DataSet } from "vis-data"
-import { Graph2d } from "vis-timeline/standalone"
-
+import { Network } from 'vis-network'
+import { DataSet } from 'vis-data'
+import { Graph2d } from 'vis-timeline/standalone'
 
 class BackendViewer {
   constructor() {
-
-
-
     this.playing = false
     this.timerID = -1
     this.timerId
@@ -16,10 +12,8 @@ class BackendViewer {
 
     this.data = {
       nodes: new DataSet([]),
-      edges: new DataSet([])
+      edges: new DataSet([]),
     }
-
-
   }
 
   next = () => {
@@ -30,22 +24,21 @@ class BackendViewer {
     this.updatePreview(this.version - 1)
   }
 
-  updatePreview = async (desiredVersion) => {
-
+  updatePreview = async desiredVersion => {
     this.version = desiredVersion
-    const url = this.fetchUrl + "/" + desiredVersion + "/"
+    const url = this.fetchUrl + '/' + desiredVersion + '/'
     const res = await fetch(url, {
-      "method": "GET",
-      mode: "cors",
+      method: 'GET',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json',
       },
     })
 
     // concept map was not found, or user has no privileges to see it -> redirect to login page
     if (res.status === 401) {
-      location.replace("/backend")
+      location.replace('/backend')
     }
     // no versions found. This can happen if a concept map was imported without versions
     if (res.status === 404) {
@@ -57,25 +50,27 @@ class BackendViewer {
     this.data.nodes.clear()
     this.data.edges.clear()
     this.data.nodes.update(body.nodes)
-    this.data.edges.update(body.edges.map(node => ({ id: node.id, from: node.start_id, to: node.end_id, ...node })))
+    this.data.edges.update(
+      body.edges.map(node => ({ id: node.id, from: node.start_id, to: node.end_id, ...node }))
+    )
 
     this.network.redraw()
 
     $('#cur_ver').html(this.version + 1)
     if (this.version === 0) {
-      $('#prev').attr("disabled", "disabled")
+      $('#prev').attr('disabled', 'disabled')
     } else {
-      $('#prev').removeAttr("disabled")
+      $('#prev').removeAttr('disabled')
     }
     if (this.version === this.maxVersion) {
-      $('#next').attr("disabled", "disabled")
+      $('#next').attr('disabled', 'disabled')
     } else {
-      $('#next').removeAttr("disabled")
+      $('#next').removeAttr('disabled')
     }
 
     this.timeline.setCustomTime(body.timestamp, window.timeBar)
     this.timeline.moveTo(body.timestamp)
-  };
+  }
 
   play = () => {
     this.playing = !this.playing
@@ -89,16 +84,19 @@ class BackendViewer {
           this.next()
         }
       }, 1500)
-    }
-    else {
+    } else {
       $('#play').html("<span class='bi-play'></span>")
       window.clearInterval(this.timerId)
     }
-  };
+  }
 
-  timeChanged = (properties) => {
+  timeChanged = properties => {
     // find version next left from dropped cursor
-    const versionNextToCursor = this.items.reduce((acc, _item, index) => Date.parse(this.items[index]['x']) <= Date.parse(properties.time) ? index : acc, 0)
+    const versionNextToCursor = this.items.reduce(
+      (acc, _item, index) =>
+        Date.parse(this.items[index]['x']) <= Date.parse(properties.time) ? index : acc,
+      0
+    )
 
     this.version = Math.max(0, versionNextToCursor)
     this.updatePreview(versionNextToCursor)
@@ -114,35 +112,31 @@ class BackendViewer {
       height: '100%',
       width: '100%',
       edges: {
-        arrows: {
-          to: {
-            enabled: true,
-            scaleFactor: 0.75
-          },
-        },
-        smooth: false
+        smooth: { type: 'continuous' },
       },
       physics: {
-        enabled: false
+        enabled: false,
       },
       interaction: {
         hover: false,
         dragNodes: false,
         navigationButtons: false,
         selectConnectedEdges: false,
-        hoverConnectedEdges: false
-      }
+        hoverConnectedEdges: false,
+      },
     }
 
     const mapContainer = document.getElementById('canvas_' + this.id)
 
     this.data = {
       nodes: new DataSet(this.nodeData),
-      edges: new DataSet(this.edgeData)
+      edges: new DataSet(this.edgeData),
     }
 
     this.network = new Network(mapContainer, this.data, mapOptions)
-    this.network.once('afterDrawing', () => { this.network.fit() })
+    this.network.once('afterDrawing', () => {
+      this.network.fit()
+    })
     this.network.redraw()
   }
 
@@ -161,15 +155,14 @@ class BackendViewer {
       start: firstTimestamp,
       end: lastTimestamp,
       height: '100%',
-      width: '100%'
+      width: '100%',
     }
 
     this.timeline = new Graph2d(timelineContainer, timelineData, timelineOptions)
-    this.timeline.on("timechanged", this.timeChanged)
+    this.timeline.on('timechanged', this.timeChanged)
 
     this.timeline.addCustomTime(lastTimestamp)
   }
-
 }
 
 export default BackendViewer
