@@ -93,10 +93,10 @@
 
 <!-- Survey introduction-->
 <% unless @concept_map.survey.introduction.blank? %>
-  <div id="task" class="alert <% unless @concept_map.first? %> d-none <% end %>">
+  <div id="task" class="d-flex alert alert-dismissable fade show <% unless @concept_map.first? %> d-none <% end %>">
+    <span class="pe-4">
+      <%= raw @concept_map.survey.introduction %>
+    </span>
     <button type="button" class="btn-close" aria-label="Close" onclick="$('#task').addClass('d-none');return false;"></span></button>
-    <p>
-      <%= @concept_map.survey.introduction %>
-    </p>
   </div>
 <% end %>
