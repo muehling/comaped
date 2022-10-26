@@ -7,14 +7,14 @@
       </div>
       <div class="modal-body">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-          <div class="card card-default">
-            <div class="card-header" role="tab" id="hImprint">
-              <h4 class="card-header">
-                <a role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#cImprint" aria-expanded="true" aria-controls="cImprint">
+          <div class="card card-default mb-3">
+            <a class="text-body text-decoration-none" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#cImprint" aria-expanded="true" aria-controls="cImprint">
+              <div role="tab" id="hImprint">
+                <h4 class="card-header legal-button">
                   <%= t('imprint') %>
-                </a>
-              </h4>
-            </div>
+                </h4>
+              </div>
+            </a>
             <div id="cImprint" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="hImprint">
               <div class="card-body">
                 <%= render 'imprint'%>
@@ -22,13 +22,13 @@
             </div>
           </div>
           <div class="card card-default">
-            <div class="card-header" role="tab" id="hPrivacy">
-              <h4 class="card-header">
-                <a class="collapsed" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#cPrivacy" aria-expanded="false" aria-controls="#cPrivacy">
+            <a class="collapsed text-body text-decoration-none" role="button" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#cPrivacy" aria-expanded="false" aria-controls="#cPrivacy">
+              <div role="tab" id="hPrivacy">
+                <h4 class="card-header legal-button">
                   <%= t('privacy') %>
-                </a>
-              </h4>
-            </div>
+                </h4>
+              </div>
+            </a>
             <div id="cPrivacy" class="panel-collapse collapse" role="tabpanel" aria-labelledby="#hPrivacy">
               <div class="card-body">
                 <% if controller_name != 'concept_maps' %>
