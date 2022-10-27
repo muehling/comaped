@@ -1,7 +1,7 @@
 import $ from 'jquery'
 import { Network } from 'vis-network'
 import { DataSet } from 'vis-data'
-import { getLanguage } from './helpers'
+import { getLanguage, ajax } from './helpers'
 
 class ConceptMap {
   static none = 0
@@ -305,7 +305,13 @@ class ConceptMap {
             postObj['x'] = params.pointer.canvas.x
             postObj['y'] = params.pointer.canvas.y
 
-            const res = await fetch(this.conceptsPath + '/' + this.ids[i], {
+            const res = await ajax({
+              url: this.conceptsPath + '/' + this.ids[i],
+              method: 'PUT',
+              data: postObj,
+            })
+
+            /*const res = await fetch(this.conceptsPath + '/' + this.ids[i], {
               method: 'PUT',
               mode: 'same-origin',
               headers: {
@@ -315,7 +321,7 @@ class ConceptMap {
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
               },
               body: JSON.stringify(postObj),
-            })
+            })*/
             // Update Node(s) or Edges depending on Response from DB
             var body = await res.json()
             if (body.edge) this.edges.update(body.edge)
@@ -442,37 +448,40 @@ class ConceptMap {
   destroy = async () => {
     switch (this.mode) {
       case ConceptMap.editNode:
-        await fetch(this.conceptsPath + '/' + this.ids[0], {
+        await ajax({ url: this.conceptsPath + '/' + this.ids[0], method: 'DELETE' })
+        /*await fetch(this.conceptsPath + '/' + this.ids[0], {
           method: 'DELETE',
           mode: 'same-origin',
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
           },
-        })
+        })*/
         this.nodes.remove(this.ids[0])
         break
       case ConceptMap.editEdge:
-        await fetch(this.linksPath + '/' + this.ids[0], {
+        await ajax({ url: this.linksPath + '/' + this.ids[0], method: 'DELETE' })
+        /*await fetch(this.linksPath + '/' + this.ids[0], {
           method: 'DELETE',
           mode: 'same-origin',
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
           },
-        })
+        })*/
         this.edges.remove(this.ids[0])
         break
       case ConceptMap.editMultiNode:
         for (let i = 0; i < this.ids.length; i++) {
-          await fetch(this.conceptsPath + '/' + this.ids[i], {
+          await ajax({ url: this.conceptsPath + '/' + this.ids[0], method: 'DELETE' })
+          /*await fetch(this.conceptsPath + '/' + this.ids[i], {
             method: 'DELETE',
             mode: 'same-origin',
             headers: {
               'X-Requested-With': 'XMLHttpRequest',
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
             },
-          })
+          })*/
           this.nodes.remove(this.ids[i])
         }
         break
@@ -559,7 +568,12 @@ class ConceptMap {
         for (let i = 0; i < this.ids.length; i++) {
           postObj['shape'] = $('#shape').val()
           postObj['color'] = $('#color').val()
-          var res = await fetch(this.conceptsPath + '/' + this.ids[i], {
+          const res = await ajax({
+            url: this.conceptsPath + '/' + this.ids[i],
+            method: 'PUT',
+            data: postObj,
+          })
+          /*var res = await fetch(this.conceptsPath + '/' + this.ids[i], {
             method: 'PUT',
             mode: 'same-origin',
             headers: {
@@ -569,8 +583,8 @@ class ConceptMap {
               'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
             },
             body: JSON.stringify(postObj),
-          })
-          var body = await res.json()
+          })*/
+          const body = await res.json()
           if (body.edge) this.edges.update(body.edge)
           if (body.node) this.nodes.update(body.node)
         }
@@ -587,7 +601,12 @@ class ConceptMap {
     }
 
     //Fetch for all cases except MultiNodes
-    var res = await fetch(path + (method === 'PUT' ? '/' + this.ids[0] : ''), {
+    const res = await ajax({
+      url: path + (method === 'PUT' ? '/' + this.ids[0] : ''),
+      method,
+      data: { ...postObj, lock: 'false' },
+    })
+    /*var res = await fetch(path + (method === 'PUT' ? '/' + this.ids[0] : ''), {
       method: method,
       mode: 'same-origin',
       headers: {
@@ -597,7 +616,7 @@ class ConceptMap {
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
       },
       body: JSON.stringify({ ...postObj, lock: 'false' }),
-    })
+    })*/
     var body = await res.json()
     if (body.edge) {
       this.edges.update(body.edge)
@@ -778,7 +797,19 @@ class ConceptMap {
     //TODO for multiple selected nodes, we need a different endpoint to lock more than one node
     //TODO same goes for toggleEdgeLock
     //TODO see comment in onSubmit for editMultiNodes
-    const res = await fetch(this.conceptsPath + '/' + this.ids[0], {
+    const res = await ajax({
+      url: this.conceptsPath + '/' + this.ids[0],
+      method: 'PUT',
+      data: {
+        concept: {
+          label: this.nodes.get(this.ids[0]).label,
+          lock: status,
+          x: this.nodes.get(this.ids[0]).x,
+          y: this.nodes.get(this.ids[0]).y,
+        },
+      },
+    })
+    /*const res = await fetch(this.conceptsPath + '/' + this.ids[0], {
       method: 'PUT',
       mode: 'same-origin',
       headers: {
@@ -795,13 +826,25 @@ class ConceptMap {
           y: this.nodes.get(this.ids[0]).y,
         },
       }),
-    })
+    })*/
     const body = await res.json()
     this.nodes.update(body.node)
   }
 
   toggleEdgeLock = async status => {
-    const res = await fetch(this.linksPath + '/' + this.ids[0], {
+    const res = await ajax({
+      url: this.linksPath + '/' + this.ids[0],
+      method: 'PUT',
+      data: {
+        link: {
+          label: this.edges.get(this.ids[0]).label,
+          lock: status,
+          start_id: this.edges.get(this.ids[0]).from,
+          end_id: this.edges.get(this.ids[0]).to,
+        },
+      },
+    })
+    /*const res = await fetch(this.linksPath + '/' + this.ids[0], {
       method: 'PUT',
       mode: 'same-origin',
       headers: {
@@ -818,7 +861,7 @@ class ConceptMap {
           end_id: this.edges.get(this.ids[0]).to,
         },
       }),
-    })
+    })*/
     const body = await res.json()
     this.edges.update(body.edge)
   }
