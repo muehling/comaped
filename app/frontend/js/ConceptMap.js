@@ -50,7 +50,8 @@ class ConceptMap {
     this.oldPointerX = 0 //Saves Pointerlocation when drag starts
     this.oldPointerY = 0
     this.ids = []
-    this.data
+
+    this.hoveredNodeStyle = undefined
 
     /**********************************
      * SETTINGS for Vis Network library
@@ -225,6 +226,12 @@ class ConceptMap {
       $('#context-help-text').html($('#ch_hoveredge').html())
       this.network.canvas.body.container.style.cursor = 'pointer'
     })
+    this.network.on('hoverNode', () => {
+      if (this.mode === ConceptMap.none) {
+        $('#context-help-text').html($('#ch_hovernode').html())
+      }
+      this.network.canvas.body.container.style.cursor = 'pointer'
+    })
 
     /********************************
      * HOVER NODE/EDGE EVENT EXIT
@@ -248,6 +255,31 @@ class ConceptMap {
       else if (buttonMode == ConceptMap.edgeButton)
         $('#context-help-text').html($('#ch_addEdgeMode').html())
       this.network.canvas.body.container.style.cursor = 'default'
+    })
+
+    /***************************************
+     * Add edge: highlight target node
+     ***************************************/
+    this.network.on('controlNodeDragging', params => {
+      if (!params.controlEdge.to && this.hoveredNodeStyle) {
+        this.resetNodeStyle()
+      }
+
+      if (
+        params.controlEdge.to &&
+        params.controlEdge.to !== params.controlEdge.from &&
+        !this.hoveredNodeStyle
+      ) {
+        const targetNode = this.nodes.get(params.controlEdge.to)
+        this.hoveredNodeStyle = { id: targetNode.id, color: targetNode.color }
+        const currentColor = targetNode.color
+        targetNode.color = {
+          ...currentColor,
+          border: '#000000',
+        }
+
+        this.nodes.update(targetNode)
+      }
     })
 
     /***************************************
@@ -338,6 +370,12 @@ class ConceptMap {
   /*********************
    * HELPER FUNCTIONS
    *********************/
+  resetNodeStyle = () => {
+    const targetNode = this.nodes.get(this.hoveredNodeStyle.id)
+    targetNode.color = this.hoveredNodeStyle.color
+    this.nodes.update(targetNode)
+    this.hoveredNodeStyle = undefined
+  }
 
   /******************************************************
    * Highlights the active button (Edit/Add-Node/Add-Edge)
@@ -877,15 +915,10 @@ class ConceptMap {
    *******************************************/
   hideForm = async () => {
     $('#edit-dialog').addClass('d-none')
-    //$("#edit-dialog").focusout()
-    this.network.disableEditMode()
     this.network.unselectAll()
     $('#colorSelect').css('display', 'none') // close colorDropdown
     $('#shapeSelect').css('display', 'none') // close shapeDropdown
     $('#context-help-text').html($('#ch_editMode').html())
-
-    this.buttonMode = ConceptMap.editButton
-    this.activeButton(1)
 
     if (this.enableCoworking) {
       if (this.mode === ConceptMap.editNode || this.mode === ConceptMap.editMultiNode) {
@@ -894,10 +927,20 @@ class ConceptMap {
         await this.toggleEdgeLock(false)
       }
     }
-    this.mode = ConceptMap.none
+
+    // if in edge mode, reactivate the mode on network (vis network resets the mode after edge creation)
+    if (this.mode === ConceptMap.addEdge) {
+      this.network.addEdgeMode()
+    }
+
     if (this.scale && this.viewPosition) {
       this.network.moveTo({ scale: this.scale, position: this.viewPosition })
       this.scale = undefined
+      this.viewPosition = undefined
+    }
+
+    if (this.hoveredNodeStyle) {
+      this.resetNodeStyle()
     }
   }
 
