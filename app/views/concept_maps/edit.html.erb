@@ -53,11 +53,11 @@
   <div class="map-wrapper col-12 position-relative">
     <div class="editor-buttons position-absolute">
       <!-- Cursor Function Button -->
-      <div class="d-block button-wrapper"><button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :edit %></span></button></div>
+      <div class="d-flex w-100 button-wrapper"><button id="editButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :edit %></span></button></div>
       <!-- Node Function Button -->
-      <div class="d-block button-wrapper"><button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :addNode %></span></button></div>
+      <div class="d-flex w-100 button-wrapper"><button id="nodeButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :addNode %></span></button></div>
       <!-- Edge Function Button -->
-      <div class="d-block button-wrapper"><button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :addEdge %></span></button></div>
+      <div class="d-flex w-100 button-wrapper"><button id="edgeButton" class="editor-button btn info"><span class='button-text d-none d-md-inline'><%= t :addEdge %></span></button></div>
       <% if @project.enable_coworking%>
         <div class="d-block button-wrapper"><button id="logButton" class="editor-button btn info" data-bs-toggle="offcanvas" data-bs-target="#student-log" aria-controls="student-log"><span class='button-text d-none d-md-inline'><%= t :show_log %></span></button></div>
       <% end %>

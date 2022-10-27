@@ -314,7 +314,7 @@ body {
 .editor-buttons {
   z-index: 5;
   margin: 1em;
-  right: 1em;
+  right: 0;
   .btn.editor-button {
     font-family: 'bootstrap-icons';
     background-color: white;
@@ -328,7 +328,7 @@ body {
     z-index: 1;
     color: $blue;
     text-align: left;
-    width: 100%;
+    flex-grow: 1;
     @media (max-width: 768px) {
       width: 1em;
       span.button-text {
