@@ -301,6 +301,9 @@ class ConceptMap {
       switch (this.mode) {
         case ConceptMap.dragNode:
           //TODO single post
+          //FIXME this seems to be conceptually weird,
+          //FIXME as all concepts get the same x and y coordinate
+          //FIXME and are afterwards unpredictably uncollided by vis-network
           for (let i = this.ids.length - 1; i >= 0; i--) {
             postObj['x'] = params.pointer.canvas.x
             postObj['y'] = params.pointer.canvas.y
@@ -311,18 +314,7 @@ class ConceptMap {
               data: postObj,
             })
 
-            /*const res = await fetch(this.conceptsPath + '/' + this.ids[i], {
-              method: 'PUT',
-              mode: 'same-origin',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-              },
-              body: JSON.stringify(postObj),
-            })*/
-            // Update Node(s) or Edges depending on Response from DB
+            // Update Node(s) or Edges depending on Response from backend
             var body = await res.json()
             if (body.edge) this.edges.update(body.edge)
             if (body.node) this.nodes.update(body.node)
@@ -449,39 +441,15 @@ class ConceptMap {
     switch (this.mode) {
       case ConceptMap.editNode:
         await ajax({ url: this.conceptsPath + '/' + this.ids[0], method: 'DELETE' })
-        /*await fetch(this.conceptsPath + '/' + this.ids[0], {
-          method: 'DELETE',
-          mode: 'same-origin',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-          },
-        })*/
         this.nodes.remove(this.ids[0])
         break
       case ConceptMap.editEdge:
         await ajax({ url: this.linksPath + '/' + this.ids[0], method: 'DELETE' })
-        /*await fetch(this.linksPath + '/' + this.ids[0], {
-          method: 'DELETE',
-          mode: 'same-origin',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-          },
-        })*/
         this.edges.remove(this.ids[0])
         break
       case ConceptMap.editMultiNode:
         for (let i = 0; i < this.ids.length; i++) {
           await ajax({ url: this.conceptsPath + '/' + this.ids[0], method: 'DELETE' })
-          /*await fetch(this.conceptsPath + '/' + this.ids[i], {
-            method: 'DELETE',
-            mode: 'same-origin',
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-            },
-          })*/
           this.nodes.remove(this.ids[i])
         }
         break
@@ -563,31 +531,21 @@ class ConceptMap {
         path = this.linksPath
         break
       case ConceptMap.editMultiNode:
-        //FIXME this needs to be replaced by a single post to the concept_maps_controller
-        // see https://github.com/muehling/comaped/commit/5909fa84be6de465af24778170501efb8f6a91e1
-        for (let i = 0; i < this.ids.length; i++) {
-          postObj['shape'] = $('#shape').val()
-          postObj['color'] = $('#color').val()
-          const res = await ajax({
-            url: this.conceptsPath + '/' + this.ids[i],
-            method: 'PUT',
-            data: postObj,
-          })
-          /*var res = await fetch(this.conceptsPath + '/' + this.ids[i], {
-            method: 'PUT',
-            mode: 'same-origin',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-            },
-            body: JSON.stringify(postObj),
-          })*/
+        const selectedNodes = this.network.getSelectedNodes()
+
+        if (selectedNodes.length) {
+          const data = {
+            concepts_attributes: selectedNodes.map(nodeId => {
+              return { id: nodeId, shape: $('#shape').val(), color: $('#color').val(), lock: false }
+            }),
+          }
+          const res = await ajax({ url: this.conceptMapsPath.slice(0, -5), method: 'PUT', data })
           const body = await res.json()
-          if (body.edge) this.edges.update(body.edge)
-          if (body.node) this.nodes.update(body.node)
+          if (body.concepts) {
+            this.nodes.update(body.concepts)
+          }
         }
+
         await this.hideForm()
         this.ids = []
         return
@@ -604,19 +562,9 @@ class ConceptMap {
     const res = await ajax({
       url: path + (method === 'PUT' ? '/' + this.ids[0] : ''),
       method,
-      data: { ...postObj, lock: 'false' },
+      data: { ...postObj, lock: false },
     })
-    /*var res = await fetch(path + (method === 'PUT' ? '/' + this.ids[0] : ''), {
-      method: method,
-      mode: 'same-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-      },
-      body: JSON.stringify({ ...postObj, lock: 'false' }),
-    })*/
+
     var body = await res.json()
     if (body.edge) {
       this.edges.update(body.edge)
@@ -809,24 +757,6 @@ class ConceptMap {
         },
       },
     })
-    /*const res = await fetch(this.conceptsPath + '/' + this.ids[0], {
-      method: 'PUT',
-      mode: 'same-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-      },
-      body: JSON.stringify({
-        concept: {
-          label: this.nodes.get(this.ids[0]).label,
-          lock: status,
-          x: this.nodes.get(this.ids[0]).x,
-          y: this.nodes.get(this.ids[0]).y,
-        },
-      }),
-    })*/
     const body = await res.json()
     this.nodes.update(body.node)
   }
@@ -844,24 +774,6 @@ class ConceptMap {
         },
       },
     })
-    /*const res = await fetch(this.linksPath + '/' + this.ids[0], {
-      method: 'PUT',
-      mode: 'same-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-      },
-      body: JSON.stringify({
-        link: {
-          label: this.edges.get(this.ids[0]).label,
-          lock: status,
-          start_id: this.edges.get(this.ids[0]).from,
-          end_id: this.edges.get(this.ids[0]).to,
-        },
-      }),
-    })*/
     const body = await res.json()
     this.edges.update(body.edge)
   }

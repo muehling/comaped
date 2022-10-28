@@ -1,5 +1,5 @@
 class ConceptMapsController < ApplicationController
-  skip_before_action :check_login_frontend, except: [:edit]
+  skip_before_action :check_login_frontend, except: %i[edit update]
   skip_before_action :check_login_backend, only: %i[edit show]
   before_action :login_for_show, only: [:show]
   before_action :set_user_project_survey, only: %i[new create destroy index page]
@@ -67,6 +67,13 @@ class ConceptMapsController < ApplicationController
     else
       @concept_map = ConceptMap.create
       render 'import_concept_map', layout: 'backend'
+    end
+  end
+
+  # PUT /concept_maps/1
+  def update
+    if !@concept_map.update(concept_maps_params)
+      render error: { error: 'unable to update' }, status: 400
     end
   end
 
@@ -180,5 +187,9 @@ class ConceptMapsController < ApplicationController
     else
       check_login_frontend
     end
+  end
+
+  def concept_maps_params
+    params.require(:concept_map).permit([concepts_attributes: %i[id label shape color x y lock]])
   end
 end
