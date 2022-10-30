@@ -1,6 +1,6 @@
 class ConceptMapsController < ApplicationController
   skip_before_action :check_login_frontend, except: %i[edit update]
-  skip_before_action :check_login_backend, only: %i[edit show]
+  skip_before_action :check_login_backend, only: %i[edit show update]
   before_action :login_for_show, only: [:show]
   before_action :set_user_project_survey, only: %i[new create destroy index page]
   before_action :set_concept_map, only: %i[edit update show destroy]
