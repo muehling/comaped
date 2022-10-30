@@ -256,8 +256,8 @@ export const initSubscription = () => {
             case 'create':
               if (data['type'] == 'node') {
                 if (language == 'de') {
-                  object = 'ERSTELLTE KNOTEN'
-                  change += '<li>erstellte' + ' den Knoten ' + data['label'] + '</li>'
+                  object = 'Konzept erstellt'
+                  change += '<li>erstellte' + ' das Konzept ' + data['label'] + '</li>'
                   change +=
                     "<li>die Farbe ist <span style='color: " +
                     data['color'] +
@@ -271,7 +271,7 @@ export const initSubscription = () => {
                     Math.round(parseInt(data['y'])) +
                     ']</li>'
                 } else {
-                  object = 'CREATED NODE'
+                  object = 'Created Node'
                   change += '<li>created' + ' the node ' + data['label'] + '</li>'
                   change +=
                     "<li>the color is <span style='color: " +
@@ -288,10 +288,10 @@ export const initSubscription = () => {
                 }
               } else if (data['type'] == 'link') {
                 if (language == 'de') {
-                  object = 'ERSTELLTE VERBINDUNG'
+                  object = 'Verbindung erstellt'
                   change += '<li>erstellte' + ' die Verbindung ' + data['label'] + '</li>'
                 } else {
-                  object = 'CREATED EDGE'
+                  object = 'Created Edge'
                   change += '<li>created' + ' the edge ' + data['label'] + '</li>'
                 }
               }
@@ -301,9 +301,9 @@ export const initSubscription = () => {
               if (data['type'] == 'node') {
                 // Update node
                 if (language == 'de') {
-                  object = 'UPDATED KNOTEN "' + data['label_old'] + '"'
+                  object = 'Updated Konzept "' + data['label_old'] + '"'
                 } else {
-                  object = 'UPDATED NODE "' + data['label_old'] + '"'
+                  object = 'Updated Node "' + data['label_old'] + '"'
                 }
 
                 if (data['label_old'] != data['label']) {
@@ -350,13 +350,13 @@ export const initSubscription = () => {
                 if (data['lock_old'] != data['lock']) {
                   if (data['lock']) {
                     if (language == 'de') {
-                      change += '<li>sperrt den Knoten</li>'
+                      change += '<li>sperrt das Konzept</li>'
                     } else {
                       change += '<li>set a lock</li>'
                     }
                   } else {
                     if (language == 'de') {
-                      change += '<li>entsperrt den Knoten</li>'
+                      change += '<li>entsperrt das Konzept</li>'
                     } else {
                       change += '<li>removed the lock </li>'
                     }
@@ -365,9 +365,9 @@ export const initSubscription = () => {
               } else if (data['type'] == 'link') {
                 // Update edge
                 if (language == 'de') {
-                  object = 'UPDATED VERBINDUNG  "' + data['label_old'] + '"'
+                  object = 'Update Verbindung "' + data['label_old'] + '"'
                 } else {
-                  object = 'UPDATED EDGE  "' + data['label_old'] + '"'
+                  object = 'Update Edge "' + data['label_old'] + '"'
                 }
 
                 if (data['label_old'] != data['label']) {
@@ -398,18 +398,18 @@ export const initSubscription = () => {
             case 'destroy':
               if (data['type'] == 'node') {
                 if (language == 'de') {
-                  object = 'LÖSCHTE KNOTEN "' + data['label'] + '"'
-                  change += '<li>löschte den Knoten ' + data['label'] + '</li>'
+                  object = 'Konzept gelöscht "' + data['label'] + '"'
+                  change += '<li>löschte das Konzept ' + data['label'] + '</li>'
                 } else {
-                  object = 'DELETED NODE "' + data['label'] + '"'
+                  object = 'Deleted Node "' + data['label'] + '"'
                   change += '<li>deleted the node ' + data['label'] + '</li>'
                 }
               } else if (data['type'] == 'link') {
                 if (language == 'de') {
-                  object = 'LÖSCHTE VERBINDUNG "' + data['label'] + '"'
+                  object = 'Verbindung gelöscht "' + data['label'] + '"'
                   change += '<li>löschte die Verbindung ' + data['label'] + '</li>'
                 } else {
-                  object = 'DELETED EDGE  "' + data['label'] + '"'
+                  object = 'Deleted Edge "' + data['label'] + '"'
                   change += '<li>deleted the edge ' + data['label'] + '</li>'
                 }
               }

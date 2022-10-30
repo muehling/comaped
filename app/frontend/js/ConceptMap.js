@@ -300,25 +300,31 @@ class ConceptMap {
 
       switch (this.mode) {
         case ConceptMap.dragNode:
-          //TODO single post
-          //FIXME this seems to be conceptually weird,
-          //FIXME as all concepts get the same x and y coordinate
-          //FIXME and are afterwards unpredictably uncollided by vis-network
-          for (let i = this.ids.length - 1; i >= 0; i--) {
-            postObj['x'] = params.pointer.canvas.x
-            postObj['y'] = params.pointer.canvas.y
+          const newPointerX = params.pointer.canvas.x
+          const newPointerY = params.pointer.canvas.y
+          const diffX = this.oldPointerX - newPointerX
+          const diffY = this.oldPointerY - newPointerY
 
-            const res = await ajax({
-              url: this.conceptsPath + '/' + this.ids[i],
-              method: 'PUT',
-              data: postObj,
-            })
+          const selectedNodes = this.network.getSelectedNodes()
 
-            // Update Node(s) or Edges depending on Response from backend
-            var body = await res.json()
-            if (body.edge) this.edges.update(body.edge)
-            if (body.node) this.nodes.update(body.node)
+          if (selectedNodes.length) {
+            const data = {
+              concepts_attributes: selectedNodes.map(nodeId => {
+                return {
+                  id: nodeId,
+                  x: this.nodes.get(nodeId).x - diffX,
+                  y: this.nodes.get(nodeId).y - diffY,
+                  lock: false,
+                }
+              }),
+            }
+            const res = await ajax({ url: this.conceptMapsPath.slice(0, -5), method: 'PUT', data })
+            const body = await res.json()
+            if (body.concepts) {
+              this.nodes.update(body.concepts)
+            }
           }
+
           this.ids = []
           this.hideForm()
       }
