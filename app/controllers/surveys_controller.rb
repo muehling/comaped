@@ -109,7 +109,7 @@ class SurveysController < ApplicationController
   # DELETE /surveys/1
   def destroy
     @survey.destroy
-    redirect_to user_project_surpath(@user, @project),
+    redirect_to user_project_path(@user, @project),
                 notice: I18n.t('surveys.destroyed'),
                 status: :see_other
   end
