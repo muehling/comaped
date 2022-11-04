@@ -86,6 +86,11 @@ class ConceptMapsController < ApplicationController
     @concept_map.accesses = 0 if @concept_map.accesses.nil?
     @concept_map.accesses = @concept_map.accesses + 1
     @concept_map.save
+
+    # if concepts were added to the survey preset after creation,
+    # and the map is still untouched, insert them now
+    @concept_map.after_create if !@concept_map.has_concepts && !survey.concept_labels.blank?
+
     render 'edit'
   end
 

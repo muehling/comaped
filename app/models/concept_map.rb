@@ -62,6 +62,11 @@ class ConceptMap < ApplicationRecord
     versionize(DateTime.now)
   end
 
+  # returns true if the map has no concepts
+  def has_concepts
+    return Concept.where(concept_map_id: self.id).length > 0
+  end
+
   #Retrieve a map by code or find an available survey and create a new map
   #Params:
   # code: Either a concept map slug or a survey code
