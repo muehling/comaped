@@ -89,7 +89,7 @@ class ConceptMapsController < ApplicationController
 
     # if concepts were added to the survey preset after creation,
     # and the map is still untouched, insert them now
-    @concept_map.after_create if !@concept_map.has_concepts && !survey.concept_labels.blank?
+    @concept_map.after_create if !@concept_map.has_concepts && !survey.initial_map.blank?
 
     render 'edit'
   end
