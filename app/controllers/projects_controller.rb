@@ -7,7 +7,11 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
-    @projects = @user.projects.order(created_at: :desc)
+    if @login.admin?
+      @projects = Project.all
+    else
+      @projects = @user.projects.order(created_at: :desc)
+    end
   end
 
   # GET /projects/1
@@ -116,7 +120,7 @@ class ProjectsController < ApplicationController
 
   def set_project
     @project = Project.find(params[:id])
-    redirect_to root_path if @project.nil? || (@project.user != @user)
+    redirect_to root_path if @project.nil? || (!@login.admin? && @project.user != @user)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

@@ -177,7 +177,7 @@ class ConceptMapsController < ApplicationController
     @user = User.find(params[:user_id])
     redirect_to root_path if @user.nil? || (@user.id != @login.id && !@login.admin?)
     @project = Project.find(params[:project_id])
-    if @project.nil? || @project.user != @user
+    if @project.nil? || (@project.user != @user && !@login.admin?)
       redirect_to root_path
     else
       @survey = Survey.find(params[:survey_id])

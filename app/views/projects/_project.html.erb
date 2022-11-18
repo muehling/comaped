@@ -1,9 +1,9 @@
 <div id="project_<%= project.id%>">
   <div class="card <%= if project.available then "card-success" else "card-default" end %>">
     <div class="card-header">
-      <%= link_to project.name, user_project_path(@user, project) %>
+      <%= link_to project.name, user_project_path(@user, project) %><%= if @login.id != project.user_id then ' (' + User.find_by_id(project.user_id).email + ')' end%>
       <p class = "float-end">
-        <%= link_to raw("<span class='bi-pencil'></span>"), edit_user_project_path(@user, project), remote: true %>
+        <%= link_to raw("<span class='bi-pencil'></span>"), '/users/' + project.user_id.to_s + '/project/' + project.id.to_s , remote: true %>
         &nbsp;
         <%= link_to raw("<span class='bi-download'></span>"), user_project_path(@user, project, format: 'json', versions: true)%>
       </p>

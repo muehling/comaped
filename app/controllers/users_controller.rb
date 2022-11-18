@@ -55,7 +55,9 @@ class UsersController < ApplicationController
   # DELETE /users/1
   def destroy
     @user.destroy
-    respond_to { |format| format.html { redirect_to users_url, notice: I18n.t('users.destroyed') } }
+    respond_to do |format|
+      format.html { redirect_to users_url, notice: I18n.t('users.destroyed'), status: :see_other }
+    end
   end
 
   private
