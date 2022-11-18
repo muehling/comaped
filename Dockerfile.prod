@@ -33,7 +33,7 @@ COPY Gemfile.lock /Gemfile.lock
 COPY . /usr/src/app/
 COPY .msmtprc ~/
 
-RUN gem update --system && gem install bundler && bundle install
+RUN gem update --system && gem install bundler && bundle config set --local without test development && bundle install
 
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
