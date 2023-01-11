@@ -131,82 +131,72 @@ class ApplicationController < ActionController::Base
   end
 
   def check_login_frontend
+
     if session.has_key?(:map)
       @map = ConceptMap.find(session[:map])
-
-      # DH: Set the current student
-      @current_student = current_student
-
-      # Check if the student reloaded the browser
-      if @current_student == 'reload'
-        # DH: Redircet the student
-        redirect_to '/'
-      else
-        if @current_student
-          # DH: The student is valid
-          cookies[:student_id] = @current_student.id
-          cookies[:map_id] = @map.id
-
-          # DH: Get all students from this Map
-          @student = Student.where('concept_map_id = ?', @map.id)
-        else
-          # DH: student can't join. All colors are given away
-          redirect_to '/', notice: (I18n.t('application.frontend.full', code: @map.code))
-        end
-      end
-    else
+    elsif params.has_key?(:code)
+      @map = ConceptMap.find_by_code(params[:code])
+    else 
       redirect_to '/'
+    end
+
+    if @map.nil?
+      redirect_to '/'
+    end
+   
+    # DH: Set the current student
+    @current_student = current_student
+    # Check if the student reloaded the browser
+    if @current_student == 'reload'
+      # DH: Redircet the student
+      redirect_to '/'
+    else
+      if @current_student
+        # DH: The student is valid
+        cookies[:student_id] = @current_student.id
+        cookies[:map_id] = @map.id
+        # DH: Get all students from this Map
+        @student = Student.where('concept_map_id = ?', @map.id)
+      else
+        # DH: student can't join. All colors are given away
+        redirect_to '/', notice: (I18n.t('application.frontend.full', code: @map.code))
+      end      
     end
   end
 
-  # DH: Helper Method
   helper_method :current_student
 
-  # DH: Current Student
   def current_student
-    # DH: Return the current student if already present
     return @current_student if @current_student.present?
 
-    # DH: CHeck if there is a session for the student
     if session[:student_id].present?
-      # DH: Get the student from the database
       @current_student = Student.find_by_id(session[:student_id])
 
-      # DH: Check if the student is not null
       if @current_student
-        # DH: The student is valid
         return @current_student
       else
-        # DH: The student did a reload
         return 'reload'
       end
-    else
-      # DH: Get all students from this Map
-      @student = Student.where('concept_map_id = ?', @map.id)
+    end
 
-      # DH: Check if a new student can join, this depends on the number of colors
-      # DH: At the moment 20 users are allowed, need to be changed here if the number changes!
-      while @student.count < 20
-        # DH: Try to generate a unique student
-        @current_student = Student.generate(@map.id)
-        if @current_student.id
-          session[:student_id] = @current_student.id
+    @student = Student.where('concept_map_id = ?', @map.id)
 
-          # DH: Inform the channel that a new user joined
-          ActionCable.server.broadcast(
-            'test_channel',
-            {
-              action: 'user_joined',
-              user: @current_student.name,
-              user_color: @current_student.color,
-              user_id: @current_student.id,
-              map_id: session[:map]
-            }
-          )
-
-          # DH: Make it available for the view
-          return @current_student
-        end
+    # DH: At the moment 20 users are allowed, need to be changed here if the number changes!
+    while @student.count < 20
+      @current_student = Student.generate(@map.id)
+      if @current_student.id
+        session[:student_id] = @current_student.id
+        ActionCable.server.broadcast(
+          'test_channel',
+          {
+            action: 'user_joined',
+            user: @current_student.name,
+            user_color: @current_student.color,
+            user_id: @current_student.id,
+            map_id: @map.id
+          }
+        )
+        return @current_student
       end
 
       return false
