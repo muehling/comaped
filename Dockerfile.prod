@@ -31,7 +31,7 @@ COPY Gemfile /Gemfile
 COPY Gemfile.lock /Gemfile.lock
 
 COPY . /usr/src/app/
-COPY .msmtprc ~/
+COPY .msmtprc /root/
 
 RUN gem update --system && gem install bundler && bundle config set --local without test development && bundle install
 
