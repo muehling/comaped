@@ -143,6 +143,13 @@ class ApplicationController < ActionController::Base
     if @map.nil?
       redirect_to '/'
     end
+
+    survey = Survey.find(@map.survey_id)
+    project = Project.find(survey.project_id)
+
+    if !project.enable_coworking
+      return        
+    end
    
     # DH: Set the current student
     @current_student = current_student
