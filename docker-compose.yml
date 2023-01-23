@@ -29,3 +29,17 @@ services:
     volumes:
       - ./:/usr/src/app
       - ./node_modules:/app/node_modules
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=comaped_dev
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    ports:
+      - '3307:3306'
+    volumes:
+      - db:/var/lib/mysql
+volumes:
+  db:

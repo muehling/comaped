@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   end
 
   post 'login' => 'application#login'
+  get '/redirect_to_edit' => 'concept_maps#redirect_to_edit'
+  post '/confirm_redirect' => 'concept_maps#confirm_redirect'
 
   #DH
   post 'delete_student' => 'application#delete_student'

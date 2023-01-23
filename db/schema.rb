@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
-  create_table "concept_maps", force: :cascade do |t|
+  create_table "concept_maps", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "code"
     t.integer "accesses"
     t.integer "survey_id"
@@ -19,7 +19,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "concepts", force: :cascade do |t|
+  create_table "concepts", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "label"
     t.float "x"
     t.float "y"
@@ -31,7 +31,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
     t.boolean "lock", default: false, null: false
   end
 
-  create_table "links", force: :cascade do |t|
+  create_table "links", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "start_id"
     t.integer "end_id"
     t.string "label"
@@ -41,7 +41,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
     t.boolean "lock", default: false, null: false
   end
 
-  create_table "projects", force: :cascade do |t|
+  create_table "projects", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.integer "user_id"
@@ -50,16 +50,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
     t.boolean "enable_coworking", default: false, null: false
   end
 
-  create_table "students", force: :cascade do |t|
+  create_table "students", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "name"
-    t.integer "concept_map_id", null: false
+    t.integer "concept_map_id"
+    t.string "color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "color", null: false
-    t.index ["concept_map_id"], name: "index_students_on_concept_map_id"
   end
 
-  create_table "surveys", force: :cascade do |t|
+  create_table "surveys", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.string "code"
@@ -74,7 +73,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
     t.string "capabilities"
@@ -82,12 +81,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_081847) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "versions", force: :cascade do |t|
+  create_table "versions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "concept_map_id"
     t.text "map"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  add_foreign_key "students", "concept_maps"
 end

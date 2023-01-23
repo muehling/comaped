@@ -17,9 +17,7 @@ Rails.application.configure do
     config.action_controller.perform_caching = true
 
     config.cache_store = :memory_store
-    config.public_file_server.headers = {
-      'Cache-Control' => 'public, max-age=172800'
-    }
+    config.public_file_server.headers = { 'Cache-Control' => 'public, max-age=172800' }
   else
     config.action_controller.perform_caching = false
 
@@ -52,4 +50,7 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  # Allow docker container to print to the console
+  config.web_console.whitelisted_ips = '172.19.0.1'
 end

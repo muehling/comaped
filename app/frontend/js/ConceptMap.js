@@ -64,7 +64,9 @@ class ConceptMap {
         smooth: { type: 'continuous' },
       },
       physics: {
-        barnesHut: {
+        // TBD: if uncollisioning is activated, all positions of all moved nodes have to be posted to the backend.
+        // TBD: currently, only the one moved by the user is posted.
+        /*barnesHut: {
           springLength: 120,
           springConstant: 0.0,
           centralGravity: 0.0,
@@ -72,7 +74,8 @@ class ConceptMap {
           avoidOverlap: 1,
           damping: 0.25,
         },
-        solver: 'barnesHut',
+        solver: 'barnesHut',*/
+        enabled: false,
       },
 
       interaction: {
@@ -455,7 +458,7 @@ class ConceptMap {
         break
       case ConceptMap.editMultiNode:
         for (let i = 0; i < this.ids.length; i++) {
-          await ajax({ url: this.conceptsPath + '/' + this.ids[0], method: 'DELETE' })
+          await ajax({ url: this.conceptsPath + '/' + this.ids[i], method: 'DELETE' })
           this.nodes.remove(this.ids[i])
         }
         break
@@ -476,8 +479,9 @@ class ConceptMap {
           return item.label.toLocaleLowerCase() === t.toLocaleLowerCase()
         },
       })
-      if (node == null || node.length == 0 || node[0].id == this.ids[0]) return true
-      else {
+      if (node == null || node.length == 0 || node[0].id == this.ids[0]) {
+        return true
+      } else {
         // Node with this label already exists
         this.network.focus(node[0].id)
         // if context_help is displayed show doubleNodeToast instead for 6s then display context_help again
@@ -552,7 +556,7 @@ class ConceptMap {
           }
         }
 
-        await this.hideForm()
+        await this.hideForm(true)
         this.ids = []
         return
       default:
@@ -578,7 +582,7 @@ class ConceptMap {
     if (body.node) {
       this.nodes.update(body.node)
     }
-    await this.hideForm()
+    await this.hideForm(true)
     this.ids = []
   }
 
@@ -820,6 +824,10 @@ class ConceptMap {
         return
       }
 
+      if (!this.enableCoworking) {
+        return
+      }
+
       switch (this.mode) {
         case ConceptMap.editEdge:
           await this.toggleEdgeLock(true)
@@ -874,14 +882,14 @@ class ConceptMap {
   /*******************************************
    * Hides EditForm and sets EditMode active
    *******************************************/
-  hideForm = async () => {
+  hideForm = async skipUnlocking => {
     $('#edit-dialog').addClass('d-none')
     this.network.unselectAll()
     $('#colorSelect').css('display', 'none') // close colorDropdown
     $('#shapeSelect').css('display', 'none') // close shapeDropdown
     $('#context-help-text').html($('#ch_editMode').html())
 
-    if (this.enableCoworking) {
+    if (this.enableCoworking && !skipUnlocking) {
       if (this.mode === ConceptMap.editNode || this.mode === ConceptMap.editMultiNode) {
         await this.toggleNodeLock(false)
       } else if (this.mode === ConceptMap.editEdge) {

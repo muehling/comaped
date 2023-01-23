@@ -9,74 +9,26 @@ class ConceptsController < ApplicationController
     @map.versionize(DateTime.now) if @concept.save
 
     # DH: Update the student "updatet_at" (to show his last action)
-    if session[:student_id].present?
-      Student.update(@current_student.id, updated_at: DateTime.now)
-
-      #DH: Broadcast the node creation
-      ActionCable.server.broadcast(
-        'test_channel',
-        {
-          action: 'create',
-          type: 'node',
-          user: @current_student.name,
-          user_id: @current_student.id,
-          user_color: @current_student.color,
-          label: @concept.label,
-          id: @concept.id,
-          x: @concept.x,
-          y: @concept.y,
-          color: @concept.color,
-          map_id: @map.id
-        }
-      )
-    end
+    propagate_to_subscribers('create')
   end
 
   # PATCH/PUT /concept_maps/1/concepts/1
   def update
-    old_label = @concept.label
-
-    # DH: get the old data
-    old_x = @concept.x
-    old_y = @concept.y
-    old_color = @concept.color
-    old_shape = @concept.shape
-    old_lock = @concept.lock
+    old_data = {
+      old_label: @concept.label,
+      old_x: @concept.x,
+      old_y: @concept.y,
+      old_color: @concept.color,
+      old_shape: @concept.shape,
+      old_lock: @concept.lock
+    }
 
     if @concept.update(concept_params)
-      @map.versionize(DateTime.now) unless concept_params[:label] == old_label
+      @map.versionize(DateTime.now) unless concept_params[:label] == old_data['old_label']
     end
     render :create
 
-    if session[:student_id].present?
-      # DH: Update the student "updatet_at" (to show his last action)
-      Student.update(@current_student.id, updated_at: DateTime.now)
-
-      # DH: Broadcast the node update
-      ActionCable.server.broadcast(
-        'test_channel',
-        {
-          action: 'update',
-          type: 'node',
-          user: @current_student.name,
-          user_id: @current_student.id,
-          user_color: @current_student.color,
-          label: @concept.label,
-          id: @concept.id,
-          x: @concept.x,
-          y: @concept.y,
-          color: @concept.color,
-          shape: @concept.shape,
-          lock: @concept.lock,
-          label_old: old_label,
-          x_old: old_x,
-          y_old: old_y,
-          color_old: old_color,
-          lock_old: old_lock,
-          map_id: @map.id
-        }
-      )
-    end
+    propagate_to_subscribers('update', old_data)
   end
 
   # DELETE /concept_maps/1/concepts/1.js
@@ -85,31 +37,47 @@ class ConceptsController < ApplicationController
     @map.versionize(DateTime.now)
     head :ok
 
-    if session[:student_id].present?
-      # DH: Update the student "updatet_at" (to show his last action)
-      Student.update(@current_student.id, updated_at: DateTime.now)
+    propagate_to_subscribers('destroy')
+  end
 
-      # DH: Broadcast the node deletion
-      ActionCable.server.broadcast(
-        'test_channel',
+  private
+
+  def propagate_to_subscribers(action, old_data = {})
+    return if !session[:student_id].present?
+
+    Student.update(@current_student.id, updated_at: DateTime.now)
+
+    data = {
+      action: action,
+      type: 'node',
+      user: @current_student.name,
+      user_id: @current_student.id,
+      user_color: @current_student.color,
+      label: @concept.label,
+      id: @concept.id,
+      x: @concept.x,
+      y: @concept.y,
+      color: @concept.color,
+      shape: @concept.shape,
+      map_id: @map.id
+    }
+
+    if action == 'update'
+      data.merge!(
         {
-          action: 'destroy',
-          type: 'node',
-          user: @current_student.name,
-          user_id: @current_student.id,
-          user_color: @current_student.color,
-          label: @concept.label,
-          id: @concept.id,
-          x: @concept.x,
-          y: @concept.y,
-          color: @concept.color,
+          lock: @concept.lock,
+          label_old: old_data['old_label'],
+          x_old: old_data['old_x'],
+          y_old: old_data['old_y'],
+          color_old: old_data['old_color'],
+          lock_old: old_data['old_lock'],
           map_id: @map.id
         }
       )
     end
-  end
 
-  private
+    ActionCable.server.broadcast('test_channel', data)
+  end
 
   def set_concept
     @concept = Concept.find(params[:id])
@@ -123,7 +91,6 @@ class ConceptsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def concept_params
-    #DH: Add the lock parameter
     params.require(:concept).permit(%i[label lock x y color shape])
   end
 end

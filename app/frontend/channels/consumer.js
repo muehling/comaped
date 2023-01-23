@@ -3,7 +3,7 @@
 
 import { createConsumer } from '@rails/actioncable'
 
-// für das aktuelle Staging-System:
-export default createConsumer('wss://ruapehu.informatik.uni-kiel.de/comaped/cable')
+//export default createConsumer('wss://comaped.de/cable')
 
-//export default createConsumer()
+// development environment
+export default createConsumer()

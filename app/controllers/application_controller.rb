@@ -53,7 +53,8 @@ class ApplicationController < ActionController::Base
 
     #DH: delete the student after logout, so the names can be reused
     Student.where(id: cookies[:student_id]).destroy_all
-    puts params[:target]
+
+    #puts params[:target]
 
     #DH: Reset the session
     cookies[:student_id] = nil
@@ -82,7 +83,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #POST /map
+  #######################################################
+  ## Returns or creates a map for the entered code
+  ## POST /map
+  #######################################################
   def map_form
     code = params[:code]
 
@@ -121,6 +125,9 @@ class ApplicationController < ActionController::Base
 
   private
 
+  #######################################################
+  ## Sets the language
+  #######################################################
   def set_locale
     if request.env['HTTP_ACCEPT_LANGUAGE'].nil?
       I18n.locale = :en
@@ -130,84 +137,51 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  #######################################################
+  ## Handles setting of necessary variables; redirects deep links to the bot trap
+  #######################################################
   def check_login_frontend
-
     if session.has_key?(:map)
       @map = ConceptMap.find(session[:map])
     elsif params.has_key?(:code)
       @map = ConceptMap.find_by_code(params[:code])
-    else 
-      redirect_to '/'
-    end
-
-    if @map.nil?
-      redirect_to '/'
-    end
-
-    survey = Survey.find(@map.survey_id)
-    project = Project.find(survey.project_id)
-
-    if !project.enable_coworking
-      return        
-    end
-   
-    # DH: Set the current student
-    @current_student = current_student
-    # Check if the student reloaded the browser
-    if @current_student == 'reload'
-      # DH: Redircet the student
-      redirect_to '/'
+      redirect_to controller: 'concept_maps', action: 'redirect_to_edit', code: params[:code] and
+        return
     else
-      if @current_student
-        # DH: The student is valid
-        cookies[:student_id] = @current_student.id
-        cookies[:map_id] = @map.id
-        # DH: Get all students from this Map
-        @student = Student.where('concept_map_id = ?', @map.id)
-      else
-        # DH: student can't join. All colors are given away
-        redirect_to '/', notice: (I18n.t('application.frontend.full', code: @map.code))
-      end      
+      redirect_to '/' and return
     end
+
+    @all_students = Student.where('concept_map_id = ?', @map.id)
+
+    set_current_student
   end
 
-  helper_method :current_student
-
-  def current_student
-    return @current_student if @current_student.present?
-
+  #######################################################
+  ## Handles student getting/creation
+  #######################################################
+  def set_current_student
     if session[:student_id].present?
       @current_student = Student.find_by_id(session[:student_id])
-
-      if @current_student
-        return @current_student
-      else
-        return 'reload'
-      end
+      return
     end
 
-    @student = Student.where('concept_map_id = ?', @map.id)
-
-    # DH: At the moment 20 users are allowed, need to be changed here if the number changes!
-    while @student.count < 20
-      @current_student = Student.generate(@map.id)
-      if @current_student.id
-        session[:student_id] = @current_student.id
-        ActionCable.server.broadcast(
-          'test_channel',
-          {
-            action: 'user_joined',
-            user: @current_student.name,
-            user_color: @current_student.color,
-            user_id: @current_student.id,
-            map_id: @map.id
-          }
-        )
-        return @current_student
-      end
-
-      return false
+    if Student.where('concept_map_id = ?', @map.id).count > 20
+      redirect_to '/', notice: (I18n.t('application.frontend.full', code: @map.code))
     end
+
+    @current_student = Student.generate(@map.id)
+
+    session[:student_id] = @current_student.id
+    ActionCable.server.broadcast(
+      'test_channel',
+      {
+        action: 'user_joined',
+        user: @current_student.name,
+        user_color: @current_student.color,
+        user_id: @current_student.id,
+        map_id: @map.id
+      }
+    )
   end
 
   def check_login_backend

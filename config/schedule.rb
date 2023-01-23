@@ -23,11 +23,11 @@
 # Learn more: http://github.com/javan/whenever
 
 # DH: Create the logs
-set :output, "./log/cron.log"
-
-# DH: Check every minute for inactive students
-every 1.minutes do
-  runner "puts 'Check inactive students'"
-  runner "puts Time.now"
-  runner "Student.delete_inactive"
-end
+#set :output, './log/cron.log'
+#
+## DH: Check every minute for inactive students
+#every 1.minutes do
+#  runner "puts 'Check inactive students'"
+#  runner 'puts Time.now'
+#  runner 'Student.delete_inactive'
+#end

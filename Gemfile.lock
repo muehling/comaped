@@ -158,7 +158,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.4.4)
     thor (1.2.1)
     timeout (0.3.0)
     tzinfo (2.0.5)
@@ -195,7 +194,6 @@ DEPENDENCIES
   redis (~> 5.0)
   rubyzip
   sprockets-rails (~> 3.4)
-  sqlite3 (~> 1.4.2)
   tzinfo-data
   vite_rails
   web-console (>= 3.3.0)

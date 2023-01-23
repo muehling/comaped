@@ -1,9 +1,11 @@
 class ConceptMapsController < ApplicationController
   skip_before_action :check_login_frontend, except: %i[edit update]
-  skip_before_action :check_login_backend, only: %i[edit show update]
+  skip_before_action :check_login_backend,
+                     only: %i[edit show update redirect_to_edit confirm_redirect]
   before_action :login_for_show, only: [:show]
   before_action :set_user_project_survey, only: %i[new create destroy index page]
-  before_action :set_concept_map, only: %i[edit update show destroy]
+  before_action :set_concept_map, only: %i[update show destroy]
+  before_action :set_concept_map_frontend, only: %I[edit]
 
   # GET /concept_maps/
 
@@ -72,9 +74,7 @@ class ConceptMapsController < ApplicationController
 
   # PUT /concept_maps/1
   def update
-    if !@concept_map.update(concept_maps_params)
-      render error: { error: 'unable to update' }, status: 400
-    end
+    render error: { error: 'unable to update' }, status: 400 if !@concept_map.update(params)
   end
 
   # GET /concept_maps/1/edit
@@ -92,6 +92,23 @@ class ConceptMapsController < ApplicationController
     @concept_map.after_create if !@concept_map.has_concepts && !survey.initial_map.blank?
 
     render 'edit'
+  end
+
+  # called from application_controller#check_login_frontend if a full edit url is supplied
+  def redirect_to_edit
+    map = ConceptMap.find_by_code(params[:code])
+
+    @redirect_timestamp = DateTime.now.to_i
+    session[:map] = map.id
+    render 'redirect_to_edit', layout: 'application'
+  end
+
+  def confirm_redirect
+    redirect_to '/' and return if DateTime.now.to_i - params[:timestamp].to_i < 5
+    redirect_to '/' and return if params[:dont_fill_username].present?
+    redirect_to '/' and return if params[:dont_fill_password].present?
+
+    redirect_to edit_concept_map_path(code: params[:code])
   end
 
   # POST /concept_maps
@@ -165,11 +182,22 @@ class ConceptMapsController < ApplicationController
 
   private
 
-  #Load concept maps and check whether user is allowed to access it (frontend or backend)
+  #Load concept maps and check whether user is allowed to access it (backend)
   def set_concept_map
     @concept_map = ConceptMap.find_by_code(params[:code])
     if @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
       redirect_to '/'
+    end
+  end
+
+  # Load concept map; redirect to bot trap if map id in session is different the one in the params
+  def set_concept_map_frontend
+    @concept_map = ConceptMap.find_by_code(params[:code])
+    if @concept_map.nil?
+      redirect_to '/'
+    elsif @concept_map != @map
+      redirect_to controller: 'concept_maps', action: 'redirect_to_edit', code: params[:code] and
+        return
     end
   end
 
