@@ -1,0 +1,9 @@
+stages:
+  - yarn_audit
+
+yarn_audit:
+  stage: yarn_audit
+  script:
+    - yarn audit
+  rules:
+    - failure: true
