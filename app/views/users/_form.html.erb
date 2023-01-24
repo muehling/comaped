@@ -34,6 +34,9 @@
   </div>
 </div>
 <script type="module">
+
+  const isAdmin = <%= !@login.admin? %>
+
   $(".edit_user").on('submit', function (event) {
     let hasError = false
     const emailAddress = $('#user_email').val()
@@ -45,7 +48,8 @@
       hasError = true
     }
 
-    if (!password || !passwordConfirmation || password !== passwordConfirmation) {
+
+    if (!isAdmin && !password || !passwordConfirmation || password !== passwordConfirmation) {
       $('.password-feedback').addClass('d-block')
       hasError = true
     }
