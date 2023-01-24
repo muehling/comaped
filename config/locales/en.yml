@@ -51,6 +51,9 @@ en:
       goodbye: 'Successfully logged out!'
       password: 'Password'
       wrong_credentials: 'E-mail or password incorrect'
+      users:
+        email_empty: 'Please provide a valid email address!'
+        passwords_invalid: 'Both password fields have to be filled out and match!'
     frontend:
       code_not_found: 'Code not found!'
       enter_code: 'Please enter your code here'

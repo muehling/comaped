@@ -246,11 +246,14 @@ de:
       goodbye: 'Erfolgreich ausgeloggt!'
       password: 'Passwort'
       wrong_credentials: 'E-Mail oder Passwort falsch!'
+      users:
+        email_empty: 'Die Email-Adresse muss ausgefüllt sein!'
+        passwords_invalid: 'Beide Passwortfelder müssen ausgefüllt sein und übereinstimmen!'
     frontend:
       code_not_found: 'Code nicht gefunden!'
       enter_code: 'Bitte den Zugangscode eingeben'
       goodbye: 'Vielen Dank für die Benutzung von CoMapEd!<br/>Sie können zu Ihrem Begriffsnetz mit dem Code <b>%{code}</b> zurückkehren.'
-      full: 'Die Map ist leider voll!'
+      full: 'Aktuell bearbeiten zu Nutzer diese Map!'
   layouts:
     backend:
       my_data: 'Meine Daten'

@@ -36,7 +36,7 @@ class UsersController < ApplicationController
         UserMailer.created(@user.email, p[:password]).deliver_later
         format.html { redirect_to users_path, notice: I18n.t('users.created') }
       else
-        format.html { render :edit }
+        format.html { render :edit, status: :unprocessable_entity }
       end
     end
   end
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
       if @user.update(user_params)
         format.html { redirect_to @user, notice: I18n.t('users.updated') }
       else
-        format.html { render :edit }
+        format.html { render :edit, status: :unprocessable_entity }
       end
     end
   end
