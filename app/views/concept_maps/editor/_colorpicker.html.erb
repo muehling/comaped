@@ -1,45 +1,33 @@
 <span id="colorpicker">
   <input id="color" type="hidden" name="concept[color]" value="<%= palette(0) %>"/>
-  <div class="dropdown" style="display: inline-block">
-    <div id="currentColor" class="btn dropdown-toggle" data-toggle="dropdown" style="background-color: <%= default_color %>;"><%= t :color %>&nbsp;<span class="caret"></span></div>
-    <div class="dropdown-menu">
-      <table>
-        <tr>
-          <td style="padding-left: 12px;"><div id="color1" class="btn" style="width: 40px;height:30px;background-color: <%= palette(0) %>;" onclick="changeColor('1');"></div></td>
-          <td style="padding-left: 7px;"><div id="color2" class="btn" style="width: 40px;height:30px;background-color: <%= palette(1) %>" onclick="changeColor('2');"></div></td>
-          <td style="padding-left: 7px;"><div id="color3" class="btn" style="width: 40px;height:30px;background-color: <%= palette(2) %>" onclick="changeColor('3');"></div></td>
-        </tr>
-        <tr>
-          <td style="padding-left: 12px; padding-top: 3px;"><div id="color4" class="btn" style="width: 40px;height:30px;background-color: <%= palette(3) %>;" onclick="changeColor('4');"></div></td>
-          <td style="padding-left: 7px; padding-top: 3px;"><div id="color5" class="btn" style="width: 40px;height:30px;background-color: <%= palette(4) %>" onclick="changeColor('5');"></div></td>
-          <td style="padding-left: 7px; padding-top: 3px;"><div id="color6" class="btn" style="width: 40px;height:30px;background-color: <%= palette(5) %>" onclick="changeColor('6');"></div></td>
-        </tr>
-      </table>
+  <div class="dropdown" style="display: inline-block;" >
+    <div id="currentColor" class="color btn dropdown-toggle me-1" data-toggle="dropdown" style="width: 50px;height:36px;background-color: <%= default_color %>;"><span class="caret"></span></div>
+    <div id="colorSelect" class="dropdown-menu">
+      <div class="d-flex justify-content-between flex-wrap mx-1">
+        <div id="colorSelect-0" class="colorSelectIcon btn m-1" style="width: 40px;height:30px;background-color: <%= palette(0) %>;"></div>
+        <div id="colorSelect-1" class="colorSelectIcon btn m-1" style="width: 40px;height:30px;background-color: <%= palette(1) %>"></div>
+        <div id="colorSelect-2" class="colorSelectIcon btn m-1" style="width: 40px;height:30px;background-color: <%= palette(2) %>"></div>
+        <div id="colorSelect-3" class="colorSelectIcon btn m-1" style="width: 40px;height:30px;background-color: <%= palette(3) %>;"></div>
+        <div id="colorSelect-4" class="colorSelectIcon btn m-1" style="width: 40px;height:30px;background-color: <%= palette(4) %>"></div>
+        <div id="colorSelect-5" class="colorSelectIcon btn m-1" style="width: 40px;height:30px;background-color: <%= palette(5) %>"></div>
+      </div>
     </div>
   </div>
 </span>
 
-<script>
-    function changeColor(id) {
-        $('#currentColor').css('background-color', $('#color'+id).css('background-color'));
-        var color = $('#currentColor').css('background-color');
-        $("#color").attr("value", standardizeColor(color));
-        for (var i = 1; i <= 6; ++i)
-          $('#color'+i).html("<span></span>");
-        $('#color'+id).html("<span class='glyphicon glyphicon-ok'></span>");
-        $("#entry_concept").focus();
-        return false;
-    }
+<script type="module">
 
-    function selectColor(color) {
-        for (var i = 1; i <= 6; ++i)
-            if (standardizeColor($('#color' + i).css('background-color')) === color)
-                changeColor(i);
-    }
+  $("#currentColor").on("click", () => {
+    const isColorPickerOpen = $("#colorSelect").css("display") === "block"
+    const isShapePickerOpen = $("#shapeSelect").css("display") === "block"
+    $("#colorSelect").css("display", isColorPickerOpen ? "none" : "block")
+    if (!isColorPickerOpen) $("#shapeSelect").css("display", "none")  // ColorPicker is about to be opened -> close ShapePicker
+  })
 
-    function standardizeColor(color) {
-        var ctx = document.createElement('canvas').getContext('2d');
-        ctx.fillStyle = color;
-        return ctx.fillStyle;
-    }
+  for (let i = 0; i < 6; i++){
+    $("#colorSelect-" + i).on("click", () => {
+      changeColor(i + "")
+      $("#colorSelect").css("display", "none")
+    })
+  }
 </script>

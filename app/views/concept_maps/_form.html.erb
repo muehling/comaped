@@ -1,8 +1,8 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="card card-default">
+  <div class="card-header">
     <%= t('concept_maps.new') %>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <div class="row">
       <div class = "col-md-5">
         <%= render 'form_simple' %>
@@ -15,9 +15,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  function cancelForm() {
-    $('#new_maps').html("<%= escape_javascript(render 'new') %>");
-  }
-</script>

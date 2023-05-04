@@ -1,0 +1,38 @@
+
+<div class="container">
+  <div class="text-center card m-4">
+    <p>Sie werden in <span id="timer">5</span> Sekunden automatisch weitergeleitet.</p>
+  </div>
+  <%= form_tag('/confirm_redirect', class: "form redirect-form") do %>
+    <div class="form-group">
+      <label class="control-label" for="code"><%= t('.enter_code') %></label>
+      <%= text_field_tag "code", nil, type: "text", class: "form-control"%>
+      <div style="width: 0; height: 0; overflow: hidden;">
+        <%= text_field_tag "dont_fill_username", nil, type: "text", class: "form-control" %>
+        <%= text_field_tag "dont_fill_password", nil, type: "text", class: "form-control" %>
+        <%= text_field_tag "timestamp", nil, type: "text", class: "form-control" %>
+      </div>
+    </div>
+    <%= submit_tag t('login'), class: "btn btn-primary mt-3" %>
+<% end %>
+</div>
+
+<script type="module">
+
+  let timestamp = '<%= @redirect_timestamp %>'
+
+
+  // Display a timer for five seconds. Afterwards, fill the code from the link into the form and post it.
+  // The "timestamp" field is expected by the controller
+  let timer = 5
+  let interval = setInterval(() => {
+    $('#timer').html(timer-- + '')
+    if(timer <= 0) {
+      $('#code').val(location.search.replace('?code=', ''))
+      $('#timestamp').val(timestamp)
+      $('.redirect-form').submit()
+      clearInterval(interval)
+    }
+  }, 1000);
+
+</script>

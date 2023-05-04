@@ -1,22 +1,35 @@
-<p id="ch_normal" class="hidden">
-  <% if @concept_map.survey.concept_labels.blank? %>New concept: click and hold.<% end %> Change view: click and drag, scroll (or use buttons on canvas)
+<p id="ch_editMode" class="d-none">
+  <% if @concept_map.survey.concept_labels.blank? %><% end %>Select button to edit or add nodes/edges. Change view: click and drag, scroll (or use buttons at the bottom)
 </p>
 
-<p id="ch_hovernode" class="hidden">
-Click and drag to move concept around, <% if @concept_map.survey.concept_labels.blank? %>click to edit or delete concept,<% end %> click and hold to create new connection
-
-<p id="ch_hoveredge" class="hidden">
-  Click to edit or delete connection
+<p id="ch_addNodeMode" class="d-none">
+  <% if @concept_map.survey.concept_labels.blank? %><% end %>Click on empty space to create a node. Press ESC or select another button to abort.
 </p>
 
-<p id="ch_edit" class="hidden">
-  Enter new label, then <span class="glyphicon glyphicon-ok"></span> or return. Cancel with <span class="glyphicon glyphicon-remove"></span> or Esc or click on canvas. Delete with <span class="glyphicon glyphicon-trash"></span> (<strong>Caution:</strong> No undo!)
+<p id="ch_addEdgeMode" class="d-none">
+  <% if @concept_map.survey.concept_labels.blank? %><% end %>Drag Arrow from start-concept to target-conmcept to create an edge. Press ESC or select another button to abort.
 </p>
 
-<p id="ch_new" class="hidden">
-  Enter label, then <span class="glyphicon glyphicon-ok"></span> or return. Cancel with <span class="glyphicon glyphicon-remove"></span> or Esc or click on canvas
+<p id="ch_hovernode" class="d-none">
+  Click to edit, or drag to move node. <% if @concept_map.survey.concept_labels.blank? %>PLACEHOLDER<% end %>
 </p>
 
-<p id="ch_addedge" class="hidden">
-  Click on target concept to create connection or on canvas to cancel
+<p id="ch_hoveredge" class="d-none">
+  Click to edit or delete edge.
 </p>
+
+<p id="ch_editNode" class="d-none">
+  Choose new label, color and shape, then confirm with <span class="bi-check-lg"></span> or ENTER. Cancel with <span class="bi-x-lg"></span> or ESC. Delete with <span class="bi-trash"></span> (<strong>Caution:</strong> No undo!)
+</p>
+
+<p id="ch_editEdge" class="d-none">
+  Choose new label and direction, then confirm with <span class="bi-check-lg"></span> or ENTER. Cancel with <span class="bi-x-lg"></span> or ESC. Delete with <span class="bi-trash"></span> (<strong>Caution:</strong> No undo!)</p>
+
+<p id="ch_newNode" class="d-none">
+  Choose new label, color and shape, then confirm with <span class="bi-check-lg"></span> or ENTER. Cancel with <span class="bi-x-lg"></span> or ESC.
+</p>
+
+<p id="ch_newEdge" class="d-none">
+  Choose new label and direction, then confirm with <span class="bi-check-lg"></span> or ENTER. Cancel with <span class="bi-x-lg"></span> or ESC.
+</p>
+

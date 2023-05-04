@@ -1,0 +1,572 @@
+// Place all the styles related to the ConceptMaps controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+html, body {
+  height: 100%;
+  min-height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+/* DH: Mobile View
+  smartphones, iPhone, portrait 480x320 phones
+  portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide.
+  portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones
+  tablet, landscape iPad, lo-res laptops ands desktops
+*/
+@media (min-width:320px)  {
+  #map-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+
+  }
+  #right{
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    background-color: #f8f8f8;
+    float: right;
+    height: 100%;
+
+
+  }
+  #recent_changes {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+  #users{
+    width: 100%;
+  }
+  #user_me {
+  	width: 100%;
+  	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    border: 1px solid #D7D7D7;
+  	text-align: center;
+    margin-bottom: 2em;
+  }
+  #students {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  margin-bottom: 2em;
+  border: 1px solid #D7D7D7;
+
+  }
+  #students_header {
+  	width: 100%;
+
+  	background-color: #f7f7f7;
+  	text-align: center;
+  }
+
+  .log {
+  	width: 100%;
+  	margin-bottom: 1em;
+    font-size: 12px;
+    color: black;
+
+
+  }
+  .log_header {
+  	width: 100%;
+  	display: flex;
+  	text-align: center;
+  }
+  .change_header {
+  	border-top: 1px solid #D7D7D7;
+  	border-left: 1px solid #D7D7D7;
+  	border-right: 1px solid #D7D7D7;
+  	background-color: #f7f7f7;
+  	margin-left: 12px;
+
+    text-align: center;
+
+  }
+  .log_entry {
+  	width: 100%;
+  	background-color: white;
+  	overflow: hidden;
+  	border: 1px solid #ebebeb;
+  	display: flex;
+  	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  }
+  .student {
+  	width: 20%;
+  	border-right: 1px dotted black;
+  	float: left;
+  	text-align: center;
+  	align-items: center;
+  	  display: flex;
+  	  justify-content: center;
+  }
+  .student_name{
+  	top: 50%;
+  	display: flex;
+    align-items: center;
+  }
+  .context {
+  	width: 75%;
+  	float: right;
+  	text-align: left;
+  	align-items: center;
+  	 display: flex;
+  }
+  .changes {
+  	margin: 0;
+  }
+  #toggle_button{
+    position: absolute;
+    right: 40%;
+    bottom: 0px;
+    z-index: 1;
+    display: block;
+    width: 20%;
+    background-color: black;
+    text-align: center;
+    color: white;
+    clip-path: polygon(0 0, 100% 0, 100% 50%, 50% 100%, 50% 100%, 0% 50%);
+    font-size: 14px;
+  }
+
+  #header-nav {
+    position: absolute;
+    top: 15px;
+    left: 30px;
+    z-index: 1;
+    display: block;
+  }
+
+  #header-code {
+    position: absolute;
+    right: 50%;
+    top: 15px;
+    z-index: 1;
+    display: inline-block;
+    transform: translatex(50%);
+    background-color: #1b809e;
+    padding: 5px;
+    color: white;
+  }
+
+  #header-search {
+    position: absolute;
+    right: 30px;
+    top: 15px;
+    z-index: 1;
+    display: block;
+  }
+
+  #submit-mail {
+    background-color: #1b809e;
+    &:hover {
+      background-color: #07668a;
+    }
+  }
+
+  .canvasButton {
+    color: #1b809e;
+    font-family: "bootstrap-icons";
+    font-size: 32px;
+    &:hover {
+      color: #07668a;
+      cursor: pointer;
+    }
+  }
+
+  #context-help {
+    position: absolute;
+    right: 50%;
+    bottom: 15px;
+    z-index: 1;
+    display: inline-block;
+    transform: translatex(50%);
+    background-color: #1b809e;
+    padding: 5px;
+    color: white;
+    padding: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  }
+
+  #task {
+    position: absolute;
+    right: 50%;
+    top: 75px;
+    z-index: 1;
+    display: inline-block;
+    transform: translatex(50%);
+    background-color: white;
+    padding: 5px;
+    color: black;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    padding: 10px;
+  }
+
+  .vis-button {
+    color: #1b809e;
+    font-family: "bootstrap-icons";
+    font-size: 32px;
+    cursor: pointer;
+    &:hover {
+      box-shadow: none !important;
+      color: #07668a;
+    }
+  }
+
+  .vis-right {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f133";
+    }
+  }
+
+  .vis-left {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f129";
+    }
+  }
+
+  .vis-up {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f139";
+    }
+  }
+
+  .vis-down {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f118";
+    }
+  }
+
+  .vis-zoomIn {
+    background-image: none !important;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f4f9";
+    }
+  }
+
+  .vis-zoomOut {
+    background-image: none !important;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f2e5";
+    }
+  }
+
+  .vis-zoomExtends {
+    background-image: none !important;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f2dd";
+    }
+  }
+
+
+}
+
+// DH: big landscape tablets, laptops, and desktops
+@media (min-width:1025px) {
+  #toggle_button{
+    display: none;
+  }
+
+  #map-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+  }
+  #right{
+    display: flex;
+    flex-flow: column;
+    width: 20%;
+    background-color: #f8f8f8;
+    float: right;
+    height: 100%;
+
+
+  }
+  #recent_changes {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+  #users{
+    width: 100%;
+  }
+  #user_me {
+  	width: 100%;
+  	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    border: 1px solid #D7D7D7;
+  	text-align: center;
+    margin-bottom: 2em;
+  }
+  #students {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  margin-bottom: 2em;
+  border: 1px solid #D7D7D7;
+  font-size: 12px;
+
+  }
+  #students_header {
+  	width: 100%;
+
+  	background-color: #f7f7f7;
+  	text-align: center;
+  }
+
+  .log {
+  	width: 100%;
+  	margin-bottom: 1em;
+    font-size: 12px;
+    color: black;
+
+
+  }
+  #log_header {
+  	width: 100%;
+  	display: flex;
+  	text-align: center;
+  }
+  .change_header {
+  	border-top: 1px solid #D7D7D7;
+  	border-left: 1px solid #D7D7D7;
+  	border-right: 1px solid #D7D7D7;
+  	background-color: #f7f7f7;
+  	margin-left: 12px;
+  	width: 100%;
+
+
+  }
+  .log_entry {
+  	width: 100%;
+  	background-color: white;
+  	overflow: hidden;
+  	border: 1px solid #ebebeb;
+  	display: flex;
+  	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  }
+  .student {
+  	width: 35%;
+  	border-right: 1px dotted black;
+  	float: left;
+  	text-align: center;
+  	align-items: center;
+  	  display: flex;
+  	  justify-content: center;
+  }
+  .student_name{
+  	top: 50%;
+  	display: flex;
+    align-items: center;
+  }
+  .context {
+  	width: 65%;
+  	float: right;
+  	text-align: left;
+  	align-items: center;
+  	 display: flex;
+  }
+  .changes {
+  	margin: 0;
+  }
+
+  #header-nav {
+    position: absolute;
+    top: 15px;
+    left: 30px;
+    z-index: 1;
+    display: block;
+  }
+
+  #header-code {
+    position: absolute;
+    right: 50%;
+    top: 15px;
+    z-index: 1;
+    display: inline-block;
+    transform: translatex(50%);
+    background-color: #1b809e;
+    padding: 5px;
+    color: white;
+  }
+
+  #header-search {
+    position: absolute;
+    // DH
+    //right: 30px;
+    right: 21%;
+    top: 15px;
+    z-index: 1;
+    display: block;
+  }
+
+  #submit-mail {
+    background-color: #1b809e;
+    &:hover {
+      background-color: #07668a;
+    }
+  }
+
+  .canvasButton {
+    color: #1b809e;
+    font-family: "bootstrap-icons";
+    font-size: 32px;
+    &:hover {
+      color: #07668a;
+      cursor: pointer;
+    }
+  }
+
+  #context-help {
+    position: absolute;
+    right: 50%;
+    bottom: 15px;
+    z-index: 1;
+    display: inline-block;
+    transform: translatex(50%);
+    background-color: #1b809e;
+    padding: 5px;
+    color: white;
+    padding: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  }
+
+  #task {
+    position: absolute;
+    right: 50%;
+    top: 75px;
+    z-index: 1;
+    display: inline-block;
+    transform: translatex(50%);
+    background-color: white;
+    padding: 5px;
+    color: black;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    padding: 10px;
+  }
+
+  .vis-button {
+    color: #1b809e;
+    font-family: "bootstrap-icons";
+    font-size: 32px;
+    cursor: pointer;
+    &:hover {
+      box-shadow: none !important;
+      color: #07668a;
+    }
+  }
+
+  .vis-right {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f133";
+    }
+  }
+
+  .vis-left {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f129";
+    }
+  }
+
+  .vis-up {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f139";
+    }
+  }
+
+  .vis-down {
+    background-image: none !important;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f118";
+    }
+  }
+
+  .vis-zoomIn {
+    background-image: none !important;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f4f9";
+    }
+  }
+
+  .vis-zoomOut {
+    background-image: none !important;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f2e5";
+    }
+  }
+
+  .vis-zoomExtends {
+    background-image: none !important;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    &:after {
+      content: "\f2dd";
+    }
+  }
+}
+
+// DH hi-res laptops and desktops
+@media (min-width:1281px) {
+  #students{
+      font-size: 14px;
+  }
+  .student {
+  	width: 25%;
+  	border-right: 1px dotted black;
+  	float: left;
+  	text-align: center;
+  	align-items: center;
+  	  display: flex;
+  	  justify-content: center;
+  }
+  .context {
+  	width: 75%;
+  	float: right;
+  	text-align: left;
+  	align-items: center;
+  	 display: flex;
+  }
+}

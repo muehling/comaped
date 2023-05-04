@@ -15,6 +15,6 @@ s.save
 p1.surveys.build(name: "Test Befragung 2").save
 cm = s.concept_maps.build(code: "test")
 cm.save
-cm.concepts.build(label: "Auto").save
-cm.concepts.build(label: "Motor").save
+cm.concepts.build(label: "Auto", shape: 'circle', color: '#cfe0c8').save
+cm.concepts.build(label: "Motor", shape: 'circle', color: '#cfe0c8').save
 cm.links.build(start: Concept.find(1), end: Concept.find(2), label: "hat").save

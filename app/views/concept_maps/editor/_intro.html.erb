@@ -1,50 +1,77 @@
 <%= render 'concept_maps/editor/explanation' %>
+<script type="module">
 
-<script>
-    let ids = ["#header-nav", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
-    let placements = ["right", "bottom", "left", "top", "right", "left"];
+    $('#context-help').removeClass('d-none')
 
+    let isInitialized = false
+    let introModal
+
+    const selectors = ["#header-button", "#header-code", "#header-search", "#context-help", ".vis-up", ".vis-zoomExtends"];
+    const placements = ["right", "bottom", "left", "top", "right", "left"];
+
+    // will render the translated introtexts
+    // declares these variables
+    // - texts
+    // - btn_last
+    // - btn_standard
+    // - title
     <%= render 'concept_maps/editor/intro_texts' %>
 
-    for (let i = 0; i < texts.length; ++i)
-        texts[i] = "<p class='text-justify'>" + texts[i] + "<p class='text-center'><button class='btn btn-sm btn-outline-primary' onclick='next();'>" + (i == texts.length-1 ? btn_last : btn_standard) + "</button></p>";
+    const textHtml = texts.map((text, i)=>{
+        return ("<p class='text-justify' style='overflow:scrollable'>" + texts[i] + "<p class='text-center'><button class='btn btn-secondary' onclick='next();'>" + (i === texts.length-1 ? btn_last : btn_standard) + "</button></p>")
+    })
 
-    title = title + " <button type='button' class='close' onclick='stop();' aria-label='Close'><span class='glyphicon glyphicon-remove' aria-hidden='true' style='font-size: 12pt; top: -2px;'></span></button>";
+    const titleHtml = title + " <button type='button' class='btn-close' onclick='stop();' aria-label='Close'><span aria-hidden='true' style='top: -2px;'></span></button>";
 
+    let popover
+    let popoverIndex = 0
 
     function next() {
-        if (i > 0)
-            $(ids[i-1]).popover("destroy");
-        if (i < ids.length) {
-            $(ids[i]).data("toggle", "popover");
-            $(ids[i]).data("viewport", {'selector': 'body', 'padding': 15});
-            $(ids[i]).data("placement", placements[i]);
-            $(ids[i]).data("title", title);
-            $(ids[i]).data("content", texts[i]);
-            $(ids[i]).popover({html: true});
-            $(ids[i]).popover("show");
-            ++i;
+        if (popover){
+            popover.dispose()
+        }
+
+        const el = $(selectors[popoverIndex])[0]
+        if (el) {
+            popover = new bootstrap.Popover(
+                el,
+                {
+                    viewport: {'selector': 'body', 'padding': 15},
+                    placement: placements[popoverIndex],
+                    title: titleHtml,
+                    content: textHtml[popoverIndex],
+                    html: true,
+                    sanitize: false, // allow buttons with click handlers and all in the html content
+                }
+            )
+            popover.show()
+            popoverIndex++;
         }
     };
 
     function stop() {
-        $(ids[i-1]).popover("destroy");
-        i = ids.length;
+        popoverIndex = selectors.length;
+        if (popover){
+            popover.dispose()
+        }
     };
 
-    let i = 0;
-    $("#intro").on("hidden.bs.modal", function (e) {
+    const hideModal = () =>{
+        introModal.hide()
+    }
+
+     $("#intro").on("hidden.bs.modal", function (e) {
         next();
     });
 
-    $("#intro").modal({
-        show:true,
-        backdrop:'static'
-    });
+    if (!isInitialized) {
+        introModal = new bootstrap.Modal(document.getElementById("intro"), { backdrop: "static" })
+        introModal.show()
+        isInitialized = true
+    }
 
-    $(document).ready(function(){
-        $("#intro").modal("show");
-    });
-
+    // expose handlers to the DOM
+    window.next = next
+    window.stop = stop
+    window.hideModal = hideModal
 </script>
-

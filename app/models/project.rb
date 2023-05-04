@@ -45,7 +45,7 @@ class Project < ApplicationRecord
   #Returns: true if the update succeeded, false if an error occurred
   def from_json(data, name_prefix)
     vals = ActiveSupport::JSON.decode(data)
-    update_attributes(vals.slice("name", "description"))
+    update(vals.slice("name", "description"))
     self.name = name_prefix + self.name
     return save
   end

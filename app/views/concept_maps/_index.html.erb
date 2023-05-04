@@ -1,7 +1,7 @@
 <div class="row">
-  <div class = "col-md-6">
+  <div class = "col-md-6 mb-4">
       <div id="new_maps">
-          <%= render 'concept_maps/new' %>
+          <%= render 'concept_maps/new_buttons' %>
       </div>
   </div>
 </div>
@@ -10,15 +10,32 @@
   <%= render 'concept_maps/maps' %>
 </div>
 
-<script>
-  var page = 0;
-  var ready = true;
+<script type="module">
+  let page = 1;
+  let ready = true;
 
   $(window).off( "scroll" );
-  $(window).on('scroll', function() {
+  $(window).on('scroll', async function() {
+
     if (ready && ($(window).scrollTop() > $(document).height() - $(window).height() - 60)) {
       ready = false;
-      $.getScript("<%= user_project_survey_concept_maps_path(@user, @project, @survey)%>" + "?page=" + (page+1))
+      const url = "<%= user_project_survey_concept_maps_page_path(@user, @project, @survey)%>"
+
+      const moreMaps = await fetch(url+ "?page=" + (page++), {
+        "method": "GET",
+        mode: "cors",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/html'
+        },
+        data: { page }
+      })
+      const body = await moreMaps.text()
+
+      if (body.length){
+        $(body).appendTo($('#maps'));
+        ready = true;
+      }
     }
   });
 </script>

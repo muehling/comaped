@@ -1,0 +1,8 @@
+{
+  "name": "comaped",
+  "scripts": {
+    "dokku": {
+      "predeploy": "bundle exec rake assets:precompile"
+    }
+  }
+}

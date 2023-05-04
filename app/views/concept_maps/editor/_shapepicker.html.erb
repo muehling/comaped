@@ -1,0 +1,25 @@
+<span id="shapepicker">
+  <input id="shape" type="hidden" name="concept[shape]" value= "ellipse"/>
+  <div class="dropdown" style="display: inline-block;">
+    <div id="currentShape" class="shapes shape btn dropdown-toggle me-1" data-toggle="dropdown" style="width: 50px;height:36px;background-color: <%= default_color %>;"></div>
+    <div id= "shapeSelect" class="dropdown-menu">
+      <div class="d-flex justify-content-around">
+        <div id="shape1" class="ellipse-select shape-select btn " style="width: 40px;height:30px;" value= <%= shape_palette(0) %> onclick="changeShape(1);"></div>
+        <div id="shape2" class="box-select shape-select btn " style="width: 40px;height:30px;" value= <%= shape_palette(1) %> onclick="changeShape(2);"></div>
+        <div id="shape3" class="circle-select shape-select btn" style="width: 40px;height:30px;" value= <%= shape_palette(2) %> onclick="changeShape(3);"></div>
+      </div>
+    </div>
+  </div>
+</span>
+
+
+
+<script type="module">
+  // shapepicker open/close handler
+  $("#currentShape").on("click", () => {
+    const isShapePickerOpen = $("#shapeSelect").css("display") === "block"
+    const isColorPickerOpen = $("#colorSelect").css("display") === "block"
+    $("#shapeSelect").css("display", isShapePickerOpen ? "none" : "block")
+    if (!isShapePickerOpen) $("#colorSelect").css("display", "none")  // ShapePicker is about to be opened
+  })
+</script>

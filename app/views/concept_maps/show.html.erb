@@ -1,52 +1,48 @@
 <div class="row">
   <div class = "col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
+    <div class="card card-default">
+      <div class="card-header concept_map_show">
         <%= @concept_map.survey.project.name %>
-        <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_projects_path(@user), class: "pull-right"%>
+        <%= link_to raw("<span class='bi-x-lg'></span>"), user_projects_path(@user), class: "float-end"%>
       </div>
 
-      <div class="panel-body">
-        <div class="panel panel-default">
-          <div class="panel-heading">
+      <div class="card-body">
+        <div class="card card-default">
+          <div class="card-header">
             <%= @concept_map.survey.name %>
-            <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_path(@user, @concept_map.survey.project), class: "pull-right"%>
+            <%= link_to raw("<span class='bi-x-lg'></span>"), user_project_path(@user, @concept_map.survey.project), class: "float-end"%>
           </div>
 
-          <div class="panel-body">
-            <div class="panel panel-default">
-              <div class="panel-heading">
+          <div class="card-body">
+            <div class="card card-default">
+              <div class="card-header">
                 <%= @concept_map.code %>
-                <%= link_to raw("<span class='glyphicon glyphicon-remove'></span>"), user_project_survey_path(@user, @concept_map.survey.project, @concept_map.survey), class: "pull-right"%>
+                <%= link_to raw("<span class='bi-x-lg'></span>"), user_project_survey_path(@user, @concept_map.survey.project, @concept_map.survey), class: "float-end"%>
               </div>
 
-              <div class="panel-body">
+              <div class="card-body">
                 <div class="row">
-                  <div class="col-md-2">
+                  <div class="col-md-3 col-xl-2">
                     <%= render partial: "versions/index", locals: {concept_map: @concept_map}%>
                   </div>
-                  <div class="col-md-10">
+                  <div class="col-md-9 col-xl-10">
                     <%= render partial: 'versions/timeline', locals: {concept_map: @concept_map}%>
                   </div>
                 </div>
+
                 <div class="row">
-                  <div class="col-md-2">
-                  </div>
-                  <div class="col-md-10">
-                    <p class="text-center">
-                      <%= render partial: "versions/show", locals: {concept_map: @concept_map}%>
-                    </p>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-2">
+                  <div class="col-md-3 col-xl-2">
                     <%= render partial: 'concept_maps/table', locals: {concept_map: @concept_map}%>
+                    <a id="png_link" href="#" download="<%= @concept_map.code%>.png" onclick="$('#png_link').attr('href', $('canvas')[0].toDataURL());" class="btn btn-secondary mb-2 w-100">PNG</a>
+                    <%= button_to concept_map_version_path(@concept_map, 0), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-danger mb-2 w-100" do %>
+                      <%= t('versions.delete') %>
+                    <% end %>
 
-                    <%= link_to t('versions.delete'), concept_map_version_path(@concept_map, 0), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-block btn-danger" %>
-
-                    <%= link_to t('concept_maps.delete'), user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, data: {confirm: t('are_you_sure')}, class: "btn btn-block btn-danger" %>
+                    <%= button_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), method: :delete, form: { data: {turbo_confirm: t('are_you_sure')} }, class: "btn btn-danger mb-2 w-100" do %>
+                      <%= t('concept_maps.delete') %>
+                    <% end %>
                   </div>
-                  <div class="col-md-10">
+                  <div class="col-md-9 col-lg-xl">
                     <%= render partial: 'concept_maps/preview', locals: {concept_map: @concept_map}%>
                   </div>
                 </div>

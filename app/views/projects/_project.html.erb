@@ -1,33 +1,34 @@
 <div id="project_<%= project.id%>">
-  <div class="panel <%= if project.available then "panel-success" else "panel-default" end %>">
-    <div class="panel-heading">
-      <%= link_to project.name, user_project_path(@user, project) %>
-      <p class = "pull-right">
-        <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_path(@user, project), remote: true %>
+  <div class="card <%= if project.available then "card-success" else "card-default" end %>">
+    <div class="card-header">
+      <%= link_to project.name, user_project_path(@user, project) %><%= if @login.id != project.user_id then ' (' + User.find_by_id(project.user_id).email + ')' end%>
+      <p class = "float-end">
+        <%= link_to raw("<span class='bi-pencil'></span>"), '/users/' + project.user_id.to_s + '/project/' + project.id.to_s , remote: true %>
         &nbsp;
-        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_path(@user, project, format: 'json', versions: true)%>
+        <%= link_to raw("<span class='bi-download'></span>"), user_project_path(@user, project, format: 'json', versions: true)%>
       </p>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p><%= project.description.blank? ? raw("<i>#{t('no_description')}</i>") : project.description %></p>
       <table class="table">
         <tr><td><%= t('.surveys') %>:</td><td><%= project.surveys.count %></td></tr>
         <tr><td><%= t('maps') %>:</td><td><%= project.concept_maps.count %></td></tr>
       </table>
-      <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-default" %>
-      <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-default", remote: true %>
-      <div class="dropdown pull-right">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <p><%= project.enable_coworking ? t('projects.coworking') : t('projects.no_coworking')%></p>
+      <%= link_to t('projects.show'), user_project_path(@user, project), class: "btn btn-outline-secondary" %>
+      <%= link_to t('projects.edit'), edit_user_project_path(@user, project), class: "btn btn-outline-secondary", remote: true %>
+      <div class="dropdown float-end">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= t('export') %>
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
           <li class="dropdown-header"><%= t('export.current')%></li>
-          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json')%></li>
-          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text')%></li>
+          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json'), class: "dropdown-item"%></li>
+          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text'), class: "dropdown-item"%></li>
           <li class="dropdown-header"><%= t('export.all')%></li>
-          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json', versions: true)%></li>
-          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text', versions: true)%></li>
+          <li><%= link_to 'JSON', user_project_path(@user, project, format: 'json', versions: true), class: "dropdown-item"%></li>
+          <li><%= link_to 'TGF', user_project_path(@user, project, format: 'text', versions: true), class: "dropdown-item"%></li>
         </ul>
       </div>
     </div>

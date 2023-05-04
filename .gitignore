@@ -26,3 +26,8 @@
 
 #Ignore IDE
 /.idea
+
+node_modules
+
+public/vite-dev
+/config/master.key

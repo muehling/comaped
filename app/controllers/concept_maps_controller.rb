@@ -1,23 +1,33 @@
 class ConceptMapsController < ApplicationController
-
-  skip_before_action :check_login_frontend, except: [:edit]
-  skip_before_action :check_login_backend, only: [:edit, :show]
+  skip_before_action :check_login_frontend, except: %i[edit update]
+  skip_before_action :check_login_backend,
+                     only: %i[edit show update redirect_to_edit confirm_redirect]
   before_action :login_for_show, only: [:show]
-  before_action :set_user_project_survey, only: [:new, :create, :destroy, :index]
-  before_action :set_concept_map, only: [:edit, :update, :show, :destroy]
+  before_action :set_user_project_survey, only: %i[new create destroy index page]
+  before_action :set_concept_map, only: %i[update show destroy]
+  before_action :set_concept_map_frontend, only: %I[edit]
 
-  # GET /concept_maps/:page.js
+  # GET /concept_maps/
 
   def index
     @page = params[:page].to_i || 0
-    @maps = @survey.concept_maps.offset(@page*10).limit(10).order(updated_at: :desc)
+    @maps = @survey.concept_maps.offset(@page * 10).limit(10).order(updated_at: :desc)
     respond_to do |format|
-      format.js {
-        if @maps.size == 0
-          head :ok
-        end
-      }
+      format.html { head :ok if @maps.size == 0 }
+      format.json {}
     end
+  end
+
+  # GET /concept_maps/
+  # will render the partial without a layout; used for scroll-loading
+  def page
+    @page = params[:page].to_i || 0
+    @maps = @survey.concept_maps.offset(@page * 10).limit(10).order(updated_at: :desc)
+    if @maps.size == 0
+      head :ok
+      return
+    end
+    render layout: false
   end
 
   # GET /concept_maps/1
@@ -25,112 +35,144 @@ class ConceptMapsController < ApplicationController
   # GET /concept_maps/1.json
   def show
     respond_to do |format|
-      format.html {render 'show', layout: 'backend'}
-      format.json {
+      format.html { render 'show', layout: 'backend' }
+      format.json do
         if params.has_key?(:versions)
-          send_file @concept_map.to_zip(false), filename:@concept_map.code+".zip", type: "application/zip"
+          send_file @concept_map.to_zip(false),
+                    filename: @concept_map.code + '.zip',
+                    type: 'application/zip'
         else
-          send_data @concept_map.to_json, filename: @concept_map.code+".json", type: :json
+          send_data @concept_map.to_json, filename: @concept_map.code + '.json', type: :json
         end
-      }
-      format.text {
+      end
+      format.text do
         if params.has_key?(:email)
           ConceptMapMailer.edited(params[:email], @map.code).deliver_later
           head :ok
+        else
+          if params.has_key?(:versions)
+            send_file @concept_map.to_zip(true),
+                      filename: @concept_map.code + '.zip',
+                      type: 'application/zip'
           else
-            if params.has_key?(:versions)
-              send_file @concept_map.to_zip(true), filename:@concept_map.code+".zip", type: "application/zip"
-            else
-              send_data @concept_map.to_tgf, filename: @concept_map.code+".tgf", type: :text
-            end
+            send_data @concept_map.to_tgf, filename: @concept_map.code + '.tgf', type: :text
+          end
         end
-      }
+      end
     end
   end
 
   # GET /concept_maps/new
   def new
-    respond_to do |format|
-      format.js {
-      }
-      format.zip {
-        @concept_map = ConceptMap.new
-        render 'import.js.erb', content_type: Mime::JS
-      }
+    if params['import'].nil?
+      render 'create_concept_map', layout: 'backend'
+    else
+      @concept_map = ConceptMap.create
+      render 'import_concept_map', layout: 'backend'
     end
+  end
+
+  # PUT /concept_maps/1
+  def update
+    render error: { error: 'unable to update' }, status: 400 if !@concept_map.update(params)
   end
 
   # GET /concept_maps/1/edit
   def edit
-    if @concept_map.accesses.nil?
-      @concept_map.accesses = 0
-    end
+    # project is needed to check whether coworking is enabled
+    survey = Survey.find_by_id(@concept_map.survey_id)
+    @project = Project.find_by_id(survey.project_id)
+
+    @concept_map.accesses = 0 if @concept_map.accesses.nil?
     @concept_map.accesses = @concept_map.accesses + 1
     @concept_map.save
+
+    # if concepts were added to the survey preset after creation,
+    # and the map is still untouched, insert them now
+    @concept_map.after_create if !@concept_map.has_concepts && !survey.initial_map.blank?
+
     render 'edit'
+  end
+
+  # called from application_controller#check_login_frontend if a full edit url is supplied
+  def redirect_to_edit
+    map = ConceptMap.find_by_code(params[:code])
+
+    @redirect_timestamp = DateTime.now.to_i
+    session[:map] = map.id
+    render 'redirect_to_edit', layout: 'application'
+  end
+
+  def confirm_redirect
+    redirect_to '/' and return if DateTime.now.to_i - params[:timestamp].to_i < 5
+    redirect_to '/' and return if params[:dont_fill_username].present?
+    redirect_to '/' and return if params[:dont_fill_password].present?
+
+    redirect_to edit_concept_map_path(code: params[:code])
   end
 
   # POST /concept_maps
   def create
-    respond_to do |format|
-      format.js {
-        res = I18n.t('error')
-        if params[:type] == "simple"
-          count = params[:number].to_i || 0
-          res = I18n.t('concept_maps.create') + ":<br/>"
-          count.times do
-            cm = @survey.concept_maps.build
-            cm.save
-            res = res + cm.code + "<br/>"
-          end
-        else
-          if params[:type] == "email"
-            anonymous = params[:anonymized] == '1'
-            list = params[:email]
-            codes = []
-            list.split("\n").each do |email|
+    if params.has_key?(:number) || params.has_key?(:email)
+      res = I18n.t('error')
+      if params[:type] == 'simple'
+        # create number of concept maps
+        count = params[:number].to_i || 0
+        res = I18n.t('concept_maps.create') + ':<br/>'
+        count.times do
+          cm = @survey.concept_maps.build
+          cm.save
+          res = res + cm.code + '<br/>'
+        end
+      else
+        # create concepts maps and mail them
+        if params[:type] == 'email'
+          anonymous = params[:anonymized] == '1'
+          list = params[:email]
+          codes = []
+          list
+            .split("\n")
+            .each do |email|
               cm = @survey.concept_maps.build
               cm.save
               codes = codes + [[email, cm.code]]
               ConceptMapMailer.created(email, cm.code, anonymous).deliver_later
             end
-            res = I18n.t('concept_maps.create') + ":<br/>"
-            if (anonymous)
-              codes.map{|x| x[1]}.sort.each do |c|
-                res = res + c + "<br/>"
-              end
-            else
-              res = res + "<table class='table table-condensed' style='width: auto'><tbody>"
-              codes.each do |c|
-                res = res + "<tr><td>" + c[1] + "</td><td>" + c[0] + "</td></tr>"
-              end
-              res = res + "</tbody></table>"
-            end
-          end
-        end
-        redirect_to user_project_survey_path(@user, @project, @survey), notice: res
-      }
-      format.html {
-        if params.has_key?(:concept_map) && !params[:concept_map][:file].nil?
-          res = true
-          params[:concept_map][:file].each do |f|
-            @concept_map = @survey.concept_maps.build
-            res = res && @concept_map.import_file(f.tempfile, f.original_filename.split('.')[0])
-          end
-        end
-        if res
-          if params[:concept_map][:file].size == 1
-            redirect_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map), notice: I18n.t('concept_maps.imported')
+          res = I18n.t('concept_maps.create') + ':<br/>'
+          if (anonymous)
+            codes.map { |x| x[1] }.sort.each { |c| res = res + c + '<br/>' }
           else
-            redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('concept_maps.imported')
+            res = res + "<table class='table table-condensed' style='width: auto'><tbody>"
+            codes.each { |c| res = res + '<tr><td>' + c[1] + '</td><td>' + c[0] + '</td></tr>' }
+            res = res + '</tbody></table>'
           end
-        else
-          redirect_to user_project_survey_concept_maps_path(@user, @project, @survey), notice: I18n.t('error_import')
         end
-      }
+      end
+      redirect_to user_project_survey_path(@user, @project, @survey), notice: res
+      return
     end
 
-   end
+    # import concept maps
+    if params.has_key?(:concept_map) && !params[:concept_map][:file].nil?
+      res = true
+      params[:concept_map][:file].each do |f|
+        @concept_map = @survey.concept_maps.build
+        res = res && @concept_map.import_file(f.tempfile, f.original_filename.split('.')[0])
+      end
+    end
+    if res
+      if params[:concept_map][:file].size == 1
+        redirect_to user_project_survey_concept_map_path(@user, @project, @survey, @concept_map),
+                    notice: I18n.t('concept_maps.imported')
+      else
+        redirect_to user_project_survey_path(@user, @project, @survey),
+                    notice: I18n.t('concept_maps.imported')
+      end
+    else
+      redirect_to user_project_survey_concept_maps_path(@user, @project, @survey),
+                  notice: I18n.t('error_import')
+    end
+  end
 
   # DELETE /concept_maps/1
   def destroy
@@ -139,29 +181,37 @@ class ConceptMapsController < ApplicationController
   end
 
   private
-    #Load concept maps and check whether user is allowed to access it (frontend or backend)
-    def set_concept_map
-      @concept_map = ConceptMap.find_by_code(params[:code])
-      if @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
-        redirect_to '/'
-      end
-    end
 
-    def set_user_project_survey
-      @user = User.find(params[:user_id])
-      if @user.nil? || (@user.id != @login.id &&  !@login.admin?)
-        redirect_to '/backend'
-      end
-      @project = Project.find(params[:project_id])
-      if @project.nil? || @project.user != @user
-        redirect_to '/backend'
-      else
-        @survey = Survey.find(params[:survey_id])
-        if @survey.nil? || @survey.project != @project
-          redirect_to '/backend'
-        end
-      end
+  #Load concept maps and check whether user is allowed to access it (backend)
+  def set_concept_map
+    @concept_map = ConceptMap.find_by_code(params[:code])
+    if @concept_map.nil? || (@concept_map != @map && @concept_map.survey.project.user != @user)
+      redirect_to '/'
     end
+  end
+
+  # Load concept map; redirect to bot trap if map id in session is different the one in the params
+  def set_concept_map_frontend
+    @concept_map = ConceptMap.find_by_code(params[:code])
+    if @concept_map.nil?
+      redirect_to '/'
+    elsif @concept_map != @map
+      redirect_to controller: 'concept_maps', action: 'redirect_to_edit', code: params[:code] and
+        return
+    end
+  end
+
+  def set_user_project_survey
+    @user = User.find(params[:user_id])
+    redirect_to root_path if @user.nil? || (@user.id != @login.id && !@login.admin?)
+    @project = Project.find(params[:project_id])
+    if @project.nil? || (@project.user != @user && !@login.admin?)
+      redirect_to root_path
+    else
+      @survey = Survey.find(params[:survey_id])
+      redirect_to root_path if @survey.nil? || @survey.project != @project
+    end
+  end
 
   def login_for_show
     if params.has_key?(:project_id)
@@ -172,4 +222,7 @@ class ConceptMapsController < ApplicationController
     end
   end
 
+  def concept_maps_params
+    params.require(:concept_map).permit([concepts_attributes: %i[id label shape color x y lock]])
+  end
 end

@@ -1,29 +1,62 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="card card-default">
+  <div class="card-header">
     <%= if @user.id.nil? then t('users.new') else t('users.edit') end %>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <%= form_for(@user, class: "form") do |f| %>
       <div class="form-group <%= "has-error" unless @user.errors[:email].blank? %>">
         <%= f.label t('email'), class: "control-label" %>
         <%= f.text_field :email, class: "form-control" %>
+        <div class="email-feedback invalid-feedback">
+        <%= t('application.backend.users.email_empty') %>
+        </div>
       </div>
-      <div class="form-group <%= "has-error" unless @user.errors[:password_confirmation].blank? && @user.errors[:password].blank?%>">
+      <div class="form-group mt-2 <%= "has-error" unless @user.errors[:password_confirmation].blank? && @user.errors[:password].blank?%>">
         <%= f.label t('application.backend.password'), class: "control-label" %>
         <%= f.password_field :password, class: "form-control" %>
-        <%= f.label t('users._form.password_confirmation'), class: "control-label" %>
+        <%= f.label t('users._form.password_confirmation'), class: "control-label mt-2" %>
         <%= f.password_field :password_confirmation, class: "form-control" %>
+        <div class="password-feedback invalid-feedback">
+          <%= t('application.backend.users.passwords_invalid') %>
+        </div>
       </div>
-      <% if @user.admin? %>
-        <div class="form-group">
+      <% if @login.admin? %>
+        <div class="form-group mt-2">
           <%= f.label t('activerecord.attributes.user.capabilities'), class: "control-label" %>
           <%= f.text_field :capabilities, class: "form-control" %>
         </div>
       <% end %>
-      <div class="form-group">
+      <div class="form-group mt-3">
         <%= f.submit :class => "btn btn-primary" %>
-        <%= link_to t('cancel'), if (@user.id.nil? || (@user.id != @user.id)) then users_path else user_path(@user) end, class: "btn btn-default"%>
+        <%= link_to t('cancel'), if (@user.id.nil? || (@user.id != @user.id)) then users_path else user_path(@user) end, class: "btn btn-secondary"%>
      </div>
     <% end %>
   </div>
 </div>
+<script type="module">
+
+  const isAdmin = <%= !@login.admin? %>
+
+  $(".edit_user").on('submit', function (event) {
+    let hasError = false
+    const emailAddress = $('#user_email').val()
+    const password = $('#user_password').val()
+    const passwordConfirmation = $('#user_password_confirmation').val()
+
+    if (!emailAddress) {
+      $('.email-feedback').addClass('d-block')
+      hasError = true
+    }
+
+
+    if (!isAdmin && !password || !passwordConfirmation || password !== passwordConfirmation) {
+      $('.password-feedback').addClass('d-block')
+      hasError = true
+    }
+
+    if (hasError) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+  })
+</script>

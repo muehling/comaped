@@ -1,8 +1,8 @@
 <div class="row">
   <div class = "col-md-2"></div>
   <div class = "col-md-8">
-    <div class="panel panel-default">
-      <div class="panel-body">
+    <div class="card card-default">
+      <div class="card-body">
 
         <table class = "table">
           <tbody>
@@ -11,7 +11,7 @@
             <tr><td><%= t('maps') %></td><td><%= @user.concept_map_count %></td></tr>
           </tbody>
         </table>
-        <%= link_to t('.change'), edit_user_path(@user), class: 'btn btn-default'%>
+        <%= link_to t('.change'), edit_user_path(@user), class: 'btn btn-secondary'%>
 
       </div>
     </div>

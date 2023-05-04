@@ -1,4 +1,0 @@
-if ($('#survey_<%= @survey.id %>').length > 0)
-  $('#survey_<%= @survey.id %>').html("<%= escape_javascript render 'form_basic'%>");
-else
-  $('#form').html("<%= escape_javascript render 'form_detail'%>");

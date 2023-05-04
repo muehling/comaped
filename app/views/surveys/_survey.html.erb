@@ -1,14 +1,14 @@
 <div id="survey_<%= survey.id%>">
-  <div class="panel <%= if survey.available then "panel-success" else "panel-default" end %>">
-    <div class="panel-heading">
+  <div class="card <%= if survey.available then "card-success" else "card-default" end %>">
+    <div class="card-header">
       <%= link_to survey.name, user_project_survey_path(@user, @project, survey) %>
-      <p class = "pull-right">
-        <%= link_to raw("<span class='glyphicon glyphicon-pencil'></span>"), edit_user_project_survey_path(@user, @project, survey), remote: true %>
+      <p class = "float-end">
+        <%= link_to raw("<span class='bi-pencil'></span>"), edit_user_project_survey_path(@user, @project, survey), remote: true %>
         &nbsp;
-        <%= link_to raw("<span class='glyphicon glyphicon-download-alt'></span>"), user_project_survey_path(@user, @project, survey, format: 'json', versions: true) %>
+        <%= link_to raw("<span class='bi-download'></span>"), user_project_survey_path(@user, @project, survey, format: 'json', versions: true) %>
       </p>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p><%= survey.description.blank? ? raw("<i>#{t('no_description')}</i>") : survey.description %></p>
       <table class="table">
         <tr><td><%= t('maps') %>:</td><td><%= survey.concept_maps.count %></td></tr>
@@ -16,20 +16,20 @@
         <tr><td><%= t('activerecord.attributes.survey.start_date') %>:</td><td><%= survey.start_date || '-' %></td></tr>
         <tr><td><%= t('activerecord.attributes.survey.end_date') %>:</td><td><%= survey.end_date || '-' %></td></tr>
       </table>
-      <%= link_to t('surveys.show'), user_project_survey_path(@user, @project, survey), class: "btn btn-default" %>
-      <%= link_to t('surveys.edit'), edit_user_project_survey_path(@user, @project, survey), class: "btn btn-default", remote: true %>
-      <div class="dropdown pull-right">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= link_to t('surveys.show'), user_project_survey_path(@user, @project, survey), class: "btn btn-outline-secondary" %>
+      <%= link_to t('surveys.edit'), edit_user_project_survey_path(@user, @project, survey), class: "btn btn-outline-secondary", remote: true %>
+      <div class="dropdown float-end">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= t('export') %>
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
           <li class="dropdown-header"><%= t('export.current')%></li>
-          <li><%= link_to 'JSON', user_project_survey_path(@user, @project, survey, format: 'json')%></li>
-          <li><%= link_to 'TGF', user_project_survey_path(@user, @project, survey, format: 'text')%></li>
+          <li ><%= link_to 'JSON', user_project_survey_path(@user, @project, survey, format: 'json'), class: "dropdown-item"%></li>
+          <li ><%= link_to 'TGF', user_project_survey_path(@user, @project, survey, format: 'text'), class: "dropdown-item"%></li>
           <li class="dropdown-header"><%= t('export.all')%></li>
-          <li><%= link_to 'JSON', user_project_survey_path(@user, @project, survey, format: 'json', versions: true)%></li>
-          <li><%= link_to 'TGF', user_project_survey_path(@user, @project, survey, format: 'text', versions: true)%></li>
+          <li ><%= link_to 'JSON', user_project_survey_path(@user, @project, survey, format: 'json', versions: true), class: "dropdown-item"%></li>
+          <li ><%= link_to 'TGF', user_project_survey_path(@user, @project, survey, format: 'text', versions: true), class: "dropdown-item"%></li>
         </ul>
       </div>
     </div>

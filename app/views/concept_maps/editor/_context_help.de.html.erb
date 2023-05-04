@@ -1,23 +1,36 @@
-<p id="ch_normal" class="hidden">
-  <% if @concept_map.survey.concept_labels.blank? %>Neues Konzept: Langer Klick auf Zeichenfläche.<% end %> Ausschnitt verändern: Klicken und ziehen, scrollen (oder Knöpfe auf der Zeichenfläche)
+<p id="ch_editMode" class="d-none">
+  <% if @concept_map.survey.concept_labels.blank? %><% end %>Button wählen, um zu Bearbeiten oder Konzepte/Verbindungen hinzuzufügen. Ausschnitt verändern: Klicken und ziehen, scrollen (oder Knöpfe auf der Unterseite)
 </p>
 
-<p id="ch_hovernode" class="hidden">
-Klicken und ziehen um Konzept zu verschieben, <% if @concept_map.survey.concept_labels.blank? %>klicken um Konzept zu bearbeiten oder zu löschen,<% end %> langer Klick um Verbindung anzulegen
+<p id="ch_addNodeMode" class="d-none">
+  <% if @concept_map.survey.concept_labels.blank? %><% end %>Leere Fläche anklicken, um Konzept zu erstellen. Drücke ESC oder klicke auf anderen Button um abzubrechen.
 </p>
 
-<p id="ch_hoveredge" class="hidden">
-  Klicken um Verbindung zu bearbeiten oder zu löschen
+<p id="ch_addEdgeMode" class="d-none">
+  <% if @concept_map.survey.concept_labels.blank? %><% end %>Ziehe Pfeil von Startkonzept auf Zielkonzept um Verbindung anzulegen. Drücke ESC oder klicke auf anderen Button um abzubrechen.
 </p>
 
-<p id="ch_edit" class="hidden">
-  Neuen Bezeichner eingeben, dann <span class="glyphicon glyphicon-ok"></span> oder Enter. Abbrechen mit <span class="glyphicon glyphicon-remove"></span> oder Esc oder Klick auf Zeichenfläche. Löschen mit <span class="glyphicon glyphicon-trash"></span> (<strong>Achtung:</strong> Kein Rückgängig!)
+<p id="ch_hovernode" class="d-none">
+  Klicken zum Bearbeiten, ziehen zum Verschieben. <% if @concept_map.survey.concept_labels.blank? %>PLATZHALTER<% end %>
 </p>
 
-<p id="ch_new" class="hidden">
-  Bezeichner eingeben und <span class="glyphicon glyphicon-ok"></span> oder Enter, abbrechen mit <span class="glyphicon glyphicon-remove"></span> oder Esc oder Klick auf Zeichenfläche
+<p id="ch_hoveredge" class="d-none">
+  Klicken, um Verbindung zu bearbeiten oder zu löschen.
 </p>
 
-<p id="ch_addedge" class="hidden">
-  Klick auf Zielkonzept um Verbindung anzulegen oder auf Zeichenfläche um abzubrechen
+<p id="ch_editNode" class="d-none">
+  Neuen Bezeichner eingeben, Farbe und Form anpassen, dann mit <span class="bi-check-lg"></span> oder ENTER bestätigen. Abbruch mit <span class="bi-x-lg"></span> oder ESC. Löschen mit <span class="bi-trash"></span> (<strong>Achtung:</strong> Kein Rückgängig!)
 </p>
+
+<p id="ch_editEdge" class="d-none">
+  Neuen Bezeichner eingeben und Richtung wählen dann mit <span class="bi-check-lg"></span> oder ENTER bestätigen. Abbruch mit <span class="bi-x-lg"></span> oder ESC. Löschen mit <span class="bi-trash"></span> (<strong>Achtung:</strong> Kein Rückgängig!)
+</p>
+
+<p id="ch_newNode" class="d-none">
+  Bezeichner, Farbe und Form wählen und mit <span class="bi-check-lg"></span> oder ENTER bestätigen. Abbruch mit <span class="bi-x-lg"></span> oder ESC.
+</p>
+
+<p id="ch_newEdge" class="d-none">
+  Bezeichner und Richtung wählen und mit <span class="bi-check-lg"></span> oder ENTER bestätigen. Abbruch mit <span class="bi-x-lg"></span> oder ESC.
+</p>
+

@@ -1,0 +1,50 @@
+.navigation-elements {
+  height: $header-height;
+  .canvasButton {
+    color: #1b809e;
+    font-family: 'bootstrap-icons';
+    font-size: 32px;
+    &:hover {
+      color: #07668a;
+      cursor: pointer;
+    }
+  }
+
+  .main-menu {
+    &:before {
+      content: '\F479';
+      font-weight: bold;
+    }
+  }
+
+  .search {
+    &:before {
+      content: '\F52A';
+      font-weight: bold;
+    }
+  }
+
+  #header-nav {
+    display: block;
+  }
+
+  #header-code {
+    background-color: #1b809e;
+    padding: 5px;
+    color: white;
+    margin: 1em !important;
+  }
+
+  #header-search {
+    z-index: 1;
+    display: block;
+  }
+
+  #submit-mail {
+    background-color: #1b809e;
+
+    &:hover {
+      background-color: #07668a;
+    }
+  }
+}

@@ -1,11 +1,13 @@
 class ConceptMap < ApplicationRecord
-
   after_create :after_create
 
   belongs_to :survey
   has_many :concepts, dependent: :destroy
   has_many :links, dependent: :destroy
   has_many :versions, dependent: :destroy
+
+  has_many :students, dependent: :destroy
+  accepts_nested_attributes_for :concepts, :links # enable update of multiple concepts and links at once
 
   #Use slug instead of id for routing
   #Return: Code of concept map
@@ -32,26 +34,37 @@ class ConceptMap < ApplicationRecord
   def after_create
     self.accesses ||= 0
     unless survey.concept_labels.blank?
-      labels = survey.concept_labels.split(',').map{|s| s.strip}.uniq
-      step = 2*Math::PI/labels.length
+      labels = survey.concept_labels.split(',').map { |s| s.strip }.uniq
+      step = 2 * Math::PI / labels.length
       count = 0
       labels.each do |c|
-        concepts.build(label: c, x: (labels.length/5.0)*100*(Math.sin(count*step) + 1), y: (labels.length/5.0)*100*(Math.cos(count*step) + 1)).save
+        concepts.build(
+          label: c,
+          x: (labels.length / 5.0) * 100 * (Math.sin(count * step) + 1),
+          y: (labels.length / 5.0) * 100 * (Math.cos(count * step) + 1)
+        ).save
         count = count + 1
       end
       save
     else
-      unless survey.initial_map.blank?
-        from_tgf(survey.initial_map)
-      end
+      from_tgf(survey.initial_map) unless survey.initial_map.blank?
     end
 
-    while self.code.nil? || self.code.blank? || Survey.where(code: self.code).exists? || (ConceptMap.where(code: self.code).exists? && ConceptMap.find_by_code(self.code) != self)
+    while self.code.nil? || self.code.blank? || Survey.where(code: self.code).exists? ||
+            (
+              ConceptMap.where(code: self.code).exists? &&
+                ConceptMap.find_by_code(self.code) != self
+            )
       self.code = ConceptMap.generate_slug
     end
     save
     reload
     versionize(DateTime.now)
+  end
+
+  # returns true if the map has no concepts
+  def has_concepts
+    return Concept.where(concept_map_id: self.id).length > 0
   end
 
   #Retrieve a map by code or find an available survey and create a new map
@@ -60,9 +73,10 @@ class ConceptMap < ApplicationRecord
   #Effect: If no map but a suitable survey is found, a new map will be created for this survey
   #Returns: The identified map or a newly created map or nil if neither map nor survey is found.
   def self.prepare_map(code)
-    map = ConceptMap.find_by_code(code)  #Check if a map with the given code already exists
-    survey = Survey.find_by_code(code)   #Check if a survey with the given code exists
-    if map.nil? && !survey.nil? && survey.available     #No map, but availabe survey => create a new map
+    map = ConceptMap.find_by_code(code) #Check if a map with the given code already exists
+    survey = Survey.find_by_code(code) #Check if a survey with the given code exists
+    if map.nil? && !survey.nil? && survey.available
+      #No map, but availabe survey => create a new map
       map = survey.concept_maps.build
       map.save
     end
@@ -81,7 +95,7 @@ class ConceptMap < ApplicationRecord
     save
   end
 
-  #Import data from aeither a ZIP file in the same format that to_zip creates, or a JSON file
+  #Import data from either a ZIP file in the same format that to_zip creates, or a JSON file
   #Parameter:
   # file: Path to a file
   # code: Will be used as an initial code for the map. May be overwritten if importing from JSON.
@@ -92,9 +106,9 @@ class ConceptMap < ApplicationRecord
     save
     temp = file.path.split('.')
     type = temp[-1].downcase
-    return from_json(File.read(file), 'I_') if type == "json"
-    return from_tgf(File.read(file)) if type == "tgf"
-    return import_zip(file, '') if type == "zip"
+    return from_json(File.read(file), 'I_') if type == 'json'
+    return from_tgf(File.read(file)) if type == 'tgf'
+    return import_zip(file, '') if type == 'zip'
   end
 
   #Imports concepts and associations based on a JSON representation of a concept map object
@@ -106,17 +120,21 @@ class ConceptMap < ApplicationRecord
   def from_json(data, code_prefix)
     vals = ActiveSupport::JSON.decode(data)
     dict = Hash.new
-    self.code = code_prefix + (vals["code"] || '')
+    self.code = code_prefix + (vals['code'] || '')
     save
-    vals["concepts"].each do |c|
-      t = self.concepts.build(label: c["label"], x: c["x"], y: c["y"])
-      t.save
-      t.reload
-      dict[c["id"]] = t
+    unless vals['concepts'].nil?
+      vals['concepts'].each do |c|
+        t = self.concepts.build(label: c['label'], x: c['x'], y: c['y'])
+        t.save
+        t.reload
+        dict[c['id']] = t
+      end
     end
-    vals["links"].each do |l|
-      t = self.links.build(label: l["label"], start: dict[l["start_id"]], end: dict[l["end_id"]])
-      t.save
+    unless vals['links'].nil?
+      vals['links'].each do |l|
+        t = self.links.build(label: l['label'], start: dict[l['start_id']], end: dict[l['end_id']])
+        t.save
+      end
     end
     return save
   end
@@ -137,12 +155,17 @@ class ConceptMap < ApplicationRecord
     end
     dict = Hash.new
     unless node_defs.nil?
-      step = 2*Math::PI/node_defs.lines.count
+      step = 2 * Math::PI / node_defs.lines.count
       count = 0
       node_defs.each_line do |line|
         l = line.split(' ', 2)
         unless (l[0].nil? || l[1].nil? || l[0].blank? || l[1].blank?)
-          c = concepts.build(label: l[1].strip, x: (node_defs.lines.count/5.0)*100*(Math.sin(count*step) + 1), y: (node_defs.lines.count/5.0)*100*(Math.cos(count*step) + 1))
+          c =
+            concepts.build(
+              label: l[1].strip,
+              x: (node_defs.lines.count / 5.0) * 100 * (Math.sin(count * step) + 1),
+              y: (node_defs.lines.count / 5.0) * 100 * (Math.cos(count * step) + 1)
+            )
           c.save
           dict[l[0]] = c
           count = count + 1
@@ -152,7 +175,10 @@ class ConceptMap < ApplicationRecord
     unless edge_defs.nil?
       edge_defs.each_line do |line|
         l = line.split(' ', 3)
-        unless (l[0].nil? || l[1].nil? || dict[l[0]].nil? || dict[l[1]].nil? || l[2].nil? || l[2].blank?)
+        unless (
+                 l[0].nil? || l[1].nil? || dict[l[0]].nil? || dict[l[1]].nil? || l[2].nil? ||
+                   l[2].blank?
+               )
           links.build(start: dict[l[0]], end: dict[l[1]], label: l[2].strip).save
         end
       end
@@ -177,20 +203,16 @@ class ConceptMap < ApplicationRecord
       name = c.name.split('/')[-1]
       name ||= c.name
       type = name.split('.')[-1]
-      if type == "json"
-        res = res && from_json(c.get_input_stream.read, 'I_')
-      end
-      if type == "tgf"
-        res = res && from_tgf(c.get_input_stream.read)
-      end
+      res = res && from_json(c.get_input_stream.read, 'I_') if type == 'json'
+      res = res && from_tgf(c.get_input_stream.read) if type == 'tgf'
       versionize(DateTime.parse(name.split('.')[0..-2].join(':')))
-      if pos < toDo.size-1
+      if pos < toDo.size - 1
         concepts.clear
         concepts.reload
         links.clear
         links.reload
       end
-      pos = pos+1
+      pos = pos + 1
     end
     return res
   end
@@ -200,7 +222,17 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: JSON data of the concept map
   def to_json
-    as_json(include: {concepts: {only: [:id, :label, :x, :y]}, links: {only: [:id, :label, :start_id, :end_id]}}, only: [:id, :code]).to_json
+    as_json(
+      include: {
+        concepts: {
+          only: %i[id label x y color shape]
+        },
+        links: {
+          only: %i[id label start_id end_id]
+        }
+      },
+      only: %i[id code]
+    ).to_json
   end
 
   #Creates a TGF representation of the map
@@ -208,14 +240,12 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: TGF data of the concept map
   def to_tgf
-    reload(:include => [:concepts, :links])
-    res = ""
-    self.concepts.each do |concept|
-      res = res + concept.id.to_s + " " + concept.label + "\n"
-    end
+    reload(include: %i[concepts links])
+    res = ''
+    self.concepts.each { |concept| res = res + concept.id.to_s + ' ' + concept.label + "\n" }
     res = res + "#\n"
     self.links.each do |edge|
-      res = res + edge.start_id.to_s + " " + edge.end_id.to_s + " " + edge.label + "\n"
+      res = res + edge.start_id.to_s + ' ' + edge.end_id.to_s + ' ' + edge.label + "\n"
     end
     return res
   end
@@ -226,10 +256,8 @@ class ConceptMap < ApplicationRecord
   #Effect: -
   #Returns: Path to a temporary Zip file
   def to_zip(tgf)
-    temp = Tempfile.new("CoMapEd")
-    Zip::OutputStream.open(temp.path) do |zip|
-      write_stream('', zip, tgf)
-    end
+    temp = Tempfile.new('CoMapEd')
+    Zip::OutputStream.open(temp.path) { |zip| write_stream('', zip, tgf) }
     temp.close
     return temp.path
   end
@@ -244,13 +272,24 @@ class ConceptMap < ApplicationRecord
   def write_stream(prefix, zip, tgf)
     self.versions.each do |v|
       if tgf
-        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".tgf").encode!('CP437', :undefined => :replace, :replace => '_'))
+        zip.put_next_entry(
+          (prefix + v.created_at.strftime('%Y-%m-%d %H.%M.%S') + '.tgf').encode!(
+            'CP437',
+            undefined: :replace,
+            replace: '_'
+          )
+        )
         zip.print v.to_tgf
       else
-        zip.put_next_entry((prefix + v.created_at.strftime("%Y-%m-%d %H.%M.%S") + ".json").encode!('CP437', :undefined => :replace, :replace => '_'))
-        zip.print v.data
+        zip.put_next_entry(
+          (prefix + v.created_at.strftime('%Y-%m-%d %H.%M.%S') + '.json').encode!(
+            'CP437',
+            undefined: :replace,
+            replace: '_'
+          )
+        )
+        zip.print v.to_json
       end
     end
   end
-
 end
